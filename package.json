@@ -11,8 +11,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "server": "PORT=8765 node --max-old-space-size=8096 ./server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
