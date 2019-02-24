@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Gun from 'gun/gun'
 import Todos from './Todos'
+import Sign from './Sign'
 import Chat from './Chat'
 import Json from './Json'
 import logo from './logo.svg';
@@ -27,7 +28,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        {/* <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
@@ -40,17 +41,19 @@ class App extends Component {
           >
             Learn React
           </a>
-        </header>
-        <h2>Todo</h2>
-        <Todos gun={this.gun} />
+        </header> */}
+        <h2>Sign</h2>
+        <Sign gun={this.gun} />
         <br />
+
+        
         <hr />
         <h2>Chat</h2>
         <Chat gun={this.gun} />
         <br />
         <hr />
-        <h2>Json</h2>
-        <Json gun={this.gun} />
+        {/* <h2>Json</h2>
+        <Json gun={this.gun} /> */}
       </div>
     );
   }
