@@ -11,7 +11,7 @@ export default class Chat extends Component {
   constructor({gun}) {
     super()
     this.user = gun.user();
-    this.gun = this.user.get('chat');
+    this.gun = gun.get('chat');
     this.state = {
       newMsg: '',
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
@@ -36,7 +36,7 @@ export default class Chat extends Component {
       return 
     }else{
       const tmpState = {}
-      this.gun = this.user.get('chat');
+      // this.gun = this.get('chat');
       this.gun.map().val((msg, key) => {
         tmpState[key] = msg
         this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
