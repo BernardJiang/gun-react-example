@@ -10,7 +10,8 @@ const formatMsgs = msgs => Object.keys(msgs)
 export default class Chat extends Component {
   constructor({gun}) {
     super()
-    this.gun = gun.get('chat');
+    this.user = gun.user();
+    this.gun = this.user.get('chat');
     this.state = {
       newMsg: '',
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
@@ -18,6 +19,8 @@ export default class Chat extends Component {
     }
   }
   componentWillMount() {
+    if(this.gun == null)
+       return
     const tmpState = {}
     this.gun.map().val((msg, key) => {
       tmpState[key] = msg
@@ -27,17 +30,35 @@ export default class Chat extends Component {
   }
   send = e => {
     e.preventDefault()
-    const who = this.state.name || 'user' + Gun.text.random(6)
-    this.setState({name: who})
-    document.cookie = ('alias=' + who) 
-    const when = Gun.time.is()
-    const key = `${when}_${Gun.text.random(4)}`
-    this.gun.path(key).put({
-      who,
-      when,
-      what: this.state.newMsg,
-    })
-    this.setState({newMsg: ''})
+    
+    if(!this.user.is){ 
+      console.log("err", "Sign in first!!");
+      return 
+    }else{
+      const tmpState = {}
+      this.gun = this.user.get('chat');
+      this.gun.map().val((msg, key) => {
+        tmpState[key] = msg
+        this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
+      })
+     
+    }
+    
+    this.user.recall().then( ack=> {
+      const who = ack.alias;
+      console.log(who);      
+      this.setState({name: who})
+      document.cookie = ('alias=' + who) 
+      const when = Gun.time.is()
+      const key = `${when}_${Gun.text.random(4)}`
+      this.gun.path(key).put({
+        who,
+        when,
+        what: this.state.newMsg,
+      })
+      this.setState({newMsg: ''})
+    });
+
   }
   render() {
     const msgs = formatMsgs(this.state.msgs)

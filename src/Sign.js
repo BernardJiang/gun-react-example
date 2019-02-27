@@ -47,6 +47,7 @@ export default class Sign extends Component {
       if(ack.pub){
         console.log("pub", "succeeded");
         this.user.get(this.state.stagename).put(this.gun.get('~@'+this.state.stagename));
+        this.user.get("stagename").put(this.state.stagename);
       }
       
       this.session();
