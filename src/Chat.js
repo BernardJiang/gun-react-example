@@ -1,5 +1,6 @@
 import React, { Component }  from 'react'
-import Gun from 'gun/gun'
+// import Gun from 'gun/gun'
+import Entity from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ key, ...msgs[key] }))
@@ -8,10 +9,9 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 export default class Chat extends Component {
-  constructor({gun}) {
+  constructor({entity}) {
     super()
-    this.user = gun.user();
-    this.gun = gun.get('chat');
+    this.entity = entity;
     this.state = {
       newMsg: '',
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
@@ -19,10 +19,10 @@ export default class Chat extends Component {
     }
   }
   componentWillMount() {
-    if(this.gun == null)
+    if(this.entity == null)
        return
     const tmpState = {}
-    this.gun.map().val((msg, key) => {
+    this.entity.chat.map().val((msg, key) => {
       tmpState[key] = msg
       this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
     })
@@ -31,31 +31,34 @@ export default class Chat extends Component {
   send = e => {
     e.preventDefault()
     
-    if(!this.user.is){ 
+    if(!this.entity.user.is){ 
       console.log("err", "Sign in first!!");
       return 
     }else{
       const tmpState = {}
       // this.gun = this.get('chat');
-      this.gun.map().val((msg, key) => {
+      this.entity.chat.map().val((msg, key) => {
+        console.log("chat", key)
+        console.log("chat", msg)
         tmpState[key] = msg
         this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
       })
      
     }
     
-    this.user.recall().then( ack=> {
+    this.entity.user.recall().then( ack=> {
       const who = ack.alias;
       console.log(who);      
       this.setState({name: who})
       document.cookie = ('alias=' + who) 
-      const when = Gun.time.is()
-      const key = `${when}_${Gun.text.random(4)}`
-      this.gun.path(key).put({
+      const when = Entity.time()
+      const key = `${when}_${Entity.random()}`
+      this.entity.saveMessage(key, {
         who,
         when,
         what: this.state.newMsg,
       })
+
       this.setState({newMsg: ''})
     });
 

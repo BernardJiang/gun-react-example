@@ -1,8 +1,9 @@
 import React, { Component }  from 'react'
-import Gun from 'gun/gun'
+// import Gun from 'gun/gun'
 import path from 'gun/lib/path'
 import './style.css'
-import Sea from 'gun/sea' 
+// import Sea from 'gun/sea' 
+import Entity from './Entity';
 // import as from 'gun/as'
 // import nts from 'gun/nts'
 
@@ -11,10 +12,9 @@ import Sea from 'gun/sea'
 //   .filter(t => Boolean(t.val) && t.key !== '_')
 
 export default class Sign extends Component {
-  constructor({gun}) {
+  constructor({entity}) {
     super()
-    this.gun = gun.get('sign');
-    this.user = gun.user();
+    this.entity = entity;
     this.state = {name: 'alias', password: 'unsafe'}
   }
 
@@ -32,54 +32,41 @@ export default class Sign extends Component {
 
  session = () => {
   if(!sessionStorage){ return }
-  sessionStorage.alias = this.state.stagename;
+  sessionStorage.alias = this.state.name;
   sessionStorage.tmp = this.state.password;
  }
 
-  signup = e => {
+  signup = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)'
-    console.log("create", "user="+this.state.stagename + "pwd=" + this.state.password);
+    console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
+    var ack = await this.entity.createUser(this.state.name, this.state.password);
+    var ack = await this.entity.auth(this.state.name, this.state.password);
 
-    this.user.create(this.state.stagename, this.state.password, ack => {
-      // if(!ack.wait){ but.removeClass('pulse') }
-      if(ack.err){ console.log(ack.err); return }
-      if(ack.pub){
-        console.log("pub", "succeeded");
-        this.user.get(this.state.stagename).put(this.gun.get('~@'+this.state.stagename));
-        this.user.get("stagename").put(this.state.stagename);
-      }
-      
-      this.session();
-      this.user.auth(this.state.stagename, this.state.password);
-    });
-    // this.setState({stagename: '', password: ''})
+    // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
 
-  signin = e => {
+  signin = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    this.user.auth(this.state.stagename, this.state.password, ack => {
-      console.log("signin", ack);
-    });
-    
-    // this.setState({stagename: '', password: ''})
+    this.entity.auth(this.state.name, this.state.password)    
+    // this.setState({name: '', password: ''})
     console.log("dbg", "signin");
   }
 
 //   del = key => this.gun.path(key).put(null)
 
 //   handleChange = e => this.setState({ newTodo: e.target.value})
-  handleStageNameChange = e => this.setState({ stagename: e.target.value})
+  handleNameChange = e => this.setState({ name: e.target.value})
   handlePasswordChange = e => this.setState({ password: e.target.value})
 
   render() {
     return <div id="sign" class="hue page">
 			<form id="inup" class="sign pad center" onSubmit={this.signin}>
 				<div class="mid row col">
-					<input value={this.state.stagename} class="huet jot sap" type="text" placeholder="alias" onChange={this.handleStageNameChange}/>
-					Enter your stagename.
+					<input value={this.state.name} class="huet jot sap" type="text" placeholder="alias" onChange={this.handleNameChange}/>
+					Enter your name.
 				</div>
 				<div class="mid row col">
 					<input value={this.state.password} class="huet jot sap" type="password" placeholder="password" onChange={this.handlePasswordChange}/>

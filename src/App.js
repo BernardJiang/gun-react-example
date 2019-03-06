@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import Gun from 'gun/gun'
+// import Gun from 'gun/gun'
 import Todos from './Todos'
 import Sign from './Sign'
 import Chat from './Chat'
 import Json from './Json'
 import logo from './logo.svg';
 import './App.css';
-
+import Entity from './Entity';
 
 class App extends Component {
   constructor() {
@@ -21,8 +21,9 @@ class App extends Component {
     }
 
     // console.log("dbg", 'origin=' + newloc + ". port=" + window.location.port);
-    this.gun = Gun(newloc + '/gun')
+    // this.gun = Gun(newloc + '/gun')
     // this.gun = Gun('http://localhost:8765' + '/gun')
+    this.entity = new Entity(newloc + '/gun');
 
   }
   render() {
@@ -43,13 +44,13 @@ class App extends Component {
           </a>
         </header> */}
         <h2>Sign</h2>
-        <Sign gun={this.gun} />
+        <Sign entity={this.entity} />
         <br />
 
         
         <hr />
         <h2>Chat</h2>
-        <Chat gun={this.gun} />
+        <Chat entity={this.entity} />
         <br />
         <hr />
         {/* <h2>Json</h2>
