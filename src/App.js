@@ -11,7 +11,7 @@ import Entity from './Entity';
 class App extends Component {
   constructor() {
     super();
-    // console.log("dbg", 'origin=' + window.location.origin + ". port=" + window.location.port);
+     console.log("dbg", 'origin=' + window.location.origin + ". port=" + window.location.port);
 
     var newloc = window.location.origin;
     if (window.location.port !== '8765') {
@@ -27,7 +27,8 @@ class App extends Component {
 
   }
   render() {
-    return (
+   console.log("dbg", 'render in APP');
+  return (
       <div className="App">
         {/* <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />

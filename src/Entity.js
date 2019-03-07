@@ -6,7 +6,7 @@ export default class Entity {
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
-        this.chat = this.gun.get('chat')
+        this.chat = this.gun.get('chat2')
     }
 
     // public chat() { return this.chat; }

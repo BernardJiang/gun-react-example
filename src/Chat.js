@@ -10,6 +10,7 @@ const formatMsgs = msgs => Object.keys(msgs)
 
 export default class Chat extends Component {
   constructor({entity}) {
+
     super()
     this.entity = entity;
     this.state = {
@@ -17,8 +18,11 @@ export default class Chat extends Component {
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
+    // console.log("dbg", "Calling constructor!");
+    
   }
   componentWillMount() {
+    // console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
     const tmpState = {}
@@ -30,6 +34,7 @@ export default class Chat extends Component {
   }
   send = e => {
     e.preventDefault()
+    console.log("dbg", "Calling send!");
     
     if(!this.entity.user.is){ 
       console.log("err", "Sign in first!!");
@@ -38,19 +43,22 @@ export default class Chat extends Component {
       const tmpState = {}
       // this.gun = this.get('chat');
       this.entity.chat.map().val((msg, key) => {
-        console.log("chat", key)
-        console.log("chat", msg)
+        // console.log("chat", key)
+        // console.log("chat", msg)
         tmpState[key] = msg
         this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
       })
      
     }
-    
+    console.log("dbg", "Calling recall!");
+
     this.entity.user.recall().then( ack=> {
       const who = ack.alias;
       console.log(who);      
       this.setState({name: who})
-      document.cookie = ('alias=' + who) 
+      document.cookie = ('alias=' + who)
+      console.log("zzz", document.cookie); 
+      console.log("zzz", this.state.name); 
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.saveMessage(key, {
@@ -64,6 +72,8 @@ export default class Chat extends Component {
 
   }
   render() {
+    console.log("dbg", "Calling render!");
+
     const msgs = formatMsgs(this.state.msgs)
     return <div>
       <ul>
