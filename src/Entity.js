@@ -1,6 +1,35 @@
 import Gun from 'gun/gun'
 import Sea from 'gun/sea' 
 
+/*
+   class Entity {
+       identity,
+       self, //a list of Q/A that describes the person's attributes
+       location,
+       contacts, //a list of other Entities/persons that this has contact with.
+          {
+              nickname, 
+              description,
+              relation tag: fan, star, friends, family, colleague, acquaintance, stranger 
+          }
+       chats, //one-on-one talk 
+       {
+           from self to others;
+           from others to self;
+       }
+       topics, //a chain of Q/A that defines an automatic topic.
+       {
+           dating,
+           making new friends of common interests.
+           buy
+           sell
+           shoppingList
+           business review
+           opinions
+
+       }
+   }
+*/
 export default class Entity {
     constructor( url : string){
         this.gun = new Gun(url)
