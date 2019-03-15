@@ -42,7 +42,7 @@ export default class Sign extends Component {
     console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.createUser(this.state.name, this.state.password);
     var ack = await this.entity.auth(this.state.name, this.state.password);
-
+    console.log(ack);
     // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
@@ -50,9 +50,11 @@ export default class Sign extends Component {
   signin = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    this.entity.auth(this.state.name, this.state.password)    
-    // this.setState({name: '', password: ''})
-    console.log("dbg", "signin");
+    var ack = this.entity.auth(this.state.name, this.state.password)    
+    // console.log(ack);
+        // this.setState({name: '', password: ''})
+    console.log("dbg", "signin 2");
+    this.entity.usercount();
   }
 
 //   del = key => this.gun.path(key).put(null)

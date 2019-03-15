@@ -28,6 +28,23 @@ import Sea from 'gun/sea'
            opinions
 
        }
+       chatbot{
+           search for person to talk with. by distance, by max number of contacts.
+
+           once a person X is found, 
+           
+           Ask(){
+              start to talk to X with a list of topic. 
+                each topic can have a list of question, seeking answer from X.
+                if X doesn't have an answer to my question, leave the question and move on 
+                if X has the answer, then follow the logic of topic to finish the question. 
+
+           }
+           Answer(){
+              also, answer the question from X.
+           }
+            
+       }
    }
 */
 export default class Entity {
@@ -55,6 +72,14 @@ export default class Entity {
 
     auth(name: string, password: string) {
         return this.user.auth(name, password);
+    }
+
+    usercount(){
+        this.chat.map().once(function(user, id){
+            //ui.list.user(user);
+            console.log("user =", user);
+            console.log("id =", id);
+          });
     }
 
     saveMessage(key: string, obj: Object){
