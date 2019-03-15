@@ -15,7 +15,7 @@ export default class Sign extends Component {
   constructor({entity}) {
     super()
     this.entity = entity;
-    this.state = {name: 'alias', password: 'unsafe'}
+    this.state = {name: 'alias', password: 'unsafe', loginorout: "false", mencnt: 0}
   }
 
   componentWillMount() {
@@ -54,7 +54,9 @@ export default class Sign extends Component {
     // console.log(ack);
         // this.setState({name: '', password: ''})
     console.log("dbg", "signin 2");
-    this.entity.usercount();
+    var cnt = this.entity.usercount();
+    this.setState({loginorout: 'true', mencnt: cnt})
+
   }
 
 //   del = key => this.gun.path(key).put(null)
@@ -75,9 +77,12 @@ export default class Sign extends Component {
 					And a long private passphrase.
 				</div>
 				<div class="mid row col go">
-					<button class="huet sap act symbol" onClick={this.signin} >sign in</button>
+					<button class="huet sap act symbol" onClick={this.signin} >sign in {this.state.loginorout} </button>
 					<div class="or">or</div>
 					<button class="huet sap act symbol" onClick={this.signup} >sign up</button>
+				</div>
+				<div class="mid row col go">
+          <div> mencnt : {this.state.mencnt}</div>
 				</div>
 				<a href="info">more info</a>
 			</form>

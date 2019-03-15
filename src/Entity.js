@@ -53,6 +53,7 @@ export default class Entity {
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.chat = this.gun.get('chat2')
+        this.userlist = this.gun.get('userlist')
     }
 
     // public chat() { return this.chat; }
@@ -71,11 +72,16 @@ export default class Entity {
     }
 
     auth(name: string, password: string) {
-        return this.user.auth(name, password);
+        
+        this.user.auth(name, password).then(this.userlist.set({name, password}));
+        var userlistkeys = Object.keys(this.userlist);
+        console.log(userlistkeys);
+        console.log("len="+userlistkeys.length);
+        return userlistkeys.length;
     }
 
     usercount(){
-        this.chat.map().once(function(user, id){
+        this.userlist.map().once(function(user, id){
             //ui.list.user(user);
             console.log("user =", user);
             console.log("id =", id);
