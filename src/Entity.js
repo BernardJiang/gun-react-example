@@ -1,6 +1,6 @@
 import Gun from 'gun/gun'
 import Sea from 'gun/sea' 
-
+import _ from 'lodash'
 /*
    class Entity {
        identity,
@@ -53,7 +53,7 @@ export default class Entity {
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.chat = this.gun.get('chat2')
-        this.userlist = this.gun.get('userlist')
+        this.userlist = this.gun.get('userlist2')
     }
 
     // public chat() { return this.chat; }
@@ -71,21 +71,40 @@ export default class Entity {
     
     }
 
-    auth(name: string, password: string) {
+    async auth(name: string, password: string) {
         
-        this.user.auth(name, password).then(this.userlist.set({name, password}));
-        var userlistkeys = Object.keys(this.userlist);
-        console.log(userlistkeys);
-        console.log("len="+userlistkeys.length);
-        return userlistkeys.length;
+        this.user.auth(name, password).then(function(ack){
+            var user = this.user.get(name).put({name: name})
+            this.userlist.set(user)
+            console.log(user);
+        });
+        console.log("Bernard");
+        var numberofusers = 0;
+        // this.user.once(data => {
+        //     console.log(data);
+        //     numberofusers = Object.keys(data).length;
+        // } );
+        // console.log("bernard:", "numberof users="+ numberofusers);
+        // var userlistkeys = Object.keys(this.userlist);
+        // console.log(userlistkeys);
+        // console.log("len="+userlistkeys.length);
+        return numberofusers;
     }
 
-    usercount(){
-        this.userlist.map().once(function(user, id){
+    usercount(cb){
+        var numberofusers = 0;
+        this.userlist.once(data =>{
             //ui.list.user(user);
-            console.log("user =", user);
-            console.log("id =", id);
+            console.log(data);
+            numberofusers = data ? Object.keys(data).length : 0;
+            console.log("usercount:", "callback number of users="+ numberofusers);
+            cb(numberofusers);
+
           });
+        // console.log(data);
+        // numberofusers = Object.keys(data).length;
+        
+        //   return ;// numberofusers;
     }
 
     saveMessage(key: string, obj: Object){

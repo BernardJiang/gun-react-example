@@ -46,6 +46,9 @@ export default class Sign extends Component {
     // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
+  updatemencnt = (cnt) => {
+    this.setState({mencnt: cnt});
+  }
 
   signin = async e => {
     e.preventDefault()
@@ -54,8 +57,8 @@ export default class Sign extends Component {
     // console.log(ack);
         // this.setState({name: '', password: ''})
     console.log("dbg", "signin 2");
-    var cnt = this.entity.usercount();
-    this.setState({loginorout: 'true', mencnt: cnt})
+    this.setState({loginorout: 'true'})
+    this.entity.usercount(this.updatemencnt);
 
   }
 
