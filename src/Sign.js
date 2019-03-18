@@ -40,25 +40,28 @@ export default class Sign extends Component {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)'
     console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
-    var ack = await this.entity.createUser(this.state.name, this.state.password);
+    var ack = await this.entity.create(this.state.name, this.state.password);
     var ack = await this.entity.auth(this.state.name, this.state.password);
     console.log(ack);
     // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
   updatemencnt = (cnt) => {
-    this.setState({mencnt: cnt});
+    this.setState({loginorout: 'true', mencnt: cnt});
   }
 
   signin = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    var ack = this.entity.auth(this.state.name, this.state.password)    
-    // console.log(ack);
+    var ack = this.entity.auth(this.state.name, this.state.password, ack=>{
+        console.log(ack);
         // this.setState({name: '', password: ''})
-    console.log("dbg", "signin 2");
-    this.setState({loginorout: 'true'})
-    this.entity.usercount(this.updatemencnt);
+        console.log("dbg", "signin done");
+        // this.setState({loginorout: 'true'})
+        this.entity.usercount(this.updatemencnt);
+    
+    }) 
+
 
   }
 

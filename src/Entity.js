@@ -49,13 +49,18 @@ import _ from 'lodash'
 */
 export default class Entity {
     constructor( url : string){
+        // localStorage.clear();
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.chat = this.gun.get('chat2')
         this.userlist = this.gun.get('userlist2')
+        this.userlist.on(this.cbNewUser);
     }
 
+    cbNewUser(newuser){
+        console.log("New user is on", newuser);
+    }
     // public chat() { return this.chat; }
     // public user() { return this.user; }
     static time() { 
@@ -71,15 +76,16 @@ export default class Entity {
     
     }
 
-    async auth(name: string, password: string) {
+    async auth(name: string, password: string, cb) {
         
-        this.user.auth(name, password).then(function(ack){
+        this.user.auth(name, password, ack=>{
             var user = this.user.get(name).put({name: name})
             this.userlist.set(user)
             console.log(user);
+            cb(ack);
         });
-        console.log("Bernard");
-        var numberofusers = 0;
+        // console.log("Bernard");
+        // var numberofusers = 0;
         // this.user.once(data => {
         //     console.log(data);
         //     numberofusers = Object.keys(data).length;
@@ -88,7 +94,7 @@ export default class Entity {
         // var userlistkeys = Object.keys(this.userlist);
         // console.log(userlistkeys);
         // console.log("len="+userlistkeys.length);
-        return numberofusers;
+        // return numberofusers;
     }
 
     usercount(cb){
@@ -96,7 +102,7 @@ export default class Entity {
         this.userlist.once(data =>{
             //ui.list.user(user);
             console.log(data);
-            numberofusers = data ? Object.keys(data).length : 0;
+            numberofusers = data ? (Object.keys(data).length  -1): 0;
             console.log("usercount:", "callback number of users="+ numberofusers);
             cb(numberofusers);
 
