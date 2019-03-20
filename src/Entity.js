@@ -75,6 +75,11 @@ export default class Entity {
             // if(!ack.wait){ but.removeClass('pulse') }    
     
     }
+    listentouser(cb){
+        this.userlist.on(data => {
+            this.usercount(cb) 
+        });
+    }
 
     async auth(name: string, password: string, cb) {
         

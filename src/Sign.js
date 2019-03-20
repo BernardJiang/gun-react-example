@@ -16,6 +16,7 @@ export default class Sign extends Component {
     super()
     this.entity = entity;
     this.state = {name: 'alias', password: 'unsafe', loginorout: "false", mencnt: 0}
+    this.entity.listentouser(this.updatemencnt);
   }
 
   componentWillMount() {

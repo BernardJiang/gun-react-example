@@ -18,11 +18,11 @@ export default class Chat extends Component {
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
-    // console.log("dbg", "Calling constructor!");
+    console.log("dbg", "Calling constructor!");
     
   }
   componentWillMount() {
-    // console.log("dbg", "Calling componentWillMount!");
+    console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
     const tmpState = {}
@@ -39,7 +39,9 @@ export default class Chat extends Component {
     if(!this.entity.user.is){ 
       console.log("err", "Sign in first!!");
       return 
-    }else{
+    } 
+    
+    
       const tmpState = {}
       // this.gun = this.get('chat');
       this.entity.chat.map().val((msg, key) => {
@@ -49,7 +51,7 @@ export default class Chat extends Component {
         this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
       })
      
-    }
+    
     console.log("dbg", "Calling recall!");
 
     this.entity.user.recall().then( ack=> {
