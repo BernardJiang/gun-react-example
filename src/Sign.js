@@ -15,7 +15,12 @@ export default class Sign extends Component {
   constructor({entity}) {
     super()
     this.entity = entity;
-    this.state = {name: 'alias', password: 'unsafe', loginorout: "false", mencnt: 0}
+    this.state = {
+      name: 'alias', 
+      password: 'unsafe', 
+      loginorout: "false", 
+      userlist: {},
+      mencnt: 0}
   }
 
   componentWillMount() {
@@ -46,23 +51,20 @@ export default class Sign extends Component {
     // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
-  updatemencnt = (cnt) => {
-    this.setState({loginorout: 'true', mencnt: cnt});
+  updateUI = (obj ) => {
+    console.log("updateUI", "online user count=" + obj.list.length);
+    this.setState({
+      userlist: obj.list || [],
+      mencnt : obj.list.length
+    });
   }
 
+  // this.setState({loginorout: 'true', mencnt: cnt});
+  
   signin = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    var ack = this.entity.auth(this.state.name, this.state.password, ack=>{
-        console.log(ack);
-        // this.setState({name: '', password: ''})
-        console.log("dbg", "signin done");
-        // this.setState({loginorout: 'true'})
-        this.entity.usercount(this.updatemencnt);
-    
-    }) 
-
-
+    var ack = this.entity.auth(this.state.name, this.state.password, this.updateUI) 
   }
 
 //   del = key => this.gun.path(key).put(null)
@@ -92,6 +94,13 @@ export default class Sign extends Component {
 				</div>
 				<a href="info">more info</a>
 			</form>
+
+      <ul>
+        {
+          !!this.state.userlist.length && this.state.userlist.map((item) => <li key={item.key}>*   {item.text}</li>)          
+        }
+      </ul>
+
 		</div>
 
   }

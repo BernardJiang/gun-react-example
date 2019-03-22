@@ -1,5 +1,6 @@
 import Gun from 'gun/gun'
 import Sea from 'gun/sea' 
+import 'gun/lib/open'
 import _ from 'lodash'
 /*
    class Entity {
@@ -48,7 +49,7 @@ import _ from 'lodash'
    }
 */
 export default class Entity {
-    constructor( url : string){
+    constructor( url: string){
         // localStorage.clear();
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
@@ -76,13 +77,47 @@ export default class Entity {
     
     }
 
-    async auth(name: string, password: string, cb) {
-        
+    hookUserList = (UIcb) => {
+        this.userlist.open((list) => {
+            const reducer = (newList, key) => {
+                if (!!Object.keys(list[key]).length && list[key].name) {
+                    console.log("key", key)
+                    console.log("user", list[key].name)
+                    console.log("newList len=", newList.length);
+                    console.log("newList", newList);
+                    return [...newList, {text: list[key].name, key} ];
+                } else{
+                    return newList;
+                };
+            }
+            const keylist = Object.keys(list);
+            console.log(keylist);
+            var userList1 = keylist.reduce( reducer, []);
+            if(userList1 && userList1.length)
+               console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
+            else
+               console.log("hookUsersLilst", "no user found!");
+            if(UIcb)
+                UIcb({list: userList1 || []});
+        });
+    }
+
+    async auth(name: string, password: string, UIcb) {
+
+        // const list=[1,2,3]
+        // const res = list.reduce((a,b)=> [...a, b], [200]);
+        // console.log("result=", res);
+
         this.user.auth(name, password, ack=>{
+            if(ack.err){
+                console.log('err', ack.err);
+                return;
+            }
             var user = this.user.get(name).put({name: name})
             this.userlist.set(user)
-            console.log(user);
-            cb(ack);
+            // this.userlist.set({text: name})
+            // console.log(user);
+            this.hookUserList(UIcb);
         });
         // console.log("Bernard");
         // var numberofusers = 0;
@@ -98,15 +133,17 @@ export default class Entity {
     }
 
     usercount(cb){
-        var numberofusers = 0;
-        this.userlist.once(data =>{
-            //ui.list.user(user);
-            console.log(data);
-            numberofusers = data ? (Object.keys(data).length  -1): 0;
-            console.log("usercount:", "callback number of users="+ numberofusers);
-            cb(numberofusers);
 
-          });
+        this.hookUserList(cb);
+        // var numberofusers = 0;
+        // this.userlist.once(data =>{
+        //     //ui.list.user(user);
+        //     console.log(data);
+        //     numberofusers = data ? (Object.keys(data).length  -1): 0;
+        //     console.log("usercount:", "callback number of users="+ numberofusers);
+        //     cb(numberofusers);
+
+        //   });
         // console.log(data);
         // numberofusers = Object.keys(data).length;
         
