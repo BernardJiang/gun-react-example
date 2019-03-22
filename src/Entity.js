@@ -99,7 +99,7 @@ export default class Entity {
                 console.log("keylist is undefined")
                 return;
             }
-            console.log(keylist);
+            // console.log(keylist);
             var userList1 = keylist.reduce( reducer, []);
             if(userList1 && userList1.length)
                console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
@@ -169,6 +169,12 @@ export default class Entity {
         this.chat.path(key).put(obj);    
     }
 
-    
+    onChatMessage(CMcb) {
+        const tmpState = {}
+        this.chat.map().val((msg, key) => {
+            tmpState[key] = msg
+            CMcb({msgs: Object.assign({}, this.state.msgs, tmpState)})
+          })    
+    }
     
 }

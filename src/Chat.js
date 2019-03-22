@@ -25,11 +25,12 @@ export default class Chat extends Component {
     // console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
-    const tmpState = {}
-    this.entity.chat.map().val((msg, key) => {
-      tmpState[key] = msg
-      this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-    })
+    this.entity.onChatMessage(this.setState)   
+    // const tmpState = {}
+    // this.entity.chat.map().val((msg, key) => {
+    //   tmpState[key] = msg
+    //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
+    // })
 
   }
   send = e => {

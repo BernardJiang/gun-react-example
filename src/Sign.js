@@ -27,6 +27,9 @@ export default class Sign extends Component {
     this.entity.hookUserList(this.updateUI);
   }
 
+  componentWillUnmount() {
+    this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+  }
 
  session = () => {
   if(!sessionStorage){ return }
