@@ -1,6 +1,7 @@
 import Gun from 'gun/gun'
 import Sea from 'gun/sea' 
 import 'gun/lib/open'
+import 'gun/lib/unset'
 import _ from 'lodash'
 /*
    class Entity {
@@ -57,7 +58,7 @@ export default class Entity {
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.chat = this.gun.get('chat2')
-        this.userlist = this.gun.get('userlist2')
+        this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
     }
 
@@ -83,7 +84,7 @@ export default class Entity {
     hookUserList = (UIcb) => {
         this.userlist.open((list) => {
             const reducer = (newList, key) => {
-                if (!!Object.keys(list[key]).length && list[key].name) {
+                if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
                     // console.log("key", key)
                     console.log("user", list[key].name)
                     // console.log("newList len=", newList.length);
@@ -94,7 +95,11 @@ export default class Entity {
                 };
             }
             const keylist = Object.keys(list);
-            // console.log(keylist);
+            if(keylist == undefined) {
+                console.log("keylist is undefined")
+                return;
+            }
+            console.log(keylist);
             var userList1 = keylist.reduce( reducer, []);
             if(userList1 && userList1.length)
                console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
@@ -106,8 +111,11 @@ export default class Entity {
     }
 
     leave(name: string, password: string, Signcb) {
-        this.user.leave();
-        Signcb(false);
+        this.user.leave()
+        var user = this.user.get(name)
+        console.log("leave", "unset "+ user)
+        this.userlist.unset(user)
+        Signcb(false)
     }
 
     async auth(name: string, password: string, Signcb) {
