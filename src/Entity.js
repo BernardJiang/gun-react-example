@@ -174,8 +174,8 @@ export default class Entity {
         const tmpState = {}
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
-            console.log('Entity onChatMessage', key)
-            console.log('Entity onChatMessage', msg)
+            // console.log('Entity onChatMessage', key)
+            // console.log('Entity onChatMessage', msg)
             CMcb({msgs: Object.assign({}, this.state.msgs, tmpState)})
           })    
     }
