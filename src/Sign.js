@@ -24,17 +24,9 @@ export default class Sign extends Component {
   }
 
   componentWillMount() {
-    // this.gun.on(todos => this.setState({
-    //   todos: formatTodos(todos)
-    // }))
     this.entity.hookUserList(this.updateUI);
   }
 
-//   add = e => {
-//     e.preventDefault()
-//     this.gun.path(Gun.text.random()).put(this.state.newTodo)
-//     this.setState({newTodo: ''})
-//   }
 
  session = () => {
   if(!sessionStorage){ return }
@@ -44,12 +36,11 @@ export default class Sign extends Component {
 
   signup = async e => {
     e.preventDefault()
-    // this.gun.path(Gun.text.random()).put(this.state.newTodo)'
+    
     console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.create(this.state.name, this.state.password);
     var ack = await this.entity.auth(this.state.name, this.state.password);
     console.log(ack);
-    // this.setState({name: '', password: ''})
     console.log("dbg", "signup");
   }
   updateUI = (obj ) => {
@@ -66,13 +57,12 @@ export default class Sign extends Component {
   
   signin = async e => {
     e.preventDefault()
-    // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    var ack = this.entity.auth(this.state.name, this.state.password, this.updateSignStatus) 
+    if(this.state.authenticated)
+      this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+    else
+      this.entity.auth(this.state.name, this.state.password, this.updateSignStatus) 
   }
 
-//   del = key => this.gun.path(key).put(null)
-
-//   handleChange = e => this.setState({ newTodo: e.target.value})
   handleNameChange = e => this.setState({ name: e.target.value})
   handlePasswordChange = e => this.setState({ password: e.target.value})
 
@@ -100,7 +90,7 @@ export default class Sign extends Component {
 
       <ul>
         {
-          !!this.state.userlist.length && this.state.userlist.map((item) => <li key={item.key}>*   {item.text}</li>)          
+          !!this.state.userlist.length && this.state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
         }
       </ul>
 

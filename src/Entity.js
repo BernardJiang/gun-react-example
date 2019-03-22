@@ -50,7 +50,9 @@ import _ from 'lodash'
 */
 export default class Entity {
     constructor( url: string){
+        
         // localStorage.clear();
+
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
@@ -102,12 +104,12 @@ export default class Entity {
         });
     }
 
+    leave(name: string, password: string, Signcb) {
+        this.user.leave();
+        Signcb(false);
+    }
+
     async auth(name: string, password: string, Signcb) {
-
-        // const list=[1,2,3]
-        // const res = list.reduce((a,b)=> [...a, b], [200]);
-        // console.log("result=", res);
-
         this.user.auth(name, password, ack=>{
             if(ack.err){
                 console.log('err', ack.err);
