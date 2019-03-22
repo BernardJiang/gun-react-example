@@ -35,7 +35,7 @@ export default class Chat extends Component {
   }
   send = e => {
     e.preventDefault()
-    console.log("dbg", "Calling send!");
+    // console.log("dbg", "Calling send!");
     
     if(!this.entity.user.is){ 
       console.log("err", "Sign in first!!");
@@ -51,15 +51,15 @@ export default class Chat extends Component {
       })
      
     }
-    console.log("dbg", "Calling recall!");
+    // console.log("dbg", "Calling recall!");
 
     this.entity.user.recall().then( ack=> {
       const who = ack.alias;
-      console.log(who);      
+      // console.log(who);      
       this.setState({name: who})
       document.cookie = ('alias=' + who)
-      console.log("zzz", document.cookie); 
-      console.log("zzz", this.state.name); 
+      // console.log("zzz", document.cookie); 
+      // console.log("zzz", this.state.name); 
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.saveMessage(key, {
@@ -73,7 +73,7 @@ export default class Chat extends Component {
 
   }
   render() {
-    console.log("dbg", "Calling render!");
+    // console.log("dbg", "Calling render!");
 
     const msgs = formatMsgs(this.state.msgs)
     return <div>

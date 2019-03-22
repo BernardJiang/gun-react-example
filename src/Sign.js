@@ -40,14 +40,14 @@ export default class Sign extends Component {
   signup = async e => {
     e.preventDefault()
     
-    console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
+    // console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.create(this.state.name, this.state.password);
     var ack = await this.entity.auth(this.state.name, this.state.password);
-    console.log(ack);
-    console.log("dbg", "signup");
+    // console.log(ack);
+    // console.log("dbg", "signup");
   }
   updateUI = (obj ) => {
-    console.log("updateUI", "online user count=" + obj.list.length);
+    // console.log("updateUI", "online user count=" + obj.list.length);
     this.setState({
       userlist: obj.list || [],
       mencnt : obj.list.length

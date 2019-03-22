@@ -70,7 +70,7 @@ export default class Entity {
     // public user() { return this.user; }
     static time() { 
         var t = Gun.time.is();
-        console.log("chat", t);
+        // console.log("chat", t);
         return t;
     }
     static random() { return Gun.text.random(4);}
@@ -86,7 +86,7 @@ export default class Entity {
             const reducer = (newList, key) => {
                 if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
                     // console.log("key", key)
-                    console.log("user", list[key].name)
+                    // console.log("user", list[key].name)
                     // console.log("newList len=", newList.length);
                     // console.log("newList", newList);
                     return [...newList, {text: list[key].name, key} ];
@@ -96,15 +96,15 @@ export default class Entity {
             }
             const keylist = Object.keys(list);
             if(keylist == undefined) {
-                console.log("keylist is undefined")
+                // console.log("keylist is undefined")
                 return;
             }
             // console.log(keylist);
             var userList1 = keylist.reduce( reducer, []);
-            if(userList1 && userList1.length)
-               console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
-            else
-               console.log("hookUsersLilst", "no user found!");
+            // if(userList1 && userList1.length)
+            //    console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
+            // else
+            //    console.log("hookUsersLilst", "no user found!");
             if(UIcb)
                 UIcb({list: userList1 || []});
         });
@@ -113,7 +113,7 @@ export default class Entity {
     leave(name: string, password: string, Signcb) {
         this.user.leave()
         var user = this.user.get(name)
-        console.log("leave", "unset "+ user)
+        // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
         Signcb(false)
     }
@@ -164,15 +164,18 @@ export default class Entity {
     }
 
     saveMessage(key: string, obj: Object){
-        console.log("Entity", key);
-        console.log("Entity", obj);
+        // console.log("Entity", key);
+        // console.log("Entity", obj);
         this.chat.path(key).put(obj);    
     }
 
     onChatMessage(CMcb) {
+        console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
-        this.chat.map().val((msg, key) => {
+        this.chat.map().once((msg, key) => {
             tmpState[key] = msg
+            console.log('Entity onChatMessage', key)
+            console.log('Entity onChatMessage', msg)
             CMcb({msgs: Object.assign({}, this.state.msgs, tmpState)})
           })    
     }
