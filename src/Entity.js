@@ -74,6 +74,9 @@ export default class Entity {
         return t;
     }
     static random() { return Gun.text.random(4);}
+    isUserOnline(){
+        return this.user.is
+    }
 
     create(name: string, password: string) {
         return this.user.create(name, password);
@@ -172,12 +175,15 @@ export default class Entity {
     onChatMessage(CMcb) {
         console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
+        let msgs = {};
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
             // console.log('Entity onChatMessage', msg)
-            CMcb({msgs: Object.assign({}, this.state.msgs, tmpState)})
-          })    
+            msgs = Object.assign({}, msgs, tmpState)
+          })
+        console.log(msgs)
+        // CMcb({msgs});    
     }
     
 }

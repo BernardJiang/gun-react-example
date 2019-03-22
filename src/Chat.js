@@ -25,22 +25,24 @@ export default class Chat extends Component {
     // console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
-    this.entity.onChatMessage(this.setState)   
-    // const tmpState = {}
-    // this.entity.chat.map().val((msg, key) => {
-    //   tmpState[key] = msg
-    //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-    // })
+    // this.entity.onChatMessage(this.setState)   
+    const tmpState = {}
+    this.entity.chat.map().val((msg, key) => {
+      tmpState[key] = msg
+      this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
+    })
 
   }
   send = e => {
     e.preventDefault()
     // console.log("dbg", "Calling send!");
     
-    if(!this.entity.user.is){ 
-      console.log("err", "Sign in first!!");
+    if(!this.entity.isUserOnline()){ 
+      console.log("err", "Sign in first!!")
       return 
     }else{
+      // this.entity.onChatMessage(this.setState)   
+      
       const tmpState = {}
       // this.gun = this.get('chat');
       this.entity.chat.map().val((msg, key) => {
