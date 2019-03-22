@@ -58,11 +58,12 @@ export default class Entity {
         this.user = this.gun.user()
         this.chat = this.gun.get('chat2')
         this.userlist = this.gun.get('userlist2')
-        this.userlist.on(this.cbNewUser);
+        // this.userlist.on(this.cbNewUser);
     }
 
     cbNewUser(newuser){
         console.log("New user is on", newuser);
+        
     }
     // public chat() { return this.chat; }
     // public user() { return this.user; }
@@ -83,17 +84,17 @@ export default class Entity {
         this.userlist.open((list) => {
             const reducer = (newList, key) => {
                 if (!!Object.keys(list[key]).length && list[key].name) {
-                    console.log("key", key)
+                    // console.log("key", key)
                     console.log("user", list[key].name)
-                    console.log("newList len=", newList.length);
-                    console.log("newList", newList);
+                    // console.log("newList len=", newList.length);
+                    // console.log("newList", newList);
                     return [...newList, {text: list[key].name, key} ];
                 } else{
                     return newList;
                 };
             }
             const keylist = Object.keys(list);
-            console.log(keylist);
+            // console.log(keylist);
             var userList1 = keylist.reduce( reducer, []);
             if(userList1 && userList1.length)
                console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
