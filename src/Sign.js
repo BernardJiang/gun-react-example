@@ -18,7 +18,7 @@ export default class Sign extends Component {
     this.state = {
       name: 'alias', 
       password: 'unsafe', 
-      loginorout: "false", 
+      authenticated: false, 
       userlist: {},
       mencnt: 0}
   }
@@ -27,6 +27,7 @@ export default class Sign extends Component {
     // this.gun.on(todos => this.setState({
     //   todos: formatTodos(todos)
     // }))
+    this.entity.hookUserList(this.updateUI);
   }
 
 //   add = e => {
@@ -59,12 +60,14 @@ export default class Sign extends Component {
     });
   }
 
-  // this.setState({loginorout: 'true', mencnt: cnt});
+  updateSignStatus = (InOrOut) => {
+    this.setState({authenticated: InOrOut});
+  }
   
   signin = async e => {
     e.preventDefault()
     // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    var ack = this.entity.auth(this.state.name, this.state.password, this.updateUI) 
+    var ack = this.entity.auth(this.state.name, this.state.password, this.updateSignStatus) 
   }
 
 //   del = key => this.gun.path(key).put(null)
@@ -85,7 +88,7 @@ export default class Sign extends Component {
 					And a long private passphrase.
 				</div>
 				<div class="mid row col go">
-					<button class="huet sap act symbol" onClick={this.signin} >sign in {this.state.loginorout} </button>
+					<button class="huet sap act symbol" onClick={this.signin} > {this.state.authenticated ? 'Sign Out' : 'Sign In'} </button>
 					<div class="or">or</div>
 					<button class="huet sap act symbol" onClick={this.signup} >sign up</button>
 				</div>

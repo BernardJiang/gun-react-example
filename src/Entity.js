@@ -102,7 +102,7 @@ export default class Entity {
         });
     }
 
-    async auth(name: string, password: string, UIcb) {
+    async auth(name: string, password: string, Signcb) {
 
         // const list=[1,2,3]
         // const res = list.reduce((a,b)=> [...a, b], [200]);
@@ -111,13 +111,15 @@ export default class Entity {
         this.user.auth(name, password, ack=>{
             if(ack.err){
                 console.log('err', ack.err);
+                Signcb && Signcb(false);
                 return;
             }
             var user = this.user.get(name).put({name: name})
             this.userlist.set(user)
             // this.userlist.set({text: name})
             // console.log(user);
-            this.hookUserList(UIcb);
+            // this.hookUserList(UIcb);
+            Signcb(true);
         });
         // console.log("Bernard");
         // var numberofusers = 0;
