@@ -1,5 +1,7 @@
 import Gun from 'gun/gun'
 import Sea from 'gun/sea' 
+import 'gun/lib/open'
+import 'gun/lib/unset'
 import _ from 'lodash'
 /*
    class Entity {
@@ -48,27 +50,33 @@ import _ from 'lodash'
    }
 */
 export default class Entity {
-    constructor( url : string){
+    constructor( url: string){
+        
         // localStorage.clear();
+
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
-        this.chat = this.gun.get('chat2')
-        this.userlist = this.gun.get('userlist2')
-        this.userlist.on(this.cbNewUser);
+        this.chat = this.gun.get('chat')
+        this.userlist = this.gun.get('userlist')
+        // this.userlist.on(this.cbNewUser);
     }
 
     cbNewUser(newuser){
         console.log("New user is on", newuser);
+        
     }
     // public chat() { return this.chat; }
     // public user() { return this.user; }
     static time() { 
         var t = Gun.time.is();
-        console.log("chat", t);
+        // console.log("chat", t);
         return t;
     }
     static random() { return Gun.text.random(4);}
+    isUserOnline(){
+        return this.user.is
+    }
 
     create(name: string, password: string) {
         return this.user.create(name, password);
@@ -81,13 +89,56 @@ export default class Entity {
         });
     }
 
-    async auth(name: string, password: string, cb) {
-        
+    hookUserList = (UIcb) => {
+        this.userlist.open((list) => {
+            const reducer = (newList, key) => {
+                if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
+                    // console.log("key", key)
+                    // console.log("user", list[key].name)
+                    // console.log("newList len=", newList.length);
+                    // console.log("newList", newList);
+                    return [...newList, {text: list[key].name, key} ];
+                } else{
+                    return newList;
+                };
+            }
+            const keylist = Object.keys(list);
+            if(keylist == undefined) {
+                // console.log("keylist is undefined")
+                return;
+            }
+            // console.log(keylist);
+            var userList1 = keylist.reduce( reducer, []);
+            // if(userList1 && userList1.length)
+            //    console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
+            // else
+            //    console.log("hookUsersLilst", "no user found!");
+            if(UIcb)
+                UIcb({list: userList1 || []});
+        });
+    }
+
+    leave(name: string, password: string, Signcb) {
+        this.user.leave()
+        var user = this.user.get(name)
+        // console.log("leave", "unset "+ user)
+        this.userlist.unset(user)
+        Signcb(false)
+    }
+
+    async auth(name: string, password: string, Signcb) {
         this.user.auth(name, password, ack=>{
+            if(ack.err){
+                console.log('err', ack.err);
+                Signcb && Signcb(false);
+                return;
+            }
             var user = this.user.get(name).put({name: name})
             this.userlist.set(user)
-            console.log(user);
-            cb(ack);
+            // this.userlist.set({text: name})
+            // console.log(user);
+            // this.hookUserList(UIcb);
+            Signcb(true);
         });
         // console.log("Bernard");
         // var numberofusers = 0;
@@ -103,15 +154,17 @@ export default class Entity {
     }
 
     usercount(cb){
-        var numberofusers = 0;
-        this.userlist.once(data =>{
-            //ui.list.user(user);
-            console.log(data);
-            numberofusers = data ? (Object.keys(data).length  -1): 0;
-            console.log("usercount:", "callback number of users="+ numberofusers);
-            cb(numberofusers);
 
-          });
+        this.hookUserList(cb);
+        // var numberofusers = 0;
+        // this.userlist.once(data =>{
+        //     //ui.list.user(user);
+        //     console.log(data);
+        //     numberofusers = data ? (Object.keys(data).length  -1): 0;
+        //     console.log("usercount:", "callback number of users="+ numberofusers);
+        //     cb(numberofusers);
+
+        //   });
         // console.log(data);
         // numberofusers = Object.keys(data).length;
         
@@ -119,11 +172,23 @@ export default class Entity {
     }
 
     saveMessage(key: string, obj: Object){
-        console.log("Entity", key);
-        console.log("Entity", obj);
+        // console.log("Entity", key);
+        // console.log("Entity", obj);
         this.chat.path(key).put(obj);    
     }
 
-    
+    onChatMessage(CMcb) {
+        console.log('Entity onChatMessage', 'entered')
+        const tmpState = {}
+        let msgs = {};
+        this.chat.map().once((msg, key) => {
+            tmpState[key] = msg
+            // console.log('Entity onChatMessage', key)
+            // console.log('Entity onChatMessage', msg)
+            msgs = Object.assign({}, msgs, tmpState)
+          })
+        console.log(msgs)
+        // CMcb({msgs});    
+    }
     
 }

@@ -15,21 +15,21 @@ export default class Sign extends Component {
   constructor({entity}) {
     super()
     this.entity = entity;
-    this.state = {name: 'alias', password: 'unsafe', loginorout: "false", mencnt: 0}
-    this.entity.listentouser(this.updatemencnt);
+    this.state = {
+      name: 'alias', 
+      password: 'unsafe', 
+      authenticated: false, 
+      userlist: {},
+      mencnt: 0}
   }
 
   componentWillMount() {
-    // this.gun.on(todos => this.setState({
-    //   todos: formatTodos(todos)
-    // }))
+    this.entity.hookUserList(this.updateUI);
   }
 
-//   add = e => {
-//     e.preventDefault()
-//     this.gun.path(Gun.text.random()).put(this.state.newTodo)
-//     this.setState({newTodo: ''})
-//   }
+  componentWillUnmount() {
+    this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+  }
 
  session = () => {
   if(!sessionStorage){ return }
@@ -39,36 +39,33 @@ export default class Sign extends Component {
 
   signup = async e => {
     e.preventDefault()
-    // this.gun.path(Gun.text.random()).put(this.state.newTodo)'
-    console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
+    
+    // console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.create(this.state.name, this.state.password);
     var ack = await this.entity.auth(this.state.name, this.state.password);
-    console.log(ack);
-    // this.setState({name: '', password: ''})
-    console.log("dbg", "signup");
+    // console.log(ack);
+    // console.log("dbg", "signup");
   }
-  updatemencnt = (cnt) => {
-    this.setState({loginorout: 'true', mencnt: cnt});
+  updateUI = (obj ) => {
+    // console.log("updateUI", "online user count=" + obj.list.length);
+    this.setState({
+      userlist: obj.list || [],
+      mencnt : obj.list.length
+    });
   }
 
+  updateSignStatus = (InOrOut) => {
+    this.setState({authenticated: InOrOut});
+  }
+  
   signin = async e => {
     e.preventDefault()
-    // this.gun.path(Gun.text.random()).put(this.state.newTodo)
-    var ack = this.entity.auth(this.state.name, this.state.password, ack=>{
-        console.log(ack);
-        // this.setState({name: '', password: ''})
-        console.log("dbg", "signin done");
-        // this.setState({loginorout: 'true'})
-        this.entity.usercount(this.updatemencnt);
-    
-    }) 
-
-
+    if(this.state.authenticated)
+      this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+    else
+      this.entity.auth(this.state.name, this.state.password, this.updateSignStatus) 
   }
 
-//   del = key => this.gun.path(key).put(null)
-
-//   handleChange = e => this.setState({ newTodo: e.target.value})
   handleNameChange = e => this.setState({ name: e.target.value})
   handlePasswordChange = e => this.setState({ password: e.target.value})
 
@@ -84,7 +81,7 @@ export default class Sign extends Component {
 					And a long private passphrase.
 				</div>
 				<div class="mid row col go">
-					<button class="huet sap act symbol" onClick={this.signin} >sign in {this.state.loginorout} </button>
+					<button class="huet sap act symbol" onClick={this.signin} > {this.state.authenticated ? 'Sign Out' : 'Sign In'} </button>
 					<div class="or">or</div>
 					<button class="huet sap act symbol" onClick={this.signup} >sign up</button>
 				</div>
@@ -93,6 +90,13 @@ export default class Sign extends Component {
 				</div>
 				<a href="info">more info</a>
 			</form>
+
+      <ul>
+        {
+          !!this.state.userlist.length && this.state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
+        }
+      </ul>
+
 		</div>
 
   }

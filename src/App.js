@@ -11,7 +11,7 @@ import Entity from './Entity';
 class App extends Component {
   constructor() {
     super();
-     console.log("dbg", 'origin=' + window.location.origin + ". port=" + window.location.port);
+    //  console.log("dbg", 'origin=' + window.location.origin + ". port=" + window.location.port);
 
     var newloc = window.location.origin;
     if (window.location.port !== '8765') {
@@ -27,9 +27,9 @@ class App extends Component {
 
   }
   render() {
-   console.log("dbg", 'render in APP');
+  //  console.log("dbg", 'render in APP');
   return (
-      <div className="App">
+      <div className="App" className='rowC'>
         {/* <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
@@ -44,16 +44,8 @@ class App extends Component {
             Learn React
           </a>
         </header> */}
-        <h2>Sign</h2>
         <Sign entity={this.entity} />
-        <br />
-
-        
-        <hr />
-        <h2>Chat</h2>
         <Chat entity={this.entity} />
-        <br />
-        <hr />
         {/* <h2>Json</h2>
         <Json gun={this.gun} /> */}
       </div>

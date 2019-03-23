@@ -25,8 +25,9 @@ export default class Chat extends Component {
     console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
+    // this.entity.onChatMessage(this.setState)   
     const tmpState = {}
-    this.entity.chat.map().val((msg, key) => {
+    this.entity.chat.map().once((msg, key) => {
       tmpState[key] = msg
       this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
     })
@@ -34,33 +35,33 @@ export default class Chat extends Component {
   }
   send = e => {
     e.preventDefault()
-    console.log("dbg", "Calling send!");
+    // console.log("dbg", "Calling send!");
     
-    if(!this.entity.user.is){ 
-      console.log("err", "Sign in first!!");
+    if(!this.entity.isUserOnline()){ 
+      console.log("err", "Sign in first!!")
       return 
-    } 
-    
-    
+    }else{
+      // this.entity.onChatMessage(this.setState)   
+      
       const tmpState = {}
       // this.gun = this.get('chat');
-      this.entity.chat.map().val((msg, key) => {
+      this.entity.chat.map().once((msg, key) => {
         // console.log("chat", key)
         // console.log("chat", msg)
         tmpState[key] = msg
         this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
       })
      
-    
-    console.log("dbg", "Calling recall!");
+    }
+    // console.log("dbg", "Calling recall!");
 
     this.entity.user.recall().then( ack=> {
       const who = ack.alias;
-      console.log(who);      
+      // console.log(who);      
       this.setState({name: who})
       document.cookie = ('alias=' + who)
-      console.log("zzz", document.cookie); 
-      console.log("zzz", this.state.name); 
+      // console.log("zzz", document.cookie); 
+      // console.log("zzz", this.state.name); 
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.saveMessage(key, {
@@ -74,7 +75,7 @@ export default class Chat extends Component {
 
   }
   render() {
-    console.log("dbg", "Calling render!");
+    // console.log("dbg", "Calling render!");
 
     const msgs = formatMsgs(this.state.msgs)
     return <div>
