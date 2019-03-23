@@ -27,7 +27,7 @@ export default class Chat extends Component {
        return
     // this.entity.onChatMessage(this.setState)   
     const tmpState = {}
-    this.entity.chat.map().val((msg, key) => {
+    this.entity.chat.map().once((msg, key) => {
       tmpState[key] = msg
       this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
     })
@@ -45,7 +45,7 @@ export default class Chat extends Component {
       
       const tmpState = {}
       // this.gun = this.get('chat');
-      this.entity.chat.map().val((msg, key) => {
+      this.entity.chat.map().once((msg, key) => {
         // console.log("chat", key)
         // console.log("chat", msg)
         tmpState[key] = msg
