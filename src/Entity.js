@@ -57,7 +57,7 @@ export default class Entity {
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
-        this.chat = this.gun.get('chat2')
+        this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
     }
