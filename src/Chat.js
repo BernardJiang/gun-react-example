@@ -21,18 +21,25 @@ export default class Chat extends Component {
     console.log("dbg", "Calling constructor!");
     
   }
+  
   componentWillMount() {
     console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
-    // this.entity.onChatMessage(this.setState)   
-    const tmpState = {}
-    this.entity.chat.map().once((msg, key) => {
-      tmpState[key] = msg
-      this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-    })
+    this.entity.onChatMessage(this.updateUI)   
+    // const tmpState = {}
+    // this.entity.chat.map().once((msg, key) => {
+    //   tmpState[key] = msg
+    //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
+    // })
 
   }
+
+  updateUI =  obj => {
+    console.log("in updateUI: ", obj)
+    this.setState(obj);
+  }
+
   send = e => {
     e.preventDefault()
     // console.log("dbg", "Calling send!");
@@ -41,16 +48,16 @@ export default class Chat extends Component {
       console.log("err", "Sign in first!!")
       return 
     }else{
-      // this.entity.onChatMessage(this.setState)   
+      this.entity.onChatMessage(this.updateUI)   
       
-      const tmpState = {}
-      // this.gun = this.get('chat');
-      this.entity.chat.map().once((msg, key) => {
-        // console.log("chat", key)
-        // console.log("chat", msg)
-        tmpState[key] = msg
-        this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-      })
+      // const tmpState = {}
+      // // this.gun = this.get('chat');
+      // this.entity.chat.map().once((msg, key) => {
+      //   // console.log("chat", key)
+      //   // console.log("chat", msg)
+      //   tmpState[key] = msg
+      //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
+      // })
      
     }
     // console.log("dbg", "Calling recall!");

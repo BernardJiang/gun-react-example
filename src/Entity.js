@@ -60,6 +60,7 @@ export default class Entity {
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
+        this.msgs = {}
     }
 
     cbNewUser(newuser){
@@ -180,14 +181,17 @@ export default class Entity {
     onChatMessage(CMcb) {
         console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
-        let msgs = {};
+        // let msgs = {};
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
-            // console.log('Entity onChatMessage', key)
-            // console.log('Entity onChatMessage', msg)
-            msgs = Object.assign({}, msgs, tmpState)
+            console.log('Entity onChatMessage', key)
+            console.log('Entity onChatMessage', msg)
+            console.log("local msgs len=", Object.keys(this.msgs).length)
+            console.log("tmpState len=", Object.keys(tmpState).length)
+            this.msgs = Object.assign({}, this.msgs, tmpState)
+            CMcb({msgs: this.msgs})
           })
-        console.log(msgs)
+        // console.log(msgs)
         // CMcb({msgs});    
     }
     
