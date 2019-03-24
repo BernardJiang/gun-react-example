@@ -70,22 +70,22 @@ export default class Sign extends Component {
   handlePasswordChange = e => this.setState({ password: e.target.value})
 
   render() {
-    return <div id="sign" class="hue page">
-			<form id="inup" class="sign pad center" onSubmit={this.signin}>
-				<div class="mid row col">
-					<input value={this.state.name} class="huet jot sap" type="text" placeholder="alias" onChange={this.handleNameChange}/>
+    return <div id="sign" className="hue page">
+			<form id="inup" className="sign pad center" onSubmit={this.signin}>
+				<div className="mid row col">
+					<input value={this.state.name} className="huet jot sap" type="text" placeholder="alias" onChange={this.handleNameChange}/>
 					Enter your name.
 				</div>
-				<div class="mid row col">
-					<input value={this.state.password} class="huet jot sap" type="password" placeholder="password" onChange={this.handlePasswordChange}/>
+				<div className="mid row col">
+					<input value={this.state.password} className="huet jot sap" type="password" placeholder="password" onChange={this.handlePasswordChange}/>
 					And a long private passphrase.
 				</div>
-				<div class="mid row col go">
-					<button class="huet sap act symbol" onClick={this.signin} > {this.state.authenticated ? 'Sign Out' : 'Sign In'} </button>
-					<div class="or">or</div>
-					<button class="huet sap act symbol" onClick={this.signup} >sign up</button>
+				<div className="mid row col go">
+					<button className="huet sap act symbol" onClick={this.signin} > {this.state.authenticated ? 'Sign Out' : 'Sign In'} </button>
+					<div className="or">or</div>
+					<button className="huet sap act symbol" onClick={this.signup} >sign up</button>
 				</div>
-				<div class="mid row col go">
+				<div className="mid row col go">
           <div> mencnt : {this.state.mencnt}</div>
 				</div>
 				<a href="info">more info</a>

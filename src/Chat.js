@@ -18,25 +18,19 @@ export default class Chat extends Component {
       name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
-    console.log("dbg", "Calling constructor!");
+    // console.log("dbg", "Calling constructor!");
     
   }
   
   componentWillMount() {
-    console.log("dbg", "Calling componentWillMount!");
+    // console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
     this.entity.onChatMessage(this.updateUI)   
-    // const tmpState = {}
-    // this.entity.chat.map().once((msg, key) => {
-    //   tmpState[key] = msg
-    //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-    // })
-
   }
 
   updateUI =  obj => {
-    console.log("in updateUI: ", obj)
+    // console.log("in updateUI: ", obj)
     this.setState(obj);
   }
 
@@ -49,16 +43,6 @@ export default class Chat extends Component {
       return 
     }else{
       this.entity.onChatMessage(this.updateUI)   
-      
-      // const tmpState = {}
-      // // this.gun = this.get('chat');
-      // this.entity.chat.map().once((msg, key) => {
-      //   // console.log("chat", key)
-      //   // console.log("chat", msg)
-      //   tmpState[key] = msg
-      //   this.setState({msgs: Object.assign({}, this.state.msgs, tmpState)})
-      // })
-     
     }
     // console.log("dbg", "Calling recall!");
 

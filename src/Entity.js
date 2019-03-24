@@ -178,16 +178,17 @@ export default class Entity {
         this.chat.path(key).put(obj);    
     }
 
+    //prepare data for UI.
     onChatMessage(CMcb) {
         console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         // let msgs = {};
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
-            console.log('Entity onChatMessage', key)
-            console.log('Entity onChatMessage', msg)
-            console.log("local msgs len=", Object.keys(this.msgs).length)
-            console.log("tmpState len=", Object.keys(tmpState).length)
+            // console.log('Entity onChatMessage', key)
+            // console.log('Entity onChatMessage', msg)
+            // console.log("local msgs len=", Object.keys(this.msgs).length)
+            // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
             CMcb({msgs: this.msgs})
           })
