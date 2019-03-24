@@ -1,5 +1,4 @@
 import React, { Component }  from 'react'
-// import Gun from 'gun/gun'
 import Entity from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
