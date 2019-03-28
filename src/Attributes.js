@@ -70,10 +70,10 @@ export default class Attributes extends Component {
     // console.log("dbg", "Calling render!");
 
     const msgs = formatMsgs(this.state.msgs)
-    msgs.map( msg => console.log("attributes:" + msg.key + " : " + msg.what) )
-    
+    // msgs.map( msg => console.log("attributes:" + msg.key + " : " + msg.what) )
+
     return <div>
-       <text> Attributes </text>     
+          Attributes 
       <ul>
         {msgs.map(msg =>
           <li key={msg.key}><b> K: {msg.key} Q: {msg.what} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>

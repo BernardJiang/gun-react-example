@@ -69,16 +69,16 @@ export default class Chat extends Component {
 
     const msgs = formatMsgs(this.state.msgs)
     return <div>
-      <ul>
-        {msgs.map(msg =>
-          <li key={msg.key}><b>{msg.who}:</b> {msg.what}<span className="when">{msg.whenFmt}</span></li>
-        )}
-      </ul>
       <form onSubmit={this.send}>
       <input value={this.state.name} className="who" onChange={e => this.setState({ name: e.target.value})} />
       <input value={this.state.newMsg} className="what" onChange={e => this.setState({ newMsg: e.target.value})} />
       <button onClick={this.send}>Send</button>
       </form>
+      <ul>
+        {msgs.map(msg =>
+          <li key={msg.key}><b>{msg.who}:</b> {msg.what}<span className="when">{msg.whenFmt}</span></li>
+        )}
+      </ul>
     </div>
   }
 }

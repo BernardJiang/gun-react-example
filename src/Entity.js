@@ -183,8 +183,8 @@ export default class Entity {
     }
 
     saveMessage(key: string, obj: Object){
-        console.log("Entity", key);
-        console.log("Entity", obj);
+        // console.log("Entity", key);
+        // console.log("Entity", obj);
         this.chat.path(key).put(obj); 
 
         var c = obj.what.charAt(obj.what.length-1)
@@ -192,16 +192,17 @@ export default class Entity {
             this.user.get('lastquestion').put({what: obj.what}, function(ack){ 
                 console.log("save last question", ack)
             });
-            console.log("saveMessage: ", this.userAttributes)
+            // console.log("saveMessage: ", this.userAttributes)
             this.userAttributes.get(obj.what).put({what: obj.what, when: obj.when}, function(ack){ 
-                console.log("save attribute", ack)});
+                // console.log("save attribute", ack)
+            });
         } else if (c == '.') {// an answer
             var lq = this.user.get('lastquestion')
             var userAttributes = this.userAttributes
             var user = this.user;
             if(lq){
                  lq.once(function(data){ 
-                    console.log("get lastquestion object", data.what)
+                    // console.log("get lastquestion object", data.what)
                     userAttributes.get(data.what).put({answer: obj.what})
                     user.get('lastquestion').put(null);        
                  })
@@ -216,7 +217,7 @@ export default class Entity {
 
     //prepare data for UI.
     onChatMessage(CMcb) {
-        console.log('Entity onChatMessage', 'entered')
+        // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         // let msgs = {};
         this.chat.map().once((msg, key) => {
@@ -233,7 +234,7 @@ export default class Entity {
     }
 
     onAttributesChange(cbAttributes){
-        console.log('Entity onAttributesChange', 'entered')
+        // console.log('Entity onAttributesChange', 'entered')
         this.cbAttributes = cbAttributes;
         const tmpState = {}
         // let msgs = {};
@@ -241,7 +242,7 @@ export default class Entity {
             return;
         this.userAttributes.map().on((msg, key) => {
             tmpState[key] = msg
-            console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.what + ". A="+ msg.answer)
+            // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.what + ". A="+ msg.answer)
             // console.log('Entity onAttributesChange', msg)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
