@@ -203,7 +203,7 @@ export default class Entity {
             if(lq){
                  lq.once(function(data){ 
                     // console.log("get lastquestion object", data.what)
-                    userAttributes.get(data.what).put({answer: obj.what})
+                    data && userAttributes.get(data.what).put({answer: obj.what})
                     user.get('lastquestion').put(null);        
                  })
             }else{
@@ -211,7 +211,7 @@ export default class Entity {
                 console.log("Ignore an answer.", obj.what)
             }
         } else { //ignore chats.
-            console.log("Ignore a messaage.", obj.what)
+            console.log("Ignore a messaage.")
         }
     }
 
