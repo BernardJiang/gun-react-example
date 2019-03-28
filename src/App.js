@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Todos from './Todos'
 import Sign from './Sign'
 import Chat from './Chat'
+import Attributes from './Attributes'
 import Json from './Json'
 import logo from './logo.svg';
 import './App.css';
@@ -46,6 +47,7 @@ class App extends Component {
         </header> */}
         <Sign entity={this.entity} />
         <Chat entity={this.entity} />
+        <Attributes entity={this.entity} />
         {/* <h2>Json</h2>
         <Json gun={this.gun} /> */}
       </div>

@@ -6,7 +6,7 @@ import _ from 'lodash'
 /*
    class Entity {
        identity,
-       self, //a list of Q/A that describes the person's attributes
+       attributes, //a list of Q/A that describes the person's attributes
        location,
        contacts, //a list of other Entities/persons that this has contact with.
           {
@@ -57,6 +57,7 @@ export default class Entity {
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
+        this.userAttributes = this.user.get('attributes')
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
@@ -75,6 +76,7 @@ export default class Entity {
         return t;
     }
     static random() { return Gun.text.random(4);}
+    
     isUserOnline(){
         return this.user.is
     }
@@ -175,7 +177,25 @@ export default class Entity {
     saveMessage(key: string, obj: Object){
         // console.log("Entity", key);
         // console.log("Entity", obj);
-        this.chat.path(key).put(obj);    
+        this.chat.path(key).put(obj); 
+        var c = obj.what.charAt(obj.what.length-1)
+        if( c == '?' ) { //a question
+            this.user.get('lastquestion').put(obj, function(ack){ console.log("save last question", ack)});
+            this.userAttributes.get(obj.what).put(obj, function(ack){ console.log("save attribute", ack)});
+        } else if (c == '.') {// an answer
+            var lq = this.user.get('lastquestion')
+            if(lq){
+                lq.once(function(data){ 
+                    console.log("get lastquestion object", data)
+                    this.userAttributes.get(data.what).put({answer: obj.what})
+                    this.user.get('lastquestion').put(null);        
+                })
+            }else{
+                //ignore answer without a question.
+            }
+        } else { //ignore chats.
+
+        }
     }
 
     //prepare data for UI.
@@ -194,6 +214,22 @@ export default class Entity {
           })
         // console.log(msgs)
         // CMcb({msgs});    
+    }
+
+    onAttributesChange(cbAttributes){
+        console.log('Entity onAttributesChange', 'entered')
+        const tmpState = {}
+        // let msgs = {};
+        this.userAttributes.map().once((msg, key) => {
+            tmpState[key] = msg
+            // console.log('Entity onChatMessage', key)
+            // console.log('Entity onChatMessage', msg)
+            // console.log("local msgs len=", Object.keys(this.msgs).length)
+            // console.log("tmpState len=", Object.keys(tmpState).length)
+            this.msgs = Object.assign({}, this.msgs, tmpState)
+            cbAttributes({msgs: this.msgs})
+          })
+
     }
     
 }
