@@ -52,12 +52,12 @@ import _ from 'lodash'
 export default class Entity {
     constructor( url: string){
         
-        // localStorage.clear();
+        localStorage.clear();
 
         this.gun = new Gun(url)
         this.sign = this.gun.get('sign')
         this.user = this.gun.user()
-        this.userAttributes = this.user.get('attributes')
+        this.userAttributes = null; // it's null before sign in. this.user.get('attributes')
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
@@ -126,6 +126,7 @@ export default class Entity {
         var user = this.user.get(name)
         // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
+        this.userAttributes = null; 
         Signcb(false)
     }
 
@@ -138,10 +139,16 @@ export default class Entity {
             }
             var user = this.user.get(name).put({name: name})
             this.userlist.set(user)
+            this.userAttributes = this.user.get('Attributes')
+            console.log("sign in: ", this.userAttributes)
             // this.userlist.set({text: name})
             // console.log(user);
             // this.hookUserList(UIcb);
+
             Signcb(true);
+
+            if(this.cbAttributes)
+                this.onAttributesChange(this.cbAttributes)
         });
         // console.log("Bernard");
         // var numberofusers = 0;
@@ -180,15 +187,22 @@ export default class Entity {
         this.chat.path(key).put(obj); 
         var c = obj.what.charAt(obj.what.length-1)
         if( c == '?' ) { //a question
-            this.user.get('lastquestion').put(obj, function(ack){ console.log("save last question", ack)});
-            this.userAttributes.get(obj.what).put(obj, function(ack){ console.log("save attribute", ack)});
-        } else if (c == '.') {// an answer
+            this.user.get('lastquestion').put(obj, function(ack){ 
+                console.log("save last question", ack)
+            });
+            console.log("saveMessage: ", this.userAttributes)
+            console.log("saveMessage: ", this.user.get('Attributes'))
+            this.userAttributes.get(obj.what).put(obj, function(ack){ 
+                console.log("save attribute", ack)});
+    } else if (c == '.') {// an answer
             var lq = this.user.get('lastquestion')
+            var userAttributes = this.userAttributes
+            var user = this.user;
             if(lq){
                 lq.once(function(data){ 
                     console.log("get lastquestion object", data)
-                    this.userAttributes.get(data.what).put({answer: obj.what})
-                    this.user.get('lastquestion').put(null);        
+                    userAttributes.get(data.what).put({answer: obj.what})
+                    user.get('lastquestion').put(null);        
                 })
             }else{
                 //ignore answer without a question.
@@ -218,8 +232,11 @@ export default class Entity {
 
     onAttributesChange(cbAttributes){
         console.log('Entity onAttributesChange', 'entered')
+        this.cbAttributes = cbAttributes;
         const tmpState = {}
         // let msgs = {};
+        if(this.userAttributes == null)
+            return;
         this.userAttributes.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
