@@ -43,7 +43,9 @@ export default class Chat extends Component {
     }else{
       if(this.state.name == ''){
         // console.log("send", "register listener first!!")
-        // this.entity.onChatMessage(this.updateUI)   
+        // this.entity.onChatMessage(this.updateUI) 
+        // var name = this.entity.name;  
+        this.setState({name: this.entity.name})
 
       }else{
         // console.log("send", "already registered!!")
@@ -52,23 +54,22 @@ export default class Chat extends Component {
     }
     // console.log("dbg", "Calling recall!");
 
-    this.entity.user.recall().then( ack=> {
-      const who = ack.alias;
+    // this.entity.user.recall().then( ack=> {
+      // const who = ack.alias;
       // console.log(who);      
-      this.setState({name: who})
       // document.cookie = ('alias=' + who)
       // console.log("zzz", document.cookie); 
       // console.log("zzz", this.state.name); 
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.saveMessage(key, {
-        who,
+        name: this.state.name,
         when,
         what: this.state.newMsg,
       })
 
       this.setState({newMsg: ''})
-    });
+    // });
 
   }
   render() {
