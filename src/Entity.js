@@ -64,6 +64,7 @@ export default class Entity {
         this.msgs = {}
         this.attrs = {}
         this.name = ""
+        this.updateUIname = "";
     }
 
     cbNewUser(newuser) {
@@ -82,6 +83,8 @@ export default class Entity {
     isUserOnline() {
         return this.user.is
     }
+
+    onUpdateUIname = cb => { this.updateUIname = cb; } 
 
     create(name: string, password: string) {
         return this.user.create(name, password);
@@ -151,6 +154,8 @@ export default class Entity {
 
             Signcb(true);
 
+            this.updateUIname && this.updateUIname(name);
+            
             if (this.cbAttributes)  //notify to update attributes after sign in.
                 this.onAttributesChange(this.cbAttributes)
         });

@@ -26,6 +26,7 @@ export default class Chat extends Component {
     if(this.entity == null)
        return
     this.entity.onChatMessage(this.updateUI)   
+    this.entity.onUpdateUIname(this.updateUIname)   
   }
 
   updateUI =  obj => {
@@ -33,27 +34,17 @@ export default class Chat extends Component {
     this.setState(obj);
   }
 
+  updateUIname = username => { this.setState({name: username}) }
+
   send = e => {
     e.preventDefault()
     // console.log("dbg", "Calling send!");
     
-    if(!this.entity.isUserOnline()){ 
+    if(!this.state.name){ 
       console.log("err", "Sign in first!!")
       return 
-    }else{
-      if(this.state.name == ''){
-        // console.log("send", "register listener first!!")
-        // this.entity.onChatMessage(this.updateUI) 
-        // var name = this.entity.name;  
-        this.setState({name: this.entity.name})
-
-      }else{
-        // console.log("send", "already registered!!")
-
-      }
     }
-    // console.log("dbg", "Calling recall!");
-
+    
     // this.entity.user.recall().then( ack=> {
       // const who = ack.alias;
       // console.log(who);      
