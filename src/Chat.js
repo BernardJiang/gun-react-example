@@ -4,7 +4,7 @@ import Entity from './Entity'
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ key, ...msgs[key] }))
   .filter(m => Boolean(m.when) && m.key !== '_')
-  .sort((a, b) => a.when - b.when)
+  .sort((a, b) => - a.when + b.when)
   .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 export default class Chat extends Component {

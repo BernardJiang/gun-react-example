@@ -131,7 +131,7 @@ export default class Entity {
         Signcb(false)
     }
 
-    async auth(name: string, password: string, Signcb) {
+    auth(name: string, password: string, Signcb) {
         this.user.auth(name, password, ack => {
             if (ack.err) {
                 console.log('err', ack.err);
