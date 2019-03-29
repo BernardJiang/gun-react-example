@@ -42,7 +42,8 @@ export default class Sign extends Component {
     
     // console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.create(this.state.name, this.state.password);
-    var ack = await this.entity.auth(this.state.name, this.state.password);
+    if(ack)
+       ack = await this.entity.auth(this.state.name, this.state.password);
     // console.log(ack);
     // console.log("dbg", "signup");
   }

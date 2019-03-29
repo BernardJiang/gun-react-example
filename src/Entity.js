@@ -198,9 +198,7 @@ export default class Entity {
 
         var c = obj.what.charAt(obj.what.length - 1)
         if (c == '?') { //a question
-            this.user.get('lastquestion').put({ what: obj.what }, function (ack) {
-                console.log("save last question", ack)
-            });
+            this.user.get('lastquestion').put({ what: obj.what });
             // console.log("saveMessage: ", this.userAttributes)
             this.userAttributes.get(obj.what).put({ what: obj.what, when: obj.when }, function (ack) {
                 // console.log("save attribute", ack)
@@ -227,7 +225,7 @@ export default class Entity {
 
     //prepare data for UI.
     onChatMessage(CMcb) {
-        console.log('Entity onChatMessage', 'entered')
+        // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         // this.firsttime = true;
         // let msgs = {};
@@ -236,7 +234,7 @@ export default class Entity {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
             var date = new Date(msg.when).toLocaleString().toLowerCase()
-            console.log('Entity onChatMessage', " key=" + key + " date=" + date + ". msg=" + msg.what)
+            // console.log('Entity onChatMessage', " key=" + key + " date=" + date + ". msg=" + msg.what)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
@@ -246,7 +244,7 @@ export default class Entity {
                 var c = msg.what.charAt(msg.what.length - 1)
                 if (c == '?') { //a question
                     var ans = this.userAttributes.get(msg.what)
-                    console.log("ans:", ans);
+                    // console.log("ans:", ans);
                     if(ans)
                        ans.once(function(data){
                             if(!data) return
@@ -255,7 +253,7 @@ export default class Entity {
                             const key = `${when}_${Entity.random()}`
                             const who = name;
                             var answer = { who, when, what: data.answer }
-                            console.log("data answer", answer);
+                            // console.log("data answer", answer);
                             chat.path(key).put(answer);
                        })
                 }
