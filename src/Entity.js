@@ -248,7 +248,7 @@ export default class Entity {
                     if(ans)
                        ans.once(function(data){
                             if(!data) return
-                            
+                            if(!data.answer) return //means question exists without an answer.
                             const when = Entity.time()
                             const key = `${when}_${Entity.random()}`
                             const who = name;
