@@ -63,6 +63,7 @@ export default class Entity {
         // this.userlist.on(this.cbNewUser);
         this.msgs = {}
         this.attrs = {}
+        this.name = ""
     }
 
     cbNewUser(newuser) {
@@ -127,7 +128,8 @@ export default class Entity {
         var user = this.user.get(name)
         // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
-        this.userAttributes = null;
+        this.userAttributes = null
+        this.name = ""
         Signcb(false)
     }
 
@@ -141,6 +143,7 @@ export default class Entity {
             var user = this.user.get(name).put({ name: name })
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
+            this.name = name;
             // console.log("sign in: ", this.userAttributes)
             // this.userlist.set({text: name})
             // console.log(user);
@@ -222,27 +225,34 @@ export default class Entity {
         const tmpState = {}
         // this.firsttime = true;
         // let msgs = {};
+        var name = this.name
+        var chat = this.chat
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
-            console.log('Entity onChatMessage', " key=" + key + "msg=" + msg.what)
+            var date = new Date(msg.when).toLocaleString().toLowerCase()
+            console.log('Entity onChatMessage', " key=" + key + " date=" + date + ". msg=" + msg.what)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
             CMcb({ msgs: this.msgs })
 
-            
-                var c = msg.what.charAt(msg.what.length - 1)
-                if (c == '?') { //a question
-                    var ans = this.userAttributes.get(msg.what)
-                    console.log("ans:", ans);
-                    if(ans)
-                       ans.once(function(data){
-                            console.log("data answer", data.answer);
-                            
+            // if(this.userAttributes){
+            //     var c = msg.what.charAt(msg.what.length - 1)
+            //     if (c == '?') { //a question
+            //         var ans = this.userAttributes.get(msg.what)
+            //         console.log("ans:", ans);
+            //         if(ans)
+            //            ans.once(function(data){
+            //                 const when = Entity.time()
+            //                 const key = `${when}_${Entity.random()}`
+            //                 var answer = { who: name, when, what: data.answer }
+            //                 console.log("data answer", answer);
+            //                 chat.path(key).put(answer);
+            //            })
+            //     }
 
-                       })
-                }
+            // }
         })
         // console.log(msgs)
         // CMcb({msgs});    

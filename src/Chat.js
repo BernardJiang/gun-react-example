@@ -29,7 +29,7 @@ export default class Chat extends Component {
   }
 
   updateUI =  obj => {
-    // console.log("in updateUI: ", obj)
+    console.log("in updateUI: ", obj)
     this.setState(obj);
   }
 
