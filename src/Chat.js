@@ -54,7 +54,7 @@ export default class Chat extends Component {
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.saveMessage(key, {
-        name: this.state.name,
+        who: this.state.name,
         when,
         what: this.state.newMsg,
       })
