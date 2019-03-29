@@ -1,5 +1,5 @@
 import Gun from 'gun/gun'
-import Sea from 'gun/sea' 
+import Sea from 'gun/sea'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 import _ from 'lodash'
@@ -50,8 +50,8 @@ import _ from 'lodash'
    }
 */
 export default class Entity {
-    constructor( url: string){
-        
+    constructor(url: string) {
+
         // localStorage.clear();
 
         this.gun = new Gun(url)
@@ -65,31 +65,31 @@ export default class Entity {
         this.attrs = {}
     }
 
-    cbNewUser(newuser){
+    cbNewUser(newuser) {
         console.log("New user is on", newuser);
-        
+
     }
     // public chat() { return this.chat; }
     // public user() { return this.user; }
-    static time() { 
+    static time() {
         var t = Gun.time.is();
         // console.log("chat", t);
         return t;
     }
-    static random() { return Gun.text.random(4);}
-    
-    isUserOnline(){
+    static random() { return Gun.text.random(4); }
+
+    isUserOnline() {
         return this.user.is
     }
 
     create(name: string, password: string) {
         return this.user.create(name, password);
-            // if(!ack.wait){ but.removeClass('pulse') }    
-    
+        // if(!ack.wait){ but.removeClass('pulse') }    
+
     }
-    listentouser(cb){
+    listentouser(cb) {
         this.userlist.on(data => {
-            this.usercount(cb) 
+            this.usercount(cb)
         });
     }
 
@@ -101,24 +101,24 @@ export default class Entity {
                     // console.log("user", list[key].name)
                     // console.log("newList len=", newList.length);
                     // console.log("newList", newList);
-                    return [...newList, {text: list[key].name, key} ];
-                } else{
+                    return [...newList, { text: list[key].name, key }];
+                } else {
                     return newList;
                 };
             }
             const keylist = Object.keys(list);
-            if(keylist == undefined) {
+            if (keylist == undefined) {
                 // console.log("keylist is undefined")
                 return;
             }
             // console.log(keylist);
-            var userList1 = keylist.reduce( reducer, []);
+            var userList1 = keylist.reduce(reducer, []);
             // if(userList1 && userList1.length)
             //    console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
             // else
             //    console.log("hookUsersLilst", "no user found!");
-            if(UIcb)
-                UIcb({list: userList1 || []});
+            if (UIcb)
+                UIcb({ list: userList1 || [] });
         });
     }
 
@@ -127,18 +127,18 @@ export default class Entity {
         var user = this.user.get(name)
         // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
-        this.userAttributes = null; 
+        this.userAttributes = null;
         Signcb(false)
     }
 
     async auth(name: string, password: string, Signcb) {
-        this.user.auth(name, password, ack=>{
-            if(ack.err){
+        this.user.auth(name, password, ack => {
+            if (ack.err) {
                 console.log('err', ack.err);
                 Signcb && Signcb(false);
                 return;
             }
-            var user = this.user.get(name).put({name: name})
+            var user = this.user.get(name).put({ name: name })
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
             // console.log("sign in: ", this.userAttributes)
@@ -148,7 +148,7 @@ export default class Entity {
 
             Signcb(true);
 
-            if(this.cbAttributes)  //notify to update attributes after sign in.
+            if (this.cbAttributes)  //notify to update attributes after sign in.
                 this.onAttributesChange(this.cbAttributes)
         });
         // console.log("Bernard");
@@ -164,7 +164,7 @@ export default class Entity {
         // return numberofusers;
     }
 
-    usercount(cb){
+    usercount(cb) {
 
         this.hookUserList(cb);
         // var numberofusers = 0;
@@ -178,41 +178,41 @@ export default class Entity {
         //   });
         // console.log(data);
         // numberofusers = Object.keys(data).length;
-        
+
         //   return ;// numberofusers;
     }
 
-    saveMessage(key: string, obj: Object){
+    saveMessage(key: string, obj: Object) {
         // console.log("Entity", key);
         // console.log("Entity", obj);
-        this.chat.path(key).put(obj); 
+        this.chat.path(key).put(obj);
 
-        var c = obj.what.charAt(obj.what.length-1)
-        if( c == '?' ) { //a question
-            this.user.get('lastquestion').put({what: obj.what}, function(ack){ 
+        var c = obj.what.charAt(obj.what.length - 1)
+        if (c == '?') { //a question
+            this.user.get('lastquestion').put({ what: obj.what }, function (ack) {
                 console.log("save last question", ack)
             });
             // console.log("saveMessage: ", this.userAttributes)
-            this.userAttributes.get(obj.what).put({what: obj.what, when: obj.when}, function(ack){ 
+            this.userAttributes.get(obj.what).put({ what: obj.what, when: obj.when }, function (ack) {
                 // console.log("save attribute", ack)
             });
         } else if (c == '.') {// an answer
             var userAttributes = this.userAttributes
             var user = this.user;
-            this.user.get('lastquestion',function(ack){ 
-                    if(ack.err){
-                        console.log("err", "failed to get last question")
-                    } else if(!ack.put){
-                        console.log("err", "What is this? ")
+            this.user.get('lastquestion', function (ack) {
+                if (ack.err) {
+                    console.log("err", "failed to get last question")
+                } else if (!ack.put) {
+                    console.log("err", "What is this? ")
 
-                    }else{
-                        console.log("get lastquestion", ack.put.what)
-                        userAttributes.get(ack.put.what).put({answer: obj.what})
+                } else {
+                    console.log("get lastquestion", ack.put.what)
+                    userAttributes.get(ack.put.what).put({ answer: obj.what })
 
-                    }
-                    user.get('lastquestion').put(null);        
-                 })
-            
+                }
+                user.get('lastquestion').put(null);
+            })
+
         } else { //ignore chats.
             console.log("Ignore a messaage.")
         }
@@ -230,18 +230,18 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
-            CMcb({msgs: this.msgs})
-          })
+            CMcb({ msgs: this.msgs })
+        })
         // console.log(msgs)
         // CMcb({msgs});    
     }
 
-    onAttributesChange(cbAttributes){
+    onAttributesChange(cbAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
         this.cbAttributes = cbAttributes;
         const tmpState = {}
         // let msgs = {};
-        if(this.userAttributes == null)
+        if (this.userAttributes == null)
             return;
         this.userAttributes.map().on((msg, key) => {
             tmpState[key] = msg
@@ -250,9 +250,9 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.attrs = Object.assign({}, this.attrs, tmpState)
-            cbAttributes({msgs: this.attrs})
-          })
+            cbAttributes({ msgs: this.attrs })
+        })
 
     }
-    
+
 }
