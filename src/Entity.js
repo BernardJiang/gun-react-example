@@ -249,6 +249,8 @@ export default class Entity {
                     console.log("ans:", ans);
                     if(ans)
                        ans.once(function(data){
+                            if(!data) return
+                            
                             const when = Entity.time()
                             const key = `${when}_${Entity.random()}`
                             const who = name;
