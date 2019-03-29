@@ -199,19 +199,17 @@ export default class Entity {
         } else if (c == '.') {// an answer
             var userAttributes = this.userAttributes
             var user = this.user;
-            this.user.get('lastquestion', function (ack) {
-                if (ack.err) {
-                    console.log("err", "failed to get last question")
-                } else if (!ack.put) {
-                    console.log("err", "What is this? ")
-
-                } else {
-                    console.log("get lastquestion", ack.put.what)
-                    userAttributes.get(ack.put.what).put({ answer: obj.what })
-
-                }
-                user.get('lastquestion').put(null);
-            })
+            var lq = this.user.get('lastquestion')
+            if(lq){
+                 lq.once(function(data){ 
+                    // console.log("get lastquestion object", data.what)
+                    data && userAttributes.get(data.what).put({answer: obj.what})
+                    user.get('lastquestion').put(null);        
+                 })
+            }else{
+                //ignore answer without a question.
+                console.log("Ignore an answer.", obj.what)
+            }
 
         } else { //ignore chats.
             console.log("Ignore a messaage.")
