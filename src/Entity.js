@@ -221,7 +221,7 @@ export default class Entity {
 
     //prepare data for UI.
     onChatMessage(CMcb) {
-        // console.log('Entity onChatMessage', 'entered')
+        console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         // this.firsttime = true;
         // let msgs = {};

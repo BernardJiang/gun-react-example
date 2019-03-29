@@ -14,7 +14,7 @@ export default class Chat extends Component {
     this.entity = entity;
     this.state = {
       newMsg: '',
-      name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
+      name: '', //document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
     // console.log("dbg", "Calling constructor!");
@@ -41,7 +41,14 @@ export default class Chat extends Component {
       console.log("err", "Sign in first!!")
       return 
     }else{
-      this.entity.onChatMessage(this.updateUI)   
+      if(this.state.name == ''){
+        // console.log("send", "register listener first!!")
+        // this.entity.onChatMessage(this.updateUI)   
+
+      }else{
+        // console.log("send", "already registered!!")
+
+      }
     }
     // console.log("dbg", "Calling recall!");
 
@@ -49,7 +56,7 @@ export default class Chat extends Component {
       const who = ack.alias;
       // console.log(who);      
       this.setState({name: who})
-      document.cookie = ('alias=' + who)
+      // document.cookie = ('alias=' + who)
       // console.log("zzz", document.cookie); 
       // console.log("zzz", this.state.name); 
       const when = Entity.time()
