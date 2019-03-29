@@ -220,18 +220,33 @@ export default class Entity {
     onChatMessage(CMcb) {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
+        // this.firsttime = true;
         // let msgs = {};
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
-            // console.log('Entity onChatMessage', msg)
+            console.log('Entity onChatMessage', " key=" + key + "msg=" + msg.what)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
             CMcb({ msgs: this.msgs })
+
+            
+                var c = msg.what.charAt(msg.what.length - 1)
+                if (c == '?') { //a question
+                    var ans = this.userAttributes.get(msg.what)
+                    console.log("ans:", ans);
+                    if(ans)
+                       ans.once(function(data){
+                            console.log("data answer", data.answer);
+                            
+
+                       })
+                }
         })
         // console.log(msgs)
         // CMcb({msgs});    
+        // this.firsttime = false;
     }
 
     onAttributesChange(cbAttributes) {
