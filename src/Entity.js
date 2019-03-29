@@ -78,18 +78,21 @@ export default class Entity {
         // console.log("chat", t);
         return t;
     }
-    static random() { return Gun.text.random(4); }
+    static random() {
+        return Gun.text.random(4);
+    }
 
     isUserOnline() {
         return this.user.is
     }
 
-    onUpdateUIname = cb => { this.updateUIname = cb; } 
+    onUpdateUIname = cb => {
+        this.updateUIname = cb;
+    }
 
     create(name: string, password: string) {
         return this.user.create(name, password);
         // if(!ack.wait){ but.removeClass('pulse') }    
-
     }
     listentouser(cb) {
         this.userlist.on(data => {
@@ -105,7 +108,10 @@ export default class Entity {
                     // console.log("user", list[key].name)
                     // console.log("newList len=", newList.length);
                     // console.log("newList", newList);
-                    return [...newList, { text: list[key].name, key }];
+                    return [...newList, {
+                        text: list[key].name,
+                        key
+                    }];
                 } else {
                     return newList;
                 };
@@ -122,7 +128,9 @@ export default class Entity {
             // else
             //    console.log("hookUsersLilst", "no user found!");
             if (UIcb)
-                UIcb({ list: userList1 || [] });
+                UIcb({
+                    list: userList1 || []
+                });
         });
     }
 
@@ -144,7 +152,9 @@ export default class Entity {
                 Signcb && Signcb(false);
                 return;
             }
-            var user = this.user.get(name).put({ name: name })
+            var user = this.user.get(name).put({
+                name: name
+            })
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
             this.name = name;
@@ -152,12 +162,9 @@ export default class Entity {
             // this.userlist.set({text: name})
             // console.log(user);
             // this.hookUserList(UIcb);
-
             Signcb(true);
-
             this.updateUIname && this.updateUIname(name);
-
-            if (this.cbAttributes)  //notify to update attributes after sign in.
+            if (this.cbAttributes) //notify to update attributes after sign in.
                 this.onAttributesChange(this.cbAttributes)
         });
         // console.log("Bernard");
@@ -174,7 +181,6 @@ export default class Entity {
     }
 
     usercount(cb) {
-
         this.hookUserList(cb);
         // var numberofusers = 0;
         // this.userlist.once(data =>{
@@ -183,11 +189,9 @@ export default class Entity {
         //     numberofusers = data ? (Object.keys(data).length  -1): 0;
         //     console.log("usercount:", "callback number of users="+ numberofusers);
         //     cb(numberofusers);
-
         //   });
         // console.log(data);
         // numberofusers = Object.keys(data).length;
-
         //   return ;// numberofusers;
     }
 
@@ -195,29 +199,34 @@ export default class Entity {
         // console.log("Entity", key);
         // console.log("Entity", obj);
         this.chat.path(key).put(obj);
-
         var c = obj.what.charAt(obj.what.length - 1)
         if (c == '?') { //a question
-            this.user.get('lastquestion').put({ what: obj.what });
+            this.user.get('lastquestion').put({
+                what: obj.what
+            });
             // console.log("saveMessage: ", this.userAttributes)
-            this.userAttributes.get(obj.what).put({ what: obj.what, when: obj.when }, function (ack) {
+            this.userAttributes.get(obj.what).put({
+                what: obj.what,
+                when: obj.when
+            }, function (ack) {
                 // console.log("save attribute", ack)
             });
-        } else if (c == '.') {// an answer
+        } else if (c == '.') { // an answer
             var userAttributes = this.userAttributes
             var user = this.user;
             var lq = this.user.get('lastquestion')
-            if(lq){
-                 lq.once(function(data){ 
+            if (lq) {
+                lq.once(function (data) {
                     // console.log("get lastquestion object", data.what)
-                    data && userAttributes.get(data.what).put({answer: obj.what})
-                    user.get('lastquestion').put(null);        
-                 })
-            }else{
+                    data && userAttributes.get(data.what).put({
+                        answer: obj.what
+                    })
+                    user.get('lastquestion').put(null);
+                })
+            } else {
                 //ignore answer without a question.
                 console.log("Ignore an answer.", obj.what)
             }
-
         } else { //ignore chats.
             console.log("Ignore a messaage.")
         }
@@ -227,8 +236,6 @@ export default class Entity {
     onChatMessage(CMcb) {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
-        // this.firsttime = true;
-        // let msgs = {};
         var chat = this.chat
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
@@ -238,37 +245,39 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
-            CMcb({ msgs: this.msgs })
+            CMcb({
+                msgs: this.msgs
+            })
             var name = this.name
-            if(this.userAttributes){
+            if (this.userAttributes) {
                 var c = msg.what.charAt(msg.what.length - 1)
                 if (c == '?') { //a question
                     var ans = this.userAttributes.get(msg.what)
                     // console.log("ans:", ans);
-                    if(ans)
-                       ans.once(function(data){
-                            if(!data) return
-                            if(!data.answer) return //means question exists without an answer.
+                    if (ans)
+                        ans.once(function (data) {
+                            if (!data) return
+                            if (!data.answer) return //means question exists without an answer.
                             const when = Entity.time()
                             const key = `${when}_${Entity.random()}`
                             const who = name;
-                            var answer = { who, when, what: data.answer }
+                            var answer = {
+                                who,
+                                when,
+                                what: data.answer
+                            }
                             // console.log("data answer", answer);
                             chat.path(key).put(answer);
-                       })
+                        })
                 }
             }
         })
-        // console.log(msgs)
-        // CMcb({msgs});    
-        // this.firsttime = false;
     }
 
     onAttributesChange(cbAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
         this.cbAttributes = cbAttributes;
         const tmpState = {}
-        // let msgs = {};
         if (this.userAttributes == null)
             return;
         this.userAttributes.map().on((msg, key) => {
@@ -278,9 +287,10 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.attrs = Object.assign({}, this.attrs, tmpState)
-            cbAttributes({ msgs: this.attrs })
+            cbAttributes({
+                msgs: this.attrs
+            })
         })
-
     }
 
 }
