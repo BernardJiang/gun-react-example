@@ -1,14 +1,21 @@
-import React, { Component }  from 'react'
+import React, {
+  Component
+} from 'react'
 import Entity from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
-  .map(key => ({ key, ...msgs[key] }))
+  .map(key => ({
+    key,
+    ...msgs[key]
+  }))
   .filter(m => Boolean(m.when) && m.key !== '_')
-  .sort((a, b) => - a.when + b.when)
+  .sort((a, b) => -a.when + b.when)
   .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 export default class Chat extends Component {
-  constructor({entity}) {
+  constructor({
+    entity
+  }) {
 
     super()
     this.entity = entity;
@@ -17,55 +24,47 @@ export default class Chat extends Component {
       name: '', //document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
-    // console.log("dbg", "Calling constructor!");
-    
-  }
-  
-  componentWillMount() {
-    // console.log("dbg", "Calling componentWillMount!");
-    if(this.entity == null)
-       return
-    this.entity.onChatMessage(this.updateUI)   
-    this.entity.onUpdateUIname(this.updateUIname)   
   }
 
-  updateUI =  obj => {
-    // console.log("in updateUI: ", obj)
+  componentWillMount() {
+    if (this.entity == null)
+      return
+    this.entity.onChatMessage(this.updateUI)
+    this.entity.onUpdateUIname(this.updateUIname)
+  }
+
+  updateUI = obj => {
     this.setState(obj);
   }
 
-  updateUIname = username => { this.setState({name: username}) }
+  updateUIname = username => {
+    this.setState({
+      name: username
+    })
+  }
 
   send = e => {
     e.preventDefault()
-    // console.log("dbg", "Calling send!");
-    
-    if(!this.state.name){ 
+
+    if (!this.state.name) {
       console.log("err", "Sign in first!!")
-      return 
+      return
     }
-    
-    // this.entity.user.recall().then( ack=> {
-      // const who = ack.alias;
-      // console.log(who);      
-      // document.cookie = ('alias=' + who)
-      // console.log("zzz", document.cookie); 
-      // console.log("zzz", this.state.name); 
-      const when = Entity.time()
-      const key = `${when}_${Entity.random()}`
-      this.entity.saveMessage(key, {
-        who: this.state.name,
-        when,
-        what: this.state.newMsg,
-      })
 
-      this.setState({newMsg: ''})
-    // });
+    const when = Entity.time()
+    const key = `${when}_${Entity.random()}`
+    this.entity.saveMessage(key, {
+      who: this.state.name,
+      when,
+      what: this.state.newMsg,
+    })
 
+    this.setState({
+      newMsg: ''
+    })
   }
-  render() {
-    // console.log("dbg", "Calling render!");
 
+  render() {
     const msgs = formatMsgs(this.state.msgs)
     return <div>
       <form onSubmit={this.send}>

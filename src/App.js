@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 // import Gun from 'gun/gun'
-import Todos from './Todos'
+// import Todos from './Todos'
 import Sign from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
-import Json from './Json'
-import logo from './logo.svg';
+// import Json from './Json'
+// import logo from './logo.svg';
 import './App.css';
 import Entity from './Entity';
 
 class App extends Component {
   constructor() {
     super();
-    //  console.log("dbg", 'origin=' + window.location.origin + ". port=" + window.location.port);
-
     var newloc = window.location.origin;
     if (window.location.port !== '8765') {
       newloc = window.location.protocol + "//" 
@@ -21,14 +19,10 @@ class App extends Component {
         + (window.location.port ? ':' + '8765' : '');
     }
 
-    // console.log("dbg", 'origin=' + newloc + ". port=" + window.location.port);
-    // this.gun = Gun(newloc + '/gun')
-    // this.gun = Gun('http://localhost:8765' + '/gun')
     this.entity = new Entity(newloc + '/gun');
 
   }
   render() {
-  //  console.log("dbg", 'render in APP');
   return (
       <div className="App" className='rowC'>
         {/* <header className="App-header">
@@ -48,8 +42,6 @@ class App extends Component {
         <Sign entity={this.entity} />
         <Chat entity={this.entity} />
         <Attributes entity={this.entity} />
-        {/* <h2>Json</h2>
-        <Json gun={this.gun} /> */}
       </div>
     );
   }

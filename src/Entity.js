@@ -134,7 +134,7 @@ export default class Entity {
         });
     }
 
-    leave(name: string, password: string, Signcb) {
+    leave(name, password, Signcb) {
         this.user.leave()
         var user = this.user.get(name)
         // console.log("leave", "unset "+ user)
@@ -144,7 +144,7 @@ export default class Entity {
         Signcb(false)
     }
 
-    auth(name: string, password: string, Signcb) {
+    auth(name, password, Signcb) {
         this.name = name;
         this.user.auth(name, password, ack => {
             if (ack.err) {
@@ -167,32 +167,10 @@ export default class Entity {
             if (this.cbAttributes) //notify to update attributes after sign in.
                 this.onAttributesChange(this.cbAttributes)
         });
-        // console.log("Bernard");
-        // var numberofusers = 0;
-        // this.user.once(data => {
-        //     console.log(data);
-        //     numberofusers = Object.keys(data).length;
-        // } );
-        // console.log("bernard:", "numberof users="+ numberofusers);
-        // var userlistkeys = Object.keys(this.userlist);
-        // console.log(userlistkeys);
-        // console.log("len="+userlistkeys.length);
-        // return numberofusers;
     }
 
     usercount(cb) {
         this.hookUserList(cb);
-        // var numberofusers = 0;
-        // this.userlist.once(data =>{
-        //     //ui.list.user(user);
-        //     console.log(data);
-        //     numberofusers = data ? (Object.keys(data).length  -1): 0;
-        //     console.log("usercount:", "callback number of users="+ numberofusers);
-        //     cb(numberofusers);
-        //   });
-        // console.log(data);
-        // numberofusers = Object.keys(data).length;
-        //   return ;// numberofusers;
     }
 
     saveMessage(key: string, obj: Object) {
