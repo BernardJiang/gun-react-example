@@ -118,7 +118,7 @@ export default class Entity {
                 };
             }
             const keylist = Object.keys(list);
-            if (keylist == undefined) {
+            if (keylist === undefined) {
                 // console.log("keylist is undefined")
                 return;
             }
@@ -179,7 +179,7 @@ export default class Entity {
         // console.log("Entity", obj);
         this.chat.path(key).put(obj);
         var c = obj.what.charAt(obj.what.length - 1)
-        if (c == '?') { //a question
+        if (c === '?') { //a question
             this.user.get('lastquestion').put({
                 what: obj.what
             });
@@ -190,7 +190,7 @@ export default class Entity {
             }, function (ack) {
                 // console.log("save attribute", ack)
             });
-        } else if (c == '.') { // an answer
+        } else if (c === '.') { // an answer
             var userAttributes = this.userAttributes
             var user = this.user;
             var lq = this.user.get('lastquestion')
@@ -220,7 +220,7 @@ export default class Entity {
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
-            var date = new Date(msg.when).toLocaleString().toLowerCase()
+            // var date = new Date(msg.when).toLocaleString().toLowerCase()
             // console.log('Entity onChatMessage', " key=" + key + " date=" + date + ". msg=" + msg.what)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
@@ -231,7 +231,7 @@ export default class Entity {
             var name = this.name
             if (this.userAttributes) {
                 var c = msg.what.charAt(msg.what.length - 1)
-                if (c == '?') { //a question
+                if (c === '?') { //a question
                     var ans = this.userAttributes.get(msg.what)
                     // console.log("ans:", ans);
                     if (ans)
