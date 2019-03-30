@@ -1,6 +1,6 @@
 import React, { Component }  from 'react'
 // import Gun from 'gun/gun'
-import path from 'gun/lib/path'
+// import path from 'gun/lib/path'
 import './style.css'
 // import Sea from 'gun/sea' 
 import Entity from './Entity';

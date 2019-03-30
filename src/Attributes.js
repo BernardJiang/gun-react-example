@@ -16,7 +16,7 @@ export default class Attributes extends Component {
     this.entity = entity;
     this.state = {
       newMsg: '',
-      name: (document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
+      name: '', //(document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
     // console.log("dbg", "Calling constructor!");

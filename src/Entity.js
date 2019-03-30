@@ -1,9 +1,9 @@
 import Gun from 'gun/gun'
-import Sea from 'gun/sea'
-import path from 'gun/lib/path'
+// import Sea from 'gun/sea'
+// import path from 'gun/lib/path'
 import 'gun/lib/open'
 import 'gun/lib/unset'
-import _ from 'lodash'
+// import _ from 'lodash'
 // import as from 'gun/as'
 // import nts from 'gun/nts'
 
