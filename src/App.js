@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
 import Sign from './Sign'
@@ -7,7 +8,6 @@ import Attributes from './Attributes'
 // import Json from './Json'
 // import logo from './logo.svg';
 import './App.css';
-import Entity from './Entity';
 
 class App extends Component {
   constructor() {
