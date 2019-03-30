@@ -69,7 +69,7 @@ export default class Entity {
         this.msgs = {}
         this.attrs = {}
         this.name = ''
-        this.updateUIChat = ''
+        this.cbUpdateUIChat = ''
         this.cbUpdateUIAttributes = ''
     }
 
@@ -92,7 +92,7 @@ export default class Entity {
         return this.user.is
     }
 
-    create(name: string, password: string) {
+    create(name, password) {
         return this.user.create(name, password);
         // if(!ack.wait){ but.removeClass('pulse') }    
     }
@@ -165,7 +165,7 @@ export default class Entity {
             // console.log(user);
             // this.hookUserList(UIcb);
             Signcb(true);
-            this.updateUIChat && this.updateUIChat({name});
+            this.cbUpdateUIChat && this.cbUpdateUIChat({name});
             //notify to update attributes after sign in.
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
         });
@@ -213,11 +213,11 @@ export default class Entity {
     }
 
     //prepare data for UI.
-    onChatMessage(CMcb) {
+    onChatMessage(cbUpdateUIChat) {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         var chat = this.chat
-        this.updateUIChat = CMcb
+        this.cbUpdateUIChat = cbUpdateUIChat
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
@@ -226,7 +226,7 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
-            CMcb({
+            cbUpdateUIChat({
                 msgs: this.msgs
             })
             var name = this.name
