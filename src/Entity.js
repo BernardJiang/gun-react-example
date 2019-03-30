@@ -1,6 +1,6 @@
 import Gun from 'gun/gun'
-// import Sea from 'gun/sea'
-// import path from 'gun/lib/path'
+import Sea from 'gun/sea'
+import path from 'gun/lib/path'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 // import _ from 'lodash'
@@ -69,7 +69,7 @@ export default class Entity {
         this.msgs = {}
         this.attrs = {}
         this.name = ""
-        this.updateUIname = "";
+        this.updateUIChat = "";
     }
 
     cbNewUser(newuser) {
@@ -89,10 +89,6 @@ export default class Entity {
 
     isUserOnline() {
         return this.user.is
-    }
-
-    onUpdateUIname = cb => {
-        this.updateUIname = cb;
     }
 
     create(name: string, password: string) {
@@ -168,7 +164,7 @@ export default class Entity {
             // console.log(user);
             // this.hookUserList(UIcb);
             Signcb(true);
-            this.updateUIname && this.updateUIname(name);
+            this.updateUIChat && this.updateUIChat({name});
             if (this.cbAttributes) //notify to update attributes after sign in.
                 this.onAttributesChange(this.cbAttributes)
         });
@@ -220,6 +216,7 @@ export default class Entity {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         var chat = this.chat
+        this.updateUIChat = CMcb
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)

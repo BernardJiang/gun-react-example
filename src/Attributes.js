@@ -51,7 +51,7 @@ export default class Attributes extends Component {
       const who = ack.alias;
       // console.log(who);      
       this.setState({name: who})
-      document.cookie = ('alias=' + who)
+      // document.cookie = ('alias=' + who)
       // console.log("zzz", document.cookie); 
       // console.log("zzz", this.state.name); 
       const when = Entity.time()

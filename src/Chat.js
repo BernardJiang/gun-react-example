@@ -29,18 +29,11 @@ export default class Chat extends Component {
   componentWillMount() {
     if (this.entity == null)
       return
-    this.entity.onChatMessage(this.updateUI)
-    this.entity.onUpdateUIname(this.updateUIname)
+    this.entity.onChatMessage(this.updateUIChat)
   }
 
-  updateUI = obj => {
+  updateUIChat = obj => {
     this.setState(obj);
-  }
-
-  updateUIname = username => {
-    this.setState({
-      name: username
-    })
   }
 
   send = e => {
