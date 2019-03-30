@@ -68,8 +68,9 @@ export default class Entity {
         // this.userlist.on(this.cbNewUser);
         this.msgs = {}
         this.attrs = {}
-        this.name = ""
-        this.updateUIChat = "";
+        this.name = ''
+        this.updateUIChat = ''
+        this.cbUpdateUIAttributes = ''
     }
 
     cbNewUser(newuser) {
@@ -165,8 +166,8 @@ export default class Entity {
             // this.hookUserList(UIcb);
             Signcb(true);
             this.updateUIChat && this.updateUIChat({name});
-            if (this.cbAttributes) //notify to update attributes after sign in.
-                this.onAttributesChange(this.cbAttributes)
+            //notify to update attributes after sign in.
+            this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
         });
     }
 
@@ -254,9 +255,9 @@ export default class Entity {
         })
     }
 
-    onAttributesChange(cbAttributes) {
+    onAttributesChange(cbUpdateUIAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
-        this.cbAttributes = cbAttributes;
+        this.cbUpdateUIAttributes = cbUpdateUIAttributes;
         const tmpState = {}
         if (this.userAttributes == null)
             return;
@@ -267,7 +268,7 @@ export default class Entity {
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.attrs = Object.assign({}, this.attrs, tmpState)
-            cbAttributes({
+            cbUpdateUIAttributes({
                 msgs: this.attrs
             })
         })
