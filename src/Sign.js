@@ -16,11 +16,11 @@ export default class Sign extends Component {
   }
 
   componentWillMount() {
-    this.entity.hookUserList(this.updateUISign);
+    this.entity && this.entity.hookUserList(this.updateUISign);
   }
 
   componentWillUnmount() {
-    this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+    this.entity.leave(this.state.name, this.state.password)
   }
 
  session = () => {
@@ -38,22 +38,15 @@ export default class Sign extends Component {
   }
   
   updateUISign = obj => {
-    this.setState({
-      userlist: obj.list || [],
-      mencnt : obj.list.length
-    });
+    this.setState(obj);
   }
 
-  updateSignStatus = (InOrOut) => {
-    this.setState({authenticated: InOrOut});
-  }
-  
   signin = async e => {
     e.preventDefault()
     if(this.state.authenticated)
-      this.entity.leave(this.state.name, this.state.password, this.updateSignStatus)
+      this.entity.leave(this.state.name, this.state.password)
     else
-      this.entity.auth(this.state.name, this.state.password, this.updateSignStatus) 
+      this.entity.auth(this.state.name, this.state.password) 
   }
 
   handleNameChange = e => this.setState({ name: e.target.value})

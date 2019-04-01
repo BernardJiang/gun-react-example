@@ -21,9 +21,7 @@ export default class Attributes extends Component {
   }
   
   componentWillMount() {
-    if(this.entity == null)
-       return
-    this.entity.onAttributesChange(this.updateUIAttributes)   
+    this.entity && this.entity.onAttributesChange(this.updateUIAttributes)   
   }
 
   updateUIAttributes =  obj => {

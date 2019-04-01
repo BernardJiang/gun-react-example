@@ -21,9 +21,7 @@ export default class Chat extends Component {
   }
 
   componentWillMount() {
-    if (this.entity == null)
-      return
-    this.entity.onChatMessage(this.updateUIChat)
+      this.entity && this.entity.onChatMessage(this.updateUIChat)
   }
 
   updateUIChat = obj => {

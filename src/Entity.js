@@ -71,6 +71,7 @@ export default class Entity {
         this.name = ''
         this.cbUpdateUIChat = ''
         this.cbUpdateUIAttributes = ''
+        this.cbUpdateUISign = ''
     }
 
     cbNewUser(newuser) {
@@ -102,7 +103,8 @@ export default class Entity {
         });
     }
 
-    hookUserList = (UIcb) => {
+    hookUserList = UpdateUISign => {
+        this.cbUpdateUISign = UpdateUISign
         this.userlist.open((list) => {
             const reducer = (newList, key) => {
                 if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
@@ -129,29 +131,29 @@ export default class Entity {
             //    console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
             // else
             //    console.log("hookUsersLilst", "no user found!");
-            if (UIcb)
-                UIcb({
-                    list: userList1 || []
-                });
+            UpdateUISign && UpdateUISign({
+                userlist: userList1 || [],
+                mencnt :  userList1.length
+            });
         });
     }
 
-    leave(name, password, Signcb) {
+    leave(name, password) {
         this.user.leave()
         var user = this.user.get(name)
         // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
         this.userAttributes = null
         this.name = ""
-        Signcb(false)
+        this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
     }
 
-    auth(name, password, Signcb) {
+    auth(name, password) {
         this.name = name;
         this.user.auth(name, password, ack => {
             if (ack.err) {
                 console.log('err', ack.err);
-                Signcb && Signcb(false);
+                this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
                 return;
             }
             var user = this.user.get(name).put({
@@ -164,7 +166,7 @@ export default class Entity {
             // this.userlist.set({text: name})
             // console.log(user);
             // this.hookUserList(UIcb);
-            Signcb(true);
+            this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             this.cbUpdateUIChat && this.cbUpdateUIChat({name});
             //notify to update attributes after sign in.
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
