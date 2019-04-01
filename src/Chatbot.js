@@ -16,13 +16,12 @@ export default class Chatbot {
         this.name = name
     }
     process(msg) {
-        console.log("In Chatbot")
+        // console.log("In Chatbot")
         this.user = this.gun.user()
         this.userAttributes = this.user.get('Attributes')
         if(!this.userAttributes)
             return
 
-        
         if(this.name == msg.who){
             var c = msg.what.charAt(msg.what.length - 1)
             if (c === '?') { //a question
@@ -62,7 +61,7 @@ export default class Chatbot {
                 var c = msg.what.charAt(msg.what.length - 1)
                 if (c === '?') { //a question
                     var ans = this.userAttributes.get(msg.what)
-                    console.log("ans:", ans);
+                    // console.log("ans:", ans);
                     if (ans){
                         var user = this.user
                         var userAttributes = this.userAttributes
@@ -84,8 +83,8 @@ export default class Chatbot {
                                 return
                             } 
                             if (!data.answer) return //means question exists without an answer.
-                            const when = this.gun.time()
-                            const key = `${when}_${this.gun.random()}`
+                            const when = Gun.time.is()
+                            const key = `${when}_${Gun.text.random()}`
                             const who = name;
                             var answer = {
                                 who,
