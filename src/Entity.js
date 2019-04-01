@@ -135,6 +135,7 @@ export default class Entity {
         this.userlist.unset(user)
         this.userAttributes = null
         this.name = ""
+        this.chatbot.setSelf("")
         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
     }
 
@@ -152,6 +153,7 @@ export default class Entity {
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
             this.name = name;
+            this.chatbot.setSelf(name)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             this.cbUpdateUIChat && this.cbUpdateUIChat({name});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
@@ -162,9 +164,9 @@ export default class Entity {
     //     this.onSignChange(cb);
     // }
 
-    sendMessage(key: string, obj: Object) {
-        this.chat.path(key).put(obj);
-        this.chatbot.process(obj);
+    sendMessage(key, msg) {
+        this.chat.path(key).put(msg);
+        this.chatbot.process(msg);
     }
 
     //prepare data for UI.
@@ -172,6 +174,7 @@ export default class Entity {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         var chat = this.chat
+        var chatbot = this.chatbot;
         this.cbUpdateUIChat = cbUpdateUIChat
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
@@ -184,47 +187,8 @@ export default class Entity {
             cbUpdateUIChat({
                 msgs: this.msgs
             })
-            var name = this.name
-            if (this.userAttributes) {
-                var c = msg.what.charAt(msg.what.length - 1)
-                if (c === '?') { //a question
-                    var ans = this.userAttributes.get(msg.what)
-                    console.log("ans:", ans);
-                    if (ans){
-                        var user = this.user
-                        var userAttributes = this.userAttributes
 
-                        ans.once(function (data) {
-                            if (!data){  //never hear this question. Save the question.
-                                
-                                user.get('lastquestion').put({
-                                    what: msg.what
-                                });
-                                console.log("save question from others: ", msg.what)
-                                userAttributes.get(msg.what).put({
-                                    what: msg.what,
-                                    when: msg.when
-                                }, function (ack) {
-                                    console.log("save question status=", ack.err)
-                                });
-
-                                return
-                            } 
-                            if (!data.answer) return //means question exists without an answer.
-                            const when = Entity.time()
-                            const key = `${when}_${Entity.random()}`
-                            const who = name;
-                            var answer = {
-                                who,
-                                when,
-                                what: data.answer
-                            }
-                            // console.log("data answer", answer);
-                            chat.path(key).put(answer);
-                        })
-                    }
-                }
-            }
+            chatbot.process(msg)
         })
     }
 
