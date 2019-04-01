@@ -234,10 +234,27 @@ export default class Entity {
                 var c = msg.what.charAt(msg.what.length - 1)
                 if (c === '?') { //a question
                     var ans = this.userAttributes.get(msg.what)
-                    // console.log("ans:", ans);
-                    if (ans)
+                    console.log("ans:", ans);
+                    if (ans){
+                        var user = this.user
+                        var userAttributes = this.userAttributes
+
                         ans.once(function (data) {
-                            if (!data) return
+                            if (!data){  //never hear this question. Save the question.
+                                
+                                user.get('lastquestion').put({
+                                    what: msg.what
+                                });
+                                console.log("save question from others: ", msg.what)
+                                userAttributes.get(msg.what).put({
+                                    what: msg.what,
+                                    when: msg.when
+                                }, function (ack) {
+                                    console.log("save question status=", ack.err)
+                                });
+
+                                return
+                            } 
                             if (!data.answer) return //means question exists without an answer.
                             const when = Entity.time()
                             const key = `${when}_${Entity.random()}`
@@ -250,6 +267,7 @@ export default class Entity {
                             // console.log("data answer", answer);
                             chat.path(key).put(answer);
                         })
+                    }
                 }
             }
         })
