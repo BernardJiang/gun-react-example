@@ -16,7 +16,7 @@ export default class Sign extends Component {
   }
 
   componentWillMount() {
-    this.entity && this.entity.hookUserList(this.updateUISign);
+    this.entity && this.entity.onSignChange(this.updateUISign);
   }
 
   componentWillUnmount() {

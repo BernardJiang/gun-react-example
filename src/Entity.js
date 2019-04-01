@@ -95,23 +95,18 @@ export default class Entity {
 
     create(name, password) {
         return this.user.create(name, password);
-        // if(!ack.wait){ but.removeClass('pulse') }    
     }
-    listentouser(cb) {
-        this.userlist.on(data => {
-            this.usercount(cb)
-        });
-    }
+    // listentouser(cb) {
+    //     this.userlist.on(data => {
+    //         this.usercount(cb)
+    //     });
+    // }
 
-    hookUserList = UpdateUISign => {
+    onSignChange = UpdateUISign => {
         this.cbUpdateUISign = UpdateUISign
         this.userlist.open((list) => {
             const reducer = (newList, key) => {
                 if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
-                    // console.log("key", key)
-                    // console.log("user", list[key].name)
-                    // console.log("newList len=", newList.length);
-                    // console.log("newList", newList);
                     return [...newList, {
                         text: list[key].name,
                         key
@@ -122,15 +117,9 @@ export default class Entity {
             }
             const keylist = Object.keys(list);
             if (keylist === undefined) {
-                // console.log("keylist is undefined")
                 return;
             }
-            // console.log(keylist);
             var userList1 = keylist.reduce(reducer, []);
-            // if(userList1 && userList1.length)
-            //    console.log("hookUserList", "got user num=" + (userList1.length ? userList1 : 0));
-            // else
-            //    console.log("hookUsersLilst", "no user found!");
             UpdateUISign && UpdateUISign({
                 userlist: userList1 || [],
                 mencnt :  userList1.length
@@ -141,7 +130,6 @@ export default class Entity {
     leave(name, password) {
         this.user.leave()
         var user = this.user.get(name)
-        // console.log("leave", "unset "+ user)
         this.userlist.unset(user)
         this.userAttributes = null
         this.name = ""
@@ -162,31 +150,23 @@ export default class Entity {
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
             this.name = name;
-            // console.log("sign in: ", this.userAttributes)
-            // this.userlist.set({text: name})
-            // console.log(user);
-            // this.hookUserList(UIcb);
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             this.cbUpdateUIChat && this.cbUpdateUIChat({name});
-            //notify to update attributes after sign in.
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
         });
     }
 
-    usercount(cb) {
-        this.hookUserList(cb);
-    }
+    // usercount(cb) {
+    //     this.onSignChange(cb);
+    // }
 
     saveMessage(key: string, obj: Object) {
-        // console.log("Entity", key);
-        // console.log("Entity", obj);
         this.chat.path(key).put(obj);
         var c = obj.what.charAt(obj.what.length - 1)
         if (c === '?') { //a question
             this.user.get('lastquestion').put({
                 what: obj.what
             });
-            // console.log("saveMessage: ", this.userAttributes)
             this.userAttributes.get(obj.what).put({
                 what: obj.what,
                 when: obj.when
