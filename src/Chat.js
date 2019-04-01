@@ -4,19 +4,13 @@ import React, {
 import Entity from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
-  .map(key => ({
-    key,
-    ...msgs[key]
-  }))
+  .map(key => ({key, ...msgs[key]}))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => -a.when + b.when)
   .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 export default class Chat extends Component {
-  constructor({
-    entity
-  }) {
-
+  constructor({entity}) {
     super()
     this.entity = entity;
     this.state = {
@@ -52,9 +46,7 @@ export default class Chat extends Component {
       what: this.state.newMsg,
     })
 
-    this.setState({
-      newMsg: ''
-    })
+    this.setState({newMsg: ''})
   }
 
   render() {

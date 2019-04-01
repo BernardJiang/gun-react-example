@@ -11,7 +11,6 @@ const formatMsgs = msgs => Object.keys(msgs)
   
 export default class Attributes extends Component {
   constructor({entity}) {
-
     super()
     this.entity = entity;
     this.state = {
@@ -19,22 +18,19 @@ export default class Attributes extends Component {
       name: '', //(document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
-    // console.log("dbg", "Calling constructor!");
-    
   }
   
   componentWillMount() {
-    // console.log("dbg", "Calling componentWillMount!");
     if(this.entity == null)
        return
     this.entity.onAttributesChange(this.updateUIAttributes)   
   }
 
   updateUIAttributes =  obj => {
-    // console.log("in updateUI: ", obj)
     this.setState(obj);
   }
 
+  //Not in use yet.
   send = e => {
     e.preventDefault()
     // console.log("dbg", "Calling send!");
@@ -66,12 +62,9 @@ export default class Attributes extends Component {
     });
 
   }
+
   render() {
-    // console.log("dbg", "Calling render!");
-
     const msgs = formatMsgs(this.state.msgs)
-    // msgs.map( msg => console.log("attributes:" + msg.key + " : " + msg.what) )
-
     return <div>
           Attributes 
       <ul>
@@ -79,11 +72,6 @@ export default class Attributes extends Component {
           <li key={msg.key}><b> K: {msg.key} Q: {msg.what} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
         )}
       </ul>
-      {/* <form onSubmit={this.send}>
-      <input value={this.state.name} className="who" onChange={e => this.setState({ name: e.target.value})} />
-      <input value={this.state.newMsg} className="what" onChange={e => this.setState({ newMsg: e.target.value})} />
-      <button onClick={this.send}>Send</button>
-      </form> */}
     </div>
   }
 }

@@ -1,15 +1,6 @@
 import React, { Component }  from 'react'
-// import Gun from 'gun/gun'
-// import path from 'gun/lib/path'
 import './style.css'
-// import Sea from 'gun/sea' 
 import Entity from './Entity';
-// import as from 'gun/as'
-// import nts from 'gun/nts'
-
-// const formatToSign = todos => Object.keys(todos)
-//   .map(key => ({ key, val: todos[key] }))
-//   .filter(t => Boolean(t.val) && t.key !== '_')
 
 export default class Sign extends Component {
   constructor({entity}) {
@@ -20,11 +11,12 @@ export default class Sign extends Component {
       password: 'unsafe', 
       authenticated: false, 
       userlist: {},
-      mencnt: 0}
+      mencnt: 0
+    }
   }
 
   componentWillMount() {
-    this.entity.hookUserList(this.updateUI);
+    this.entity.hookUserList(this.updateUISign);
   }
 
   componentWillUnmount() {
@@ -40,15 +32,12 @@ export default class Sign extends Component {
   signup = async e => {
     e.preventDefault()
     
-    // console.log("create", "user="+this.state.name + "pwd=" + this.state.password);
     var ack = await this.entity.create(this.state.name, this.state.password);
     if(ack)
        ack = await this.entity.auth(this.state.name, this.state.password);
-    // console.log(ack);
-    // console.log("dbg", "signup");
   }
-  updateUI = (obj ) => {
-    // console.log("updateUI", "online user count=" + obj.list.length);
+  
+  updateUISign = obj => {
     this.setState({
       userlist: obj.list || [],
       mencnt : obj.list.length
