@@ -29,37 +29,37 @@ export default class Attributes extends Component {
   }
 
   //Not in use yet.
-  send = e => {
-    e.preventDefault()
-    // console.log("dbg", "Calling send!");
+  // send = e => {
+  //   e.preventDefault()
+  //   // console.log("dbg", "Calling send!");
     
-    if(!this.entity.isUserOnline()){ 
-      console.log("err", "Sign in first!!")
-      return 
-    }else{
-      this.entity.onChatMessage(this.updateUI)   
-    }
-    // console.log("dbg", "Calling recall!");
+  //   if(!this.entity.isUserOnline()){ 
+  //     console.log("err", "Sign in first!!")
+  //     return 
+  //   }else{
+  //     this.entity.onChatMessage(this.updateUI)   
+  //   }
+  //   // console.log("dbg", "Calling recall!");
 
-    this.entity.user.recall().then( ack=> {
-      const who = ack.alias;
-      // console.log(who);      
-      this.setState({name: who})
-      // document.cookie = ('alias=' + who)
-      // console.log("zzz", document.cookie); 
-      // console.log("zzz", this.state.name); 
-      const when = Entity.time()
-      const key = `${when}_${Entity.random()}`
-      this.entity.saveMessage(key, {
-        who,
-        when,
-        what: this.state.newMsg,
-      })
+  //   this.entity.user.recall().then( ack=> {
+  //     const who = ack.alias;
+  //     // console.log(who);      
+  //     this.setState({name: who})
+  //     // document.cookie = ('alias=' + who)
+  //     // console.log("zzz", document.cookie); 
+  //     // console.log("zzz", this.state.name); 
+  //     const when = Entity.time()
+  //     const key = `${when}_${Entity.random()}`
+  //     this.entity.saveMessage(key, {
+  //       who,
+  //       when,
+  //       what: this.state.newMsg,
+  //     })
 
-      this.setState({newMsg: ''})
-    });
+  //     this.setState({newMsg: ''})
+  //   });
 
-  }
+  // }
 
   render() {
     const msgs = formatMsgs(this.state.msgs)

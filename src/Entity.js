@@ -7,6 +7,7 @@ import 'gun/lib/unset'
 // import as from 'gun/as'
 // import nts from 'gun/nts'
 
+import Chatbot from './Chatbot'
 
 /*
    class Entity {
@@ -60,7 +61,7 @@ export default class Entity {
         // localStorage.clear();
 
         this.gun = new Gun(url)
-        this.sign = this.gun.get('sign')
+        // this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.userAttributes = null; // it's null before sign in. this.user.get('attributes')
         this.chat = this.gun.get('chat')
@@ -72,12 +73,13 @@ export default class Entity {
         this.cbUpdateUIChat = ''
         this.cbUpdateUIAttributes = ''
         this.cbUpdateUISign = ''
+        this.chatbot = new Chatbot(this.gun);
     }
 
-    cbNewUser(newuser) {
-        console.log("New user is on", newuser);
+    // cbNewUser(newuser) {
+    //     console.log("New user is on", newuser);
 
-    }
+    // }
     // public chat() { return this.chat; }
     // public user() { return this.user; }
     static time() {
@@ -160,38 +162,9 @@ export default class Entity {
     //     this.onSignChange(cb);
     // }
 
-    saveMessage(key: string, obj: Object) {
+    sendMessage(key: string, obj: Object) {
         this.chat.path(key).put(obj);
-        var c = obj.what.charAt(obj.what.length - 1)
-        if (c === '?') { //a question
-            this.user.get('lastquestion').put({
-                what: obj.what
-            });
-            this.userAttributes.get(obj.what).put({
-                what: obj.what,
-                when: obj.when
-            }, function (ack) {
-                // console.log("save attribute", ack)
-            });
-        } else if (c === '.') { // an answer
-            var userAttributes = this.userAttributes
-            var user = this.user;
-            var lq = this.user.get('lastquestion')
-            if (lq) {
-                lq.once(function (data) {
-                    // console.log("get lastquestion object", data.what)
-                    data && userAttributes.get(data.what).put({
-                        answer: obj.what
-                    })
-                    user.get('lastquestion').put(null);
-                })
-            } else {
-                //ignore answer without a question.
-                console.log("Ignore an answer.", obj.what)
-            }
-        } else { //ignore chats.
-            console.log("Ignore a messaage.")
-        }
+        this.chatbot.process(obj);
     }
 
     //prepare data for UI.
