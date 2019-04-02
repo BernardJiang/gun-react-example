@@ -12,14 +12,21 @@ import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
 const steps = [
   {
-    id: '0',
-    message: 'Welcome to react chatbot, Bernard!',
-    trigger: '1',
+    id: '1',
+    message: 'What is your name?',
+    trigger: '2',
   },
   {
-    id: '1',
-    message: 'Bye!',
-    end: true,
+    id: '2',
+    user: true,
+    trigger: '3',
+  },
+  {
+    id: '3',
+    message: 'Hi {previousValue}, nice to meet you!',
+    // end: true,
+    // user: true,
+    trigger: '2'
   },
 ];
 class App extends Component {
