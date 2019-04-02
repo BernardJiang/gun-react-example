@@ -52,9 +52,14 @@ class App extends Component {
             Learn React
           </a>
         </header> */}
-        <Sign entity={this.entity} />
+        <div className={['column']}>
+          <Sign entity={this.entity} />
+          <Attributes entity={this.entity} />
+
+        </div>
+
+
         <Chat entity={this.entity} />
-        <Attributes entity={this.entity} />
         <ChatBot steps={steps} />
       </div>
     );

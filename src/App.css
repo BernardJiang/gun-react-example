@@ -24,6 +24,7 @@
 }
 
 .rowC{display:flex; flex-direction:row;}
+.column{display:flex; flex-direction:column;}
 
 @keyframes App-logo-spin {
   from {
