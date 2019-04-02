@@ -8,6 +8,23 @@ import Attributes from './Attributes'
 // import Json from './Json'
 // import logo from './logo.svg';
 import './App.css';
+import { ThemeProvider } from 'styled-components';
+import ChatBot from 'react-simple-chatbot';
+
+
+const steps = [
+  {
+    id: '0',
+    message: 'Welcome to react chatbot!',
+    trigger: '1',
+  },
+  {
+    id: '1',
+    message: 'Bye!',
+    end: true,
+  },
+];
+
 
 class App extends Component {
   constructor() {
@@ -42,6 +59,7 @@ class App extends Component {
         <Sign entity={this.entity} />
         <Chat entity={this.entity} />
         <Attributes entity={this.entity} />
+        <ChatBot steps={steps} />
       </div>
     );
   }
