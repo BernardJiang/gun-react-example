@@ -67,7 +67,7 @@ class App extends Component {
 
 
         <Chat entity={this.entity} />
-        <ChatBot steps={steps} />
+        <ChatBot steps={steps} entity={this.entity}/>
       </div>
     );
   }

@@ -21,10 +21,20 @@ import { ChatIcon, CloseIcon, SubmitIcon, MicIcon } from './icons';
 import { isMobile } from './utils';
 import { speakFn } from './speechSynthesis';
 
+import Entity from '../Entity'
+
+const formatMsgs = msgs => Object.keys(msgs)
+  .map(key => ({key, ...msgs[key]}))
+  .filter(m => Boolean(m.when) && m.key !== '_')
+  .sort((a, b) => a.when - b.when)
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m, m.id=m.key, m.message=m.what, m.value=1,
+  m.metadata=''))
+
 class ChatBot extends Component {
   /* istanbul ignore next */
   constructor(props) {
     super(props);
+    this.entity = props.entity;
 
     this.content = null;
     this.input = null;
@@ -49,7 +59,9 @@ class ChatBot extends Component {
       inputInvalid: false,
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
-      defaultUserSettings: {}
+      defaultUserSettings: {},
+      name: "",
+      msgs: {}
     };
 
     this.speak = speakFn(props.speechSynthesis);
@@ -155,7 +167,12 @@ class ChatBot extends Component {
     return state;
   }
 
+  updateUIChatBot = obj => {
+    this.setState(obj);
+  }
+
   componentWillUnmount() {
+    this.entity && this.entity.onChatMessage(this.updateUIChatBot)
     if (this.content) {
       this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
@@ -419,13 +436,26 @@ class ChatBot extends Component {
   };
 
   submitUserMessage = () => {
+
+    if (!this.state.name) {
+      console.log("err", "Sign in first!!")
+      return
+    }
     const { defaultUserSettings, inputValue, previousSteps, renderedSteps } = this.state;
     let { currentStep } = this.state;
 
     const isInvalid = currentStep.validator && this.checkInvalidInput();
 
     if (!isInvalid) {
-      const step = {
+      const when = Entity.time()
+      const key = `${when}_${Entity.random()}`
+      this.entity.sendMessage(key, {
+        who: this.state.name,
+        when,
+        what: inputValue,
+      })
+
+        const step = {
         message: inputValue,
         value: inputValue
       };
@@ -616,6 +646,8 @@ class ChatBot extends Component {
 
     const inputAttributesOverride = currentStep.inputAttributes || inputAttributes;
 
+    const msgs = formatMsgs(this.state.msgs)
+
     return (
       <div className={`rsc ${className}`}>
         {floating && (
@@ -647,6 +679,7 @@ class ChatBot extends Component {
             hideInput={currentStep.hideInput}
           >
             {renderedSteps.map(this.renderStep)}
+            {msgs.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
             {!currentStep.hideInput && (
@@ -752,7 +785,7 @@ ChatBot.defaultProps = {
   footerStyle: {},
   handleEnd: undefined,
   headerComponent: undefined,
-  headerTitle: 'Chat',
+  headerTitle: 'Time Square',
   height: '520px',
   hideBotAvatar: false,
   hideHeader: false,
