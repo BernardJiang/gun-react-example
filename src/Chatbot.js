@@ -15,7 +15,7 @@ export default class Chatbot {
     setSelf(name) {
         this.name = name
     }
-    process(msg) {
+    process(msg) {  //process message of self.
         // console.log("In Chatbot")
         this.user = this.gun.user()
         this.userAttributes = this.user.get('Attributes')
@@ -54,7 +54,7 @@ export default class Chatbot {
         }
     }
 
-    processRespond(msg) { // message from others.
+    processRespond(msg) { // respond the message from others and self.
 
         var chat = this.gun.get('chat')
         this.user = this.gun.user()
