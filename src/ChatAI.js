@@ -4,7 +4,7 @@ import path from 'gun/lib/path'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 
-export default class Chatbot {
+export default class ChatAI {
     constructor(gun) {
         this.gun = gun
 
@@ -16,7 +16,7 @@ export default class Chatbot {
         this.name = name
     }
     process(msg) {  //process message of self.
-        // console.log("In Chatbot")
+        // console.log("In chatAI")
         this.user = this.gun.user()
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)

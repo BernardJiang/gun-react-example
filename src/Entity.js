@@ -7,8 +7,8 @@ import 'gun/lib/unset'
 // import as from 'gun/as'
 // import nts from 'gun/nts'
 
-import Chatbot from './Chatbot'
-// import ChatBot from './lib/ChatBot'
+import chatAI from './ChatAI'
+// import chatAI from './lib/chatAI'
 
 /*
    class Entity {
@@ -37,7 +37,7 @@ import Chatbot from './Chatbot'
            opinions
 
        }
-       chatbot{
+       chatAI{
            search for person to talk with. by distance, by max number of contacts.
 
            once a person X is found,
@@ -75,7 +75,7 @@ export default class Entity {
         this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
         this.cbUpdateUISign = ''
-        this.chatbot = new Chatbot(this.gun);
+        this.chatAI = new chatAI(this.gun);
     }
 
     // cbNewUser(newuser) {
@@ -137,7 +137,7 @@ export default class Entity {
         this.userlist.unset(user)
         this.userAttributes = null
         this.name = ""
-        this.chatbot.setSelf("")
+        this.chatAI.setSelf("")
         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
     }
 
@@ -155,7 +155,7 @@ export default class Entity {
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
             this.name = name;
-            this.chatbot.setSelf(name)
+            this.chatAI.setSelf(name)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             this.cbUpdateUIChat && this.cbUpdateUIChat({name});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
@@ -168,7 +168,7 @@ export default class Entity {
 
     sendMessage(key, msg) {
         this.chat.path(key).put(msg);
-        this.chatbot.process(msg);
+        this.chatAI.process(msg);
     }
 
     //prepare data for UI.
@@ -176,7 +176,7 @@ export default class Entity {
         // console.log('Entity onChatMessage', 'entered')
         const tmpState = {}
         var chat = this.chat
-        var chatbot = this.chatbot;
+        var chatAI = this.chatAI;
         this.cbUpdateUIChat = cbUpdateUIChat
         this.chat.map().once((msg, key) => {
             tmpState[key] = msg
@@ -190,22 +190,22 @@ export default class Entity {
                 msgs: this.msgs
             })
 
-            chatbot.processRespond(msg)
+            chatAI.processRespond(msg)
         })
     }
 
         //prepare data for UI.
         onChatBotMessage(cbUpdateUIChatBot) {
-          // console.log('Entity onChatMessage', 'entered')
+          console.log('Entity onChatBotMessage', 'entered')
           const tmpState = {}
           var chat = this.chat
-          var chatbot = this.chatbot;
+          var chatAI = this.chatAI;
           this.cbUpdateUIChatBot = cbUpdateUIChatBot
           this.chat.map().once((msg, key) => {
               tmpState[key] = msg
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
-              // console.log('Entity onChatMessage', " key=" + key + " who=" + msg.who + ". msg=" + msg.what)
+              console.log('Entity onChatBotMessage', " key=" + key + " who=" + msg.who + ". msg=" + msg.what)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
               // console.log("tmpState len=", Object.keys(tmpState).length)
               this.msgs = Object.assign({}, this.msgs, tmpState)
@@ -213,7 +213,7 @@ export default class Entity {
                   msgs: this.msgs
               })
 
-              chatbot.processRespond(msg)
+              chatAI.processRespond(msg)
           })
       }
 

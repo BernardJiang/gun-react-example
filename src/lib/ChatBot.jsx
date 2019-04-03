@@ -68,6 +68,8 @@ class ChatBot extends Component {
   }
 
   componentDidMount() {
+    this.entity && this.entity.onChatBotMessage(this.updateUIChatBot)
+
     const { steps } = this.props;
     const {
       botDelay,
@@ -172,7 +174,6 @@ class ChatBot extends Component {
   }
 
   componentWillUnmount() {
-    this.entity && this.entity.onChatMessage(this.updateUIChatBot)
     if (this.content) {
       this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
