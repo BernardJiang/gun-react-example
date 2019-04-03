@@ -8,6 +8,7 @@ import 'gun/lib/unset'
 // import nts from 'gun/nts'
 
 import Chatbot from './Chatbot'
+// import ChatBot from './lib/ChatBot'
 
 /*
    class Entity {
@@ -16,11 +17,11 @@ import Chatbot from './Chatbot'
        location,
        contacts, //a list of other Entities/persons that this has contact with.
           {
-              nickname, 
+              nickname,
               description,
-              relation tag: fan, star, friends, family, colleague, acquaintance, stranger 
+              relation tag: fan, star, friends, family, colleague, acquaintance, stranger
           }
-       chats, //one-on-one talk 
+       chats, //one-on-one talk
        {
            from self to others;
            from others to self;
@@ -39,19 +40,19 @@ import Chatbot from './Chatbot'
        chatbot{
            search for person to talk with. by distance, by max number of contacts.
 
-           once a person X is found, 
-           
+           once a person X is found,
+
            Ask(){
-              start to talk to X with a list of topic. 
+              start to talk to X with a list of topic.
                 each topic can have a list of question, seeking answer from X.
-                if X doesn't have an answer to my question, leave the question and move on 
-                if X has the answer, then follow the logic of topic to finish the question. 
+                if X doesn't have an answer to my question, leave the question and move on
+                if X has the answer, then follow the logic of topic to finish the question.
 
            }
            Answer(){
               also, answer the question from X.
            }
-            
+
        }
    }
 */
@@ -71,6 +72,7 @@ export default class Entity {
         this.attrs = {}
         this.name = ''
         this.cbUpdateUIChat = ''
+        this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
         this.cbUpdateUISign = ''
         this.chatbot = new Chatbot(this.gun);
@@ -192,6 +194,29 @@ export default class Entity {
         })
     }
 
+        //prepare data for UI.
+        onChatBotMessage(cbUpdateUIChatBot) {
+          // console.log('Entity onChatMessage', 'entered')
+          const tmpState = {}
+          var chat = this.chat
+          var chatbot = this.chatbot;
+          this.cbUpdateUIChatBot = cbUpdateUIChatBot
+          this.chat.map().once((msg, key) => {
+              tmpState[key] = msg
+              // console.log('Entity onChatMessage', key)
+              // var date = new Date(msg.when).toLocaleString().toLowerCase()
+              // console.log('Entity onChatMessage', " key=" + key + " who=" + msg.who + ". msg=" + msg.what)
+              // console.log("local msgs len=", Object.keys(this.msgs).length)
+              // console.log("tmpState len=", Object.keys(tmpState).length)
+              this.msgs = Object.assign({}, this.msgs, tmpState)
+              cbUpdateUIChatBot({
+                  msgs: this.msgs
+              })
+
+              chatbot.processRespond(msg)
+          })
+      }
+
     onAttributesChange(cbUpdateUIAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
         this.cbUpdateUIAttributes = cbUpdateUIAttributes;
@@ -210,5 +235,6 @@ export default class Entity {
             })
         })
     }
+
 
 }

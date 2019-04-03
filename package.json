@@ -3,11 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "circular-json": "^0.5.9",
     "gun": "^0.9.9999991",
     "lodash": "^4.17.11",
+    "onchange": "^5.2.0",
+    "prettier": "^1.16.4",
+    "prop-types": "^15.7.2",
+    "random-id": "^1.0.3",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "styled-components": "^4.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

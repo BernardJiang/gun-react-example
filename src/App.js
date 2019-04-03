@@ -8,14 +8,34 @@ import Attributes from './Attributes'
 // import Json from './Json'
 // import logo from './logo.svg';
 import './App.css';
-
+import { ThemeProvider } from 'styled-components';
+import ChatBot from './lib/index';
+const steps = [
+  {
+    id: '1',
+    message: 'What is your name?',
+    trigger: '2',
+  },
+  {
+    id: '2',
+    user: true,
+    trigger: '3',
+  },
+  {
+    id: '3',
+    message: 'Hi {previousValue}, nice to meet you!',
+    // end: true,
+    // user: true,
+    trigger: '2'
+  },
+];
 class App extends Component {
   constructor() {
     super();
     var newloc = window.location.origin;
     if (window.location.port !== '8765') {
-      newloc = window.location.protocol + "//" 
-        + window.location.hostname 
+      newloc = window.location.protocol + "//"
+        + window.location.hostname
         + (window.location.port ? ':' + '8765' : '');
     }
 
@@ -39,9 +59,15 @@ class App extends Component {
             Learn React
           </a>
         </header> */}
-        <Sign entity={this.entity} />
+        <div className={['column']}>
+          <Sign entity={this.entity} />
+          <Attributes entity={this.entity} />
+
+        </div>
+
+
         <Chat entity={this.entity} />
-        <Attributes entity={this.entity} />
+        <ChatBot steps={steps} entity={this.entity}/>
       </div>
     );
   }
