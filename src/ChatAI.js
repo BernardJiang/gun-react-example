@@ -9,11 +9,11 @@ export default class ChatAI {
         this.gun = gun
 
         // this.userAttributes = userAttributes
-        this.name = ''
+        this.stageName = ''
     }
 
-    setSelf(name) {
-        this.name = name
+    setSelf(stageName) {
+        this.stageName = stageName
     }
     process(msg) {  //process message of self.
         // console.log("In chatAI")
@@ -61,7 +61,7 @@ export default class ChatAI {
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)
             return
-        var name = this.name
+        var stageName = this.stageName
         var c = msg.what.charAt(msg.what.length - 1)
         if (c === '?') { //a question
             var ans = this.userAttributes.get(msg.what)
@@ -89,7 +89,7 @@ export default class ChatAI {
                     if (!data.answer) return //means question exists without an answer.
                     const when = Gun.time.is()
                     const key = `${when}_${Gun.text.random()}`
-                    const who = name;
+                    const who = stageName;
                     var answer = {
                         who,
                         when,

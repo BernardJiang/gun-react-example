@@ -15,7 +15,7 @@ export default class Attributes extends Component {
     this.entity = entity;
     this.state = {
       newMsg: '',
-      name: '', //(document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
+      stageName: '', //(document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
   }
