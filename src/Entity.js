@@ -70,7 +70,7 @@ export default class Entity {
         // this.userlist.on(this.cbNewUser);
         this.msgs = {}
         this.attrs = {}
-        this.name = ''
+        this.stageName = ''
         this.cbUpdateUIChat = ''
         this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
@@ -97,8 +97,8 @@ export default class Entity {
         return this.user.is
     }
 
-    create(name, password) {
-        return this.user.create(name, password);
+    create(stageName, password) {
+        return this.user.create(stageName, password);
     }
     // listentouser(cb) {
     //     this.userlist.on(data => {
@@ -110,9 +110,9 @@ export default class Entity {
         this.cbUpdateUISign = UpdateUISign
         this.userlist.open((list) => {
             const reducer = (newList, key) => {
-                if (list[key] && !!Object.keys(list[key]).length && list[key].name) {
+                if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
                     return [...newList, {
-                        text: list[key].name,
+                        text: list[key].stageName,
                         key
                     }];
                 } else {
@@ -131,33 +131,34 @@ export default class Entity {
         });
     }
 
-    leave(name, password) {
+    leave(stageName, password) {
         this.user.leave()
-        var user = this.user.get(name)
+        var user = this.user.get(stageName)
         this.userlist.unset(user)
         this.userAttributes = null
-        this.name = ""
+        this.stageName = ""
         this.chatAI.setSelf("")
         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
     }
 
-    auth(name, password) {
-        this.name = name;
-        this.user.auth(name, password, ack => {
+    auth(stageName, password) {
+        this.stageName = stageName;
+        this.user.auth(stageName, password, ack => {
             if (ack.err) {
                 console.log('err', ack.err);
                 this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
                 return;
             }
-            var user = this.user.get(name).put({
-                name: name
+            var user = this.user.get(stageName).put({
+                stageName: stageName
             })
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
-            this.name = name;
-            this.chatAI.setSelf(name)
+            this.stageName = stageName;
+            this.chatAI.setSelf(stageName)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
-            this.cbUpdateUIChat && this.cbUpdateUIChat({name});
+            this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
+            this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
         });
     }

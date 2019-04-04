@@ -60,7 +60,7 @@ class ChatBot extends Component {
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
       defaultUserSettings: {},
-      name: "",
+      stageName: "",
       msgs: {}
     };
 
@@ -441,7 +441,7 @@ class ChatBot extends Component {
 
   submitUserMessage = () => {
 
-    if (!this.state.name) {
+    if (!this.state.stageName) {
       console.log("err", "Sign in first!!")
       return
     }
@@ -454,7 +454,7 @@ class ChatBot extends Component {
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.sendMessage(key, {
-        who: this.state.name,
+        who: this.state.stageName,
         when,
         what: inputValue,
       })

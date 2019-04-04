@@ -15,7 +15,7 @@ export default class Chat extends Component {
     this.entity = entity;
     this.state = {
       newMsg: '',
-      name: '', //document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
+      stageName: '', //document.cookie.match(/alias\=(.*?)(\&|$|\;)/i)||[])[1]||'',
       msgs: {},
     }
   }
@@ -31,7 +31,7 @@ export default class Chat extends Component {
   send = e => {
     e.preventDefault()
 
-    if (!this.state.name) {
+    if (!this.state.stageName) {
       console.log("err", "Sign in first!!")
       return
     }
@@ -39,7 +39,7 @@ export default class Chat extends Component {
     const when = Entity.time()
     const key = `${when}_${Entity.random()}`
     this.entity.sendMessage(key, {
-      who: this.state.name,
+      who: this.state.stageName,
       when,
       what: this.state.newMsg,
     })
@@ -51,7 +51,7 @@ export default class Chat extends Component {
     const msgs = formatMsgs(this.state.msgs)
     return <div>
       <form onSubmit={this.send}>
-      <input value={this.state.name} className="who" onChange={e => this.setState({ name: e.target.value})} />
+      <input value={this.state.stageName} className="who" onChange={e => this.setState({ stageName: e.target.value})} />
       <input value={this.state.newMsg} className="what" onChange={e => this.setState({ newMsg: e.target.value})} />
       <button onClick={this.send}>Send</button>
       </form>
