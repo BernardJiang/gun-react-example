@@ -21,20 +21,10 @@ import { ChatIcon, CloseIcon, SubmitIcon, MicIcon } from './icons';
 import { isMobile } from './utils';
 import { speakFn } from './speechSynthesis';
 
-import Entity from '../Entity'
-
-const formatMsgs = msgs => Object.keys(msgs)
-  .map(key => ({key, ...msgs[key]}))
-  .filter(m => Boolean(m.when) && m.key !== '_')
-  .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.message=m.what), m))
-
-  //, m.id=m.key, m.message=m.what, m.value=1, m.metadata='')
 class ChatBot extends Component {
   /* istanbul ignore next */
   constructor(props) {
     super(props);
-    this.entity = props.entity;
 
     this.content = null;
     this.input = null;
@@ -59,21 +49,13 @@ class ChatBot extends Component {
       inputInvalid: false,
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
-      defaultUserSettings: {},
-      name: "",
-      msgs: {}
+      defaultUserSettings: {}
     };
 
     this.speak = speakFn(props.speechSynthesis);
   }
 
-  updateUIChatBot = obj => {
-    this.setState(obj);
-  }
-
   componentDidMount() {
-    this.entity && this.entity.onChatBotMessage(this.updateUIChatBot)
-
     const { steps } = this.props;
     const {
       botDelay,
@@ -437,26 +419,13 @@ class ChatBot extends Component {
   };
 
   submitUserMessage = () => {
-
-    if (!this.state.name) {
-      console.log("err", "Sign in first!!")
-      return
-    }
     const { defaultUserSettings, inputValue, previousSteps, renderedSteps } = this.state;
     let { currentStep } = this.state;
 
     const isInvalid = currentStep.validator && this.checkInvalidInput();
 
     if (!isInvalid) {
-      const when = Entity.time()
-      const key = `${when}_${Entity.random()}`
-      this.entity.sendMessage(key, {
-        who: this.state.name,
-        when,
-        what: inputValue,
-      })
-
-        const step = {
+      const step = {
         message: inputValue,
         value: inputValue
       };
@@ -532,12 +501,7 @@ class ChatBot extends Component {
     }
   };
 
-  renderStepFake = (step, index) => {
-    console.log("fake step=" + step + ". index=" + index);
-  }
-
   renderStep = (step, index) => {
-    console.log("real step=" + step + ". index=" + index);
     const { renderedSteps } = this.state;
     const {
       avatarStyle,
@@ -652,8 +616,6 @@ class ChatBot extends Component {
 
     const inputAttributesOverride = currentStep.inputAttributes || inputAttributes;
 
-    const msgs = formatMsgs(this.state.msgs)
-
     return (
       <div className={`rsc ${className}`}>
         {floating && (
@@ -684,7 +646,6 @@ class ChatBot extends Component {
             height={height}
             hideInput={currentStep.hideInput}
           >
-            {msgs.map(this.renderStep)}
             {renderedSteps.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
@@ -791,7 +752,7 @@ ChatBot.defaultProps = {
   footerStyle: {},
   handleEnd: undefined,
   headerComponent: undefined,
-  headerTitle: 'Time Square',
+  headerTitle: 'Chat',
   height: '520px',
   hideBotAvatar: false,
   hideHeader: false,

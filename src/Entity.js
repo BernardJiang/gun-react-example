@@ -59,7 +59,7 @@ import chatAI from './ChatAI'
 export default class Entity {
     constructor(url: string) {
 
-        // localStorage.clear();
+        localStorage.clear();
 
         this.gun = new Gun(url)
         // this.sign = this.gun.get('sign')
@@ -190,7 +190,7 @@ export default class Entity {
                 msgs: this.msgs
             })
 
-            chatAI.processRespond(msg)
+            msg && chatAI.processRespond(msg)
         })
     }
 
