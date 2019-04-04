@@ -72,6 +72,8 @@ class ChatBot extends Component {
   }
 
   componentDidMount() {
+    console.log("ChatBot", "componentDidMount")
+
     this.entity && this.entity.onChatBotMessage(this.updateUIChatBot)
 
     const { steps } = this.props;
@@ -174,6 +176,7 @@ class ChatBot extends Component {
   }
 
   componentWillUnmount() {
+    console.log("ChatBot", "componentWillUnmount")
     if (this.content) {
       this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
@@ -594,12 +597,13 @@ class ChatBot extends Component {
         hideBotAvatar={hideBotAvatar}
         hideUserAvatar={hideUserAvatar}
         speechSynthesis={speechSynthesis}
-        isFirst={this.isFirstPosition(step)}
-        isLast={this.isLastPosition(step)}
+        isFirst={false} 
+        isLast={false} 
       />
     );
   };
-
+// {this.isFirstPosition(step)}
+//{this.isLastPosition(step)}
   render() {
     const {
       currentStep,
@@ -684,8 +688,8 @@ class ChatBot extends Component {
             height={height}
             hideInput={currentStep.hideInput}
           >
-            {msgs.map(this.renderStep)}
             {renderedSteps.map(this.renderStep)}
+            {msgs.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
             {!currentStep.hideInput && (
