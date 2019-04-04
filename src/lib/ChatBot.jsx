@@ -27,7 +27,7 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({key, ...msgs[key]}))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.message=m.what), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.message=m.what, m.value='1'), m))
 
   //, m.id=m.key, m.message=m.what, m.value=1, m.metadata='')
 class ChatBot extends Component {
@@ -590,7 +590,7 @@ class ChatBot extends Component {
         steps={steps}
         speak={this.speak}
         previousStep={previousStep}
-        previousValue={previousStep.value}
+        previousValue={previousStep ? previousStep.value : '2'}
         triggerNextStep={this.triggerNextStep}
         avatarStyle={avatarStyle}
         bubbleStyle={bubbleStyle}
