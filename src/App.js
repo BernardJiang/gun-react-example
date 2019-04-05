@@ -62,12 +62,9 @@ class App extends Component {
         <div className={['column']}>
           <Sign entity={this.entity} />
           <Attributes entity={this.entity} />
-
         </div>
-
-
-        <Chat entity={this.entity} />
         <ChatBot steps={steps} entity={this.entity}/>
+        <Chat entity={this.entity} />
       </div>
     );
   }

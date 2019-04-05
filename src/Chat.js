@@ -41,7 +41,7 @@ export default class Chat extends Component {
     this.entity.sendMessage(key, {
       who: this.state.stageName,
       when,
-      what: this.state.newMsg,
+      message: this.state.newMsg,
     })
 
     this.setState({newMsg: ''})
@@ -52,12 +52,12 @@ export default class Chat extends Component {
     return <div>
       <form onSubmit={this.send}>
       <input value={this.state.stageName} className="who" onChange={e => this.setState({ stageName: e.target.value})} />
-      <input value={this.state.newMsg} className="what" onChange={e => this.setState({ newMsg: e.target.value})} />
+      <input value={this.state.newMsg} className="message" onChange={e => this.setState({ newMsg: e.target.value})} />
       <button onClick={this.send}>Send</button>
       </form>
       <ul>
         {msgs.map(msg =>
-          <li key={msg.key}><b>{msg.who}:</b> {msg.what}<span className="when">{msg.whenFmt}</span></li>
+          <li key={msg.key}><b>{msg.who}:</b> {msg.message}<span className="when">{msg.whenFmt}</span></li>
         )}
       </ul>
     </div>

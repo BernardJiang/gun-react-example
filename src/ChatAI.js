@@ -22,13 +22,13 @@ export default class ChatAI {
         if (!this.userAttributes)
             return
 
-        var c = msg.what.charAt(msg.what.length - 1)
+        var c = msg.message.charAt(msg.message.length - 1)
         if (c === '?') { //a question
             this.user.get('lastquestion').put({
-                what: msg.what
+                message: msg.message
             });
-            this.userAttributes.get(msg.what).put({
-                what: msg.what,
+            this.userAttributes.get(msg.message).put({
+                message: msg.message,
                 when: msg.when
             }, function (ack) {
                 // console.log("save attribute", ack)
@@ -39,15 +39,15 @@ export default class ChatAI {
             var lq = this.user.get('lastquestion')
             if (lq) {
                 lq.once(function (data) {
-                    // console.log("get lastquestion object", data.what)
-                    data && userAttributes.get(data.what).put({
-                        answer: msg.what
+                    // console.log("get lastquestion object", data.message)
+                    data && userAttributes.get(data.message).put({
+                        answer: msg.message
                     })
                     user.get('lastquestion').put(null);
                 })
             } else {
                 //ignore answer without a question.
-                console.log("Ignore an answer.", msg.what)
+                console.log("Ignore an answer.", msg.message)
             }
         } else { //ignore chats.
             console.log("Ignore a messaage.")
@@ -62,9 +62,9 @@ export default class ChatAI {
         if (!this.userAttributes)
             return
         var stageName = this.stageName
-        var c = msg.what.charAt(msg.what.length - 1)
+        var c = msg.message.charAt(msg.message.length - 1)
         if (c === '?') { //a question
-            var ans = this.userAttributes.get(msg.what)
+            var ans = this.userAttributes.get(msg.message)
             // console.log("ans:", ans);
             if (ans) {
                 var user = this.user
@@ -74,11 +74,11 @@ export default class ChatAI {
                     if (!data) { //never hear this question. Save the question.
 
                         user.get('lastquestion').put({
-                            what: msg.what
+                            message: msg.message
                         });
-                        console.log("save question from others: ", msg.what)
-                        userAttributes.get(msg.what).put({
-                            what: msg.what,
+                        console.log("save question from others: ", msg.message)
+                        userAttributes.get(msg.message).put({
+                            message: msg.message,
                             when: msg.when
                         }, function (ack) {
                             console.log("save question status=", ack.err)
@@ -93,7 +93,7 @@ export default class ChatAI {
                     var answer = {
                         who,
                         when,
-                        what: data.answer
+                        message: data.answer
                     }
                     // console.log("data answer", answer);
                     chat.path(key).put(answer);

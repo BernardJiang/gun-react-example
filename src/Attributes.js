@@ -53,7 +53,7 @@ export default class Attributes extends Component {
   //     this.entity.saveMessage(key, {
   //       who,
   //       when,
-  //       what: this.state.newMsg,
+  //       message: this.state.newMsg,
   //     })
 
   //     this.setState({newMsg: ''})
@@ -67,7 +67,7 @@ export default class Attributes extends Component {
           Attributes 
       <ul>
         {msgs.map(msg =>
-          <li key={msg.key}><b> K: {msg.key} Q: {msg.what} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
+          <li key={msg.key}><b> K: {msg.key} Q: {msg.message} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
         )}
       </ul>
     </div>

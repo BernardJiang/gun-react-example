@@ -27,9 +27,9 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({key, ...msgs[key]}))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.message=m.what, m.value='1'), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.value='1'), m))
 
-  //, m.id=m.key, m.message=m.what, m.value=1, m.metadata='')
+  //, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
   /* istanbul ignore next */
   constructor(props) {
@@ -456,7 +456,7 @@ class ChatBot extends Component {
       this.entity.sendMessage(key, {
         who: this.state.stageName,
         when,
-        what: inputValue,
+        message: inputValue,
       })
 
         const step = {

@@ -7,7 +7,7 @@ export default class Sign extends Component {
     super()
     this.entity = entity;
     this.state = {
-      name: 'alias', 
+      stageName: 'alias', 
       password: 'unsafe', 
       authenticated: false, 
       userlist: {},
@@ -20,21 +20,21 @@ export default class Sign extends Component {
   }
 
   componentWillUnmount() {
-    this.entity.leave(this.state.name, this.state.password)
+    this.entity.leave(this.state.stageName, this.state.password)
   }
 
  session = () => {
   if(!sessionStorage){ return }
-  sessionStorage.alias = this.state.name;
+  sessionStorage.alias = this.state.stageName;
   sessionStorage.tmp = this.state.password;
  }
 
   signup = async e => {
     e.preventDefault()
     
-    var ack = await this.entity.create(this.state.name, this.state.password);
+    var ack = await this.entity.create(this.state.stageName, this.state.password);
     if(ack)
-       ack = await this.entity.auth(this.state.name, this.state.password);
+       ack = await this.entity.auth(this.state.stageName, this.state.password);
   }
   
   updateUISign = obj => {
@@ -44,20 +44,20 @@ export default class Sign extends Component {
   signin = async e => {
     e.preventDefault()
     if(this.state.authenticated)
-      this.entity.leave(this.state.name, this.state.password)
+      this.entity.leave(this.state.stageName, this.state.password)
     else
-      this.entity.auth(this.state.name, this.state.password) 
+      this.entity.auth(this.state.stageName, this.state.password) 
   }
 
-  handleNameChange = e => this.setState({ name: e.target.value})
+  handlestageNameChange = e => this.setState({ stageName: e.target.value})
   handlePasswordChange = e => this.setState({ password: e.target.value})
 
   render() {
     return <div id="sign" className="hue page">
 			<form id="inup" className="sign pad center" onSubmit={this.signin}>
 				<div className="mid row col">
-					<input value={this.state.name} className="huet jot sap" type="text" placeholder="alias" onChange={this.handleNameChange}/>
-					Enter your name.
+					<input value={this.state.stageName} className="huet jot sap" type="text" placeholder="alias" onChange={this.handlestageNameChange}/>
+					Enter your stageName.
 				</div>
 				<div className="mid row col">
 					<input value={this.state.password} className="huet jot sap" type="password" placeholder="password" onChange={this.handlePasswordChange}/>
