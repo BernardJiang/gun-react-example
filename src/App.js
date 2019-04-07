@@ -10,23 +10,24 @@ import Attributes from './Attributes'
 import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
-const steps = [
+const steps = [];
+const steps2 = [
   {
-    id: '1',
+    id: 'aa',
     message: 'What is your name?',
-    trigger: '2',
+    trigger: '2b',
   },
   {
-    id: '2',
+    id: '2b',
     user: true,
-    trigger: '3',
+    trigger: '3c',
   },
   {
-    id: '3',
+    id: '3c',
     message: 'Hi {previousValue}, nice to meet you!',
     // end: true,
     // user: true,
-    trigger: '2'
+    trigger: '2b'
   },
 ];
 class App extends Component {

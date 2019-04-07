@@ -68,6 +68,13 @@ class ChatBot extends Component {
   }
 
   updateUIChatBot = obj => {
+
+    //assume it has msgs.
+    if(obj.msgs){
+      const msgs = formatMsgs(obj.msgs)
+      obj.renderedSteps = msgs;  
+    }
+
     this.setState(obj);
   }
 
@@ -110,12 +117,17 @@ class ChatBot extends Component {
 
     schema.checkInvalidIds(chatSteps);
 
-    const firstStep = steps[0];
+    const firstStep = {}
 
-    if (firstStep.message) {
-      const { message } = firstStep;
-      firstStep.message = typeof message === 'function' ? message() : message;
-      chatSteps[firstStep.id].message = firstStep.message;
+    if(steps.length>0){
+      firstStep = steps[0];
+
+      if (firstStep.message) {
+        const { message } = firstStep;
+        firstStep.message = typeof message === 'function' ? message() : message;
+        chatSteps[firstStep.id].message = firstStep.message;
+      }
+  
     }
 
     const { recognitionEnable } = this.state;
@@ -226,6 +238,8 @@ class ChatBot extends Component {
     const steps = {};
 
     for (let i = 0, len = previousSteps.length; i < len; i += 1) {
+      if(!previousSteps[i]) 
+        continue;
       const { id, message, value, metadata } = previousSteps[i];
 
       steps[id] = {
@@ -541,6 +555,8 @@ class ChatBot extends Component {
 
   renderStep = (step, index) => {
     console.log("real step=" + step + ". index=" + index);
+    if(!step)
+      return;
     const { renderedSteps } = this.state;
     const {
       avatarStyle,
@@ -590,18 +606,19 @@ class ChatBot extends Component {
         steps={steps}
         speak={this.speak}
         previousStep={previousStep}
-        previousValue={previousStep ? previousStep.value : '2'}
+        previousValue={previousStep.value}
         triggerNextStep={this.triggerNextStep}
         avatarStyle={avatarStyle}
         bubbleStyle={bubbleStyle}
         hideBotAvatar={hideBotAvatar}
         hideUserAvatar={hideUserAvatar}
         speechSynthesis={speechSynthesis}
-        isFirst={false} 
-        isLast={false} 
+        isFirst={this.isFirstPosition(step)} 
+        isLast={this.isLastPosition(step)} 
       />
     );
   };
+//  {previousStep ? previousStep.value : '2'}
 // {this.isFirstPosition(step)}
 //{this.isLastPosition(step)}
   render() {
@@ -656,8 +673,6 @@ class ChatBot extends Component {
 
     const inputAttributesOverride = currentStep.inputAttributes || inputAttributes;
 
-    const msgs = formatMsgs(this.state.msgs)
-
     return (
       <div className={`rsc ${className}`}>
         {floating && (
@@ -689,7 +704,6 @@ class ChatBot extends Component {
             hideInput={currentStep.hideInput}
           >
             {renderedSteps.map(this.renderStep)}
-            {msgs.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
             {!currentStep.hideInput && (
