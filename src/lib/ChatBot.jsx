@@ -53,7 +53,7 @@ class ChatBot extends Component {
       currentStep: {},
       previousStep: {},
       steps: {},
-      disabled: true,
+      disabled: false,
       opened: props.opened || !props.floating,
       inputValue: '',
       inputInvalid: false,
@@ -488,7 +488,7 @@ class ChatBot extends Component {
           currentStep,
           renderedSteps,
           previousSteps,
-          disabled: true,
+          disabled: false,
           inputValue: ''
         },
         () => {
@@ -706,7 +706,7 @@ class ChatBot extends Component {
             {renderedSteps.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
-            {!currentStep.hideInput && (
+            {/*!currentStep.hideInput && */(
               <Input
                 type="textarea"
                 style={inputStyle}
@@ -723,7 +723,7 @@ class ChatBot extends Component {
                 {...inputAttributesOverride}
               />
             )}
-            {!currentStep.hideInput && !hideSubmitButton && (
+            {/*!currentStep.hideInput && !hideSubmitButton && */(
               <SubmitButton
                 className="rsc-submit-button"
                 style={submitButtonStyle}
