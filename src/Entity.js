@@ -183,7 +183,7 @@ export default class Entity {
             tmpState[key] = msg
             // console.log('Entity onChatMessage', key)
             // var date = new Date(msg.when).toLocaleString().toLowerCase()
-            // console.log('Entity onChatMessage', " key=" + key + " who=" + msg.who + ". msg=" + msg.message)
+            // console.log('Entity onChatMessage', " key=" + key + " who=" + msg.stageName + ". msg=" + msg.message)
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.msgs = Object.assign({}, this.msgs, tmpState)
@@ -206,7 +206,7 @@ export default class Entity {
               tmpState[key] = msg
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
-              console.log('Entity onChatBotMessage', " key=" + key + " who=" + msg.who + ". msg=" + msg.message)
+              console.log('Entity onChatBotMessage', " key=" + key + " who=" + msg.stageName + ". msg=" + msg.message)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
               // console.log("tmpState len=", Object.keys(tmpState).length)
               this.msgs = Object.assign({}, this.msgs, tmpState)

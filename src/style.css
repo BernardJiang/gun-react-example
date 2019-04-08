@@ -1,6 +1,6 @@
 html, body { font-size: 14pt; padding: 10px 2.5%;}
 .hide { display: none; }
-form .who { width: 10%; }
+form .stageName { width: 10%; }
 form .message { width: 40%; }
 ul { list-style: none; padding: 0; }
 ul .when {color: #555; font-size: 12pt; float: right; display: none; }

@@ -27,7 +27,7 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({key, ...msgs[key]}))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.value='1'), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.user=m.stageName), m))
 
   //, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
@@ -468,7 +468,7 @@ class ChatBot extends Component {
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.sendMessage(key, {
-        who: this.state.stageName,
+        stageName: this.state.stageName,
         when,
         message: inputValue,
       })
