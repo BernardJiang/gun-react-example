@@ -38,5 +38,26 @@ export default [
     key: 'metadata',
     types: ['object'],
     required: false
-  }
+  },
+  {
+    key: 'key',
+    types: ['string'],
+    required: false
+  },
+  {
+    key: 'stageName',
+    types: ['string'],
+    required: false
+  },
+  {
+    key: 'when',
+    types: ['string', 'number'],
+    required: false
+  },
+  {
+    key: 'whenFmt',
+    types: ['string'],
+    required: false
+  },
+
 ];

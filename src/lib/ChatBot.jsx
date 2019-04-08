@@ -27,7 +27,7 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({key, ...msgs[key]}))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key, m.user=m.stageName), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key), m))
 
   //, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
@@ -72,10 +72,102 @@ class ChatBot extends Component {
     //assume it has msgs.
     if(obj.msgs){
       const msgs = formatMsgs(obj.msgs)
-      obj.renderedSteps = msgs;  
+      this.processSteps(msgs);  
     }
 
-    this.setState(obj);
+  }
+
+  processSteps = steps => {
+    const {
+      botDelay,
+      botAvatar,
+      cache,
+      cacheName,
+      customDelay,
+      enableMobileAutoFocus,
+      userAvatar,
+      userDelay
+    } = this.props;
+    const chatSteps = {};
+
+    const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
+    const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
+    const defaultCustomSettings = { delay: customDelay };
+
+    for (let i = 0, len = steps.length; i < len; i += 1) {
+      const step = steps[i];
+      let settings = {};
+
+      if (step.user) {
+        settings = defaultUserSettings;
+      } else if (step.message || step.asMessage) {
+        settings = defaultBotSettings;
+      } else if (step.component) {
+        settings = defaultCustomSettings;
+      }
+
+      chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+    }
+
+    schema.checkInvalidIds(chatSteps);
+
+    let firstStep = {}
+
+    if(steps.length>0){
+      firstStep = steps[0];
+
+      if (firstStep.message) {
+        const { message } = firstStep;
+        firstStep.message = typeof message === 'function' ? message() : message;
+        chatSteps[firstStep.id].message = firstStep.message;
+      }
+  
+    }
+
+    const { recognitionEnable } = this.state;
+    const { recognitionLang } = this.props;
+
+    if (recognitionEnable) {
+      this.recognition = new Recognition(
+        this.onRecognitionChange,
+        this.onRecognitionEnd,
+        this.onRecognitionStop,
+        recognitionLang
+      );
+    }
+
+    if (this.content) {
+      this.content.addEventListener('DOMNodeInserted', this.onNodeInserted);
+      window.addEventListener('resize', this.onResize);
+    }
+
+    const { currentStep, previousStep, previousSteps, renderedSteps } = storage.getData(
+      {
+        cacheName,
+        cache,
+        firstStep,
+        steps: chatSteps
+      },
+      () => {
+        // focus input if last step cached is a user step
+        this.setState({ disabled: false }, () => {
+          if (enableMobileAutoFocus || !isMobile()) {
+            if (this.input) {
+              this.input.focus();
+            }
+          }
+        });
+      }
+    );
+
+    this.setState({
+      currentStep,
+      defaultUserSettings,
+      previousStep,
+      previousSteps,
+      renderedSteps,
+      steps: chatSteps
+    });
   }
 
   componentDidMount() {
@@ -175,6 +267,7 @@ class ChatBot extends Component {
       steps: chatSteps
     });
   }
+
 
   static getDerivedStateFromProps(props, state) {
     const { opened, toggleFloating } = props;
