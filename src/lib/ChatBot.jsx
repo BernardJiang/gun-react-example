@@ -68,6 +68,10 @@ class ChatBot extends Component {
   }
 
   updateUIChatBot = obj => {
+    if(obj.stageName){
+      this.setState(obj);
+      return;
+    }
 
     //assume it has msgs.
     if(obj.msgs){
