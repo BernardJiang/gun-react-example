@@ -61,7 +61,7 @@ class TextStep extends Component {
       hideUserAvatar
     } = this.props;
     const { loading } = this.state;
-    const { avatar, user } = step;
+    const { avatar, user, stageName } = step;
 
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
 
@@ -78,6 +78,7 @@ class TextStep extends Component {
               alt="avatar"
             />
           )}
+          {stageName}
         </ImageContainer>
         <Bubble
           className="rsc-ts-bubble"
