@@ -58,6 +58,8 @@ export default class ChatAI {
 
         var chat = this.gun.get('chat')
         this.user = this.gun.user()
+        if(!this.user.is)
+            return
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)
             return
