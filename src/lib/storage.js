@@ -4,7 +4,7 @@ const JSON = require('circular-json');
 const getData = (params, callback) => {
   const { cacheName, cache, firstStep, steps } = params;
   const currentStep = firstStep;
-  const renderedSteps = [steps[currentStep.id]];
+  const renderedSteps = Object.values(steps); //[steps[currentStep.id]];
   const previousSteps = [steps[currentStep.id]];
   const previousStep = {};
 
