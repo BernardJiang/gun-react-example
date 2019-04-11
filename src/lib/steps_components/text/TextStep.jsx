@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Bubble from './Bubble';
 import Image from './Image';
+import StageName from './StageName';
 import ImageContainer from './ImageContainer';
 import Loading from '../common/Loading';
 import TextStepContainer from './TextStepContainer';
@@ -78,7 +79,9 @@ class TextStep extends Component {
               alt="avatar"
             />
           )}
-          {stageName}
+          <StageName>
+            {stageName}
+          </StageName>
         </ImageContainer>
         <Bubble
           className="rsc-ts-bubble"
