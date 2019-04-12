@@ -69,8 +69,11 @@ class TextStep extends Component {
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         <ImageContainer className="rsc-ts-image-container" user={user}>
+          <StageName>
+            {stageName}
+          </StageName>
           {isFirst && showAvatar && (
-            <Image
+          <Image
               className="rsc-ts-image"
               style={avatarStyle}
               showAvatar={showAvatar}
@@ -79,9 +82,6 @@ class TextStep extends Component {
               alt="avatar"
             />
           )}
-          <StageName>
-            {stageName}
-          </StageName>
         </ImageContainer>
         <Bubble
           className="rsc-ts-bubble"

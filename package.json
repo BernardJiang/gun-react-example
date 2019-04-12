@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "circular-json": "^0.5.9",
     "gun": "^0.9.9999991",
     "lodash": "^4.17.11",
@@ -11,6 +12,7 @@
     "prop-types": "^15.7.2",
     "random-id": "^1.0.3",
     "react": "^16.8.2",
+    "react-bootstrap": "^1.0.0-beta.6",
     "react-dom": "^16.8.2",
     "react-scripts": "2.1.5",
     "styled-components": "^4.2.0"
