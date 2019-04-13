@@ -62,18 +62,21 @@ class TextStep extends Component {
     } = this.props;
     const { loading } = this.state;
     const { avatar, user, stageName } = step;
-
+    const { previousStep } = this.props;
+    const isSameUser = previousStep && stageName == previousStep.stageName;
+    
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
 
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         <ImageContainer className="rsc-ts-image-container" user={user}>
-        {isFirst && showAvatar && (
+        {!isSameUser && (
           <StageName>
             {stageName}
           </StageName>
         )}
-          {isFirst && showAvatar && (
+          {/* {isFirst && showAvatar && ( */}
+            {!isSameUser && (
           <Image
               className="rsc-ts-image"
               style={avatarStyle}
