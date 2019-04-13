@@ -14,7 +14,7 @@ class TextStep extends Component {
   };
 
   componentDidMount() {
-    const { step, speak, previousValue, triggerNextStep } = this.props;
+    const { step, speak, previousValue, triggerNextStep, me } = this.props;
     const { component, delay, waitAction } = step;
     const isComponentWatingUser = component && waitAction;
 
@@ -58,13 +58,14 @@ class TextStep extends Component {
       avatarStyle,
       bubbleStyle,
       hideBotAvatar,
-      hideUserAvatar
+      hideUserAvatar,
+      me
     } = this.props;
     const { loading } = this.state;
-    const { avatar, user, stageName } = step;
+    const { avatar, stageName } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
-    
+    const user = stageName == me;
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
 
     return (

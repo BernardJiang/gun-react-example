@@ -567,7 +567,7 @@ class ChatBot extends Component {
     console.log("real step key=" + step.key + ". msg=" + step.message + ". index=" + index);
     if(!step)
       return;
-    const { renderedSteps } = this.state;
+    const { renderedSteps, stageName } = this.state;
     const {
       avatarStyle,
       bubbleStyle,
@@ -624,7 +624,8 @@ class ChatBot extends Component {
         hideUserAvatar={hideUserAvatar}
         speechSynthesis={speechSynthesis}
         isFirst={this.isFirstPosition(step)} 
-        isLast={this.isLastPosition(step)} 
+        isLast={this.isLastPosition(step)}
+        me={stageName} 
       />
     );
   };
