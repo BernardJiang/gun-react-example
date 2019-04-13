@@ -36,13 +36,12 @@ class TextStep extends Component {
   };
 
   renderMessage = () => {
-    const { step, steps, previousStep, triggerNextStep } = this.props;
+    const { step, previousStep, triggerNextStep } = this.props;
     const { component } = step;
 
     if (component) {
       return React.cloneElement(component, {
         step,
-        steps,
         previousStep,
         triggerNextStep
       });
@@ -69,9 +68,11 @@ class TextStep extends Component {
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         <ImageContainer className="rsc-ts-image-container" user={user}>
+        {isFirst && showAvatar && (
           <StageName>
             {stageName}
           </StageName>
+        )}
           {isFirst && showAvatar && (
           <Image
               className="rsc-ts-image"
@@ -115,7 +116,6 @@ TextStep.propTypes = {
   ]),
   speak: PropTypes.func,
   step: PropTypes.objectOf(PropTypes.any).isRequired,
-  steps: PropTypes.objectOf(PropTypes.any),
   triggerNextStep: PropTypes.func.isRequired
 };
 
@@ -123,7 +123,6 @@ TextStep.defaultProps = {
   previousStep: {},
   previousValue: '',
   speak: () => {},
-  steps: {}
 };
 
 export default TextStep;

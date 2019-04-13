@@ -613,7 +613,7 @@ class ChatBot extends Component {
       <TextStep
         key={index}
         step={step}
-        steps={steps}
+        // steps={steps}
         speak={this.speak}
         previousStep={previousStep}
         previousValue={previousStep.value}
