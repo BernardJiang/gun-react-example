@@ -1,3 +1,5 @@
+//Copied the GUI from https://codepen.io/JiaYuisalolicon/pen/xYjwyE
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Bubble from './Bubble';
