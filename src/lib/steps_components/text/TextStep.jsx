@@ -85,7 +85,7 @@ const largebox = {
   lineHeight: '21px',
   border: '1px solid #eee',
   borderRadius: '5px',
-  backgroundColor: 'white',
+  backgroundColor: 'green',
   boxShadow: '3px 5px 10px #9b7c6c',
   width: '650px',
   margin: '20px auto',
@@ -115,27 +115,27 @@ let DATA = [
     photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
     adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
   },
-  {
-    id: 2,
-    author: 'Cakeee',
-    bio: 'Lectus phasellus, mi ut nam velit per et dictum.',
-    photo: 'http://img.taste.com.au/Dtv0xl-v/w643-h428-cfill-q90/taste/2016/11/black-forest-cake-92535-1.jpeg',
-    adpic: 'http://assets.kraftfoods.com/recipe_images/opendeploy/%20138280-49fdab4f7bf207b3cc31f72186c86b0a642f0802_642x428.jpg'
-  },
-  {
-    id: 3,
-    author: 'Fruit',
-    bio: 'Ipsum commodo, et placerat neque cursus.',
-    photo: 'https://therawherbalist.com/wp-content/uploads/2017/12/04-ZS-Banned-Fruit-80-ab.jpg',
-    adpic: 'https://spindriftfresh.com/wp-content/uploads/2017/12/fruit-header-1.jpg'
-  },
-  {
-    id: 4,
-    author: 'Chocolate',
-    bio: 'Ipsum commodo, et placerat neque cursus.',
-    photo: 'http://dubeat.com/wp-content/uploads/chocolates2.jpg',
-    adpic: 'https://aadl.org/sites/default/files/inline-images/chocolate_0.jpeg'
-  }
+  // {
+  //   id: 2,
+  //   author: 'Cakeee',
+  //   bio: 'Lectus phasellus, mi ut nam velit per et dictum.',
+  //   photo: 'http://img.taste.com.au/Dtv0xl-v/w643-h428-cfill-q90/taste/2016/11/black-forest-cake-92535-1.jpeg',
+  //   adpic: 'http://assets.kraftfoods.com/recipe_images/opendeploy/%20138280-49fdab4f7bf207b3cc31f72186c86b0a642f0802_642x428.jpg'
+  // },
+  // {
+  //   id: 3,
+  //   author: 'Fruit',
+  //   bio: 'Ipsum commodo, et placerat neque cursus.',
+  //   photo: 'https://therawherbalist.com/wp-content/uploads/2017/12/04-ZS-Banned-Fruit-80-ab.jpg',
+  //   adpic: 'https://spindriftfresh.com/wp-content/uploads/2017/12/fruit-header-1.jpg'
+  // },
+  // {
+  //   id: 4,
+  //   author: 'Chocolate',
+  //   bio: 'Ipsum commodo, et placerat neque cursus.',
+  //   photo: 'http://dubeat.com/wp-content/uploads/chocolates2.jpg',
+  //   adpic: 'https://aadl.org/sites/default/files/inline-images/chocolate_0.jpeg'
+  // }
 ]
 
 class IconBox extends React.Component {
@@ -171,7 +171,7 @@ const AdBox = (props) => (
 const Something = (props) => (
   <div>
     <p>{props.bio}</p>
-    <p>author: <span style={blue}>@heeee</span></p>
+    <p>Something: <span style={blue}>not in use.</span></p>
   </div>
 )
 
@@ -179,20 +179,22 @@ const Author = (props) => (
   <span style={bold}>{props.author}</span>
 )
 
+const Card = props => {
+    return <div style={{...largebox, ...flex}} key={props.id}>
+      <div style={{...Photo,backgroundImage: `url(${props.photo})`}}></div>
+      <div>
+        <Author author={props.author}/>
+        <Something bio={props.bio}/>
+        <AdBox adpic={props.adpic} />
+        <IconBox />
+      </div>
+  </div>
+}
+
 const FormCard = (props) => (
   <div>
     {
-      DATA.map((props) => {
-        return <div style={{...largebox, ...flex}} key={props.id}>
-          <div style={{...Photo,backgroundImage: `url(${props.photo})`}}></div>
-          <div>
-            <Author author={props.author}/>
-            <Something bio={props.bio}/>
-            <AdBox adpic={props.adpic} />
-            <IconBox />
-          </div>
-      </div>
-      })
+      Card(DATA[0])
     }
   </div>
 )
@@ -252,7 +254,7 @@ class TextStep extends Component {
       me
     } = this.props;
     const { loading } = this.state;
-    const { avatar, stageName } = step;
+    const { avatar, stageName, message } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
@@ -260,7 +262,16 @@ class TextStep extends Component {
 
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
-        <FormCard data={DATA} />
+        {/* <FormCard data={DATA} /> */}
+        {/* {Card(DATA[0])} */}
+
+        {Card({
+          id: 1,
+          author: stageName,
+          bio: message,
+          photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
+          adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
+        })}
         <ImageContainer className="rsc-ts-image-container" user={user}>
         {!isSameUser && (
           <StageName>
