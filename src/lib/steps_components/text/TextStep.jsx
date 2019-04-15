@@ -168,10 +168,10 @@ const AdBox = (props) => (
 )
 
 
-const Something = (props) => (
+const Message = (props) => (
   <div>
     <p>{props.bio}</p>
-    <p>Something: <span style={blue}>not in use.</span></p>
+    <p>Message: <span style={blue}> {props.message} </span></p>
   </div>
 )
 
@@ -184,8 +184,8 @@ const Card = props => {
       <div style={{...Photo,backgroundImage: `url(${props.photo})`}}></div>
       <div>
         <Author author={props.author}/>
-        <Something bio={props.bio}/>
-        <AdBox adpic={props.adpic} />
+        <Message bio={props.bio} message={props.message}/>
+        {/* <AdBox adpic={props.adpic} /> */}
         <IconBox />
       </div>
   </div>
@@ -268,7 +268,8 @@ class TextStep extends Component {
         {Card({
           id: 1,
           author: stageName,
-          bio: message,
+          bio: "Bio: Not in use. Might add time and date later",
+          message,
           photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
           adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
         })}
