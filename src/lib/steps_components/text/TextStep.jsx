@@ -181,7 +181,7 @@ const Author = (props) => (
 
 const Card = props => {
     return <div style={{...largebox, ...flex}} key={props.id}>
-      <div style={{...Photo,backgroundImage: `url(${props.photo})`}}></div>
+      <div style={{...Photo, backgroundImage: `url(${props.photo})`}}></div>
       <div>
         <Author author={props.author}/>
         <Message bio={props.bio} message={props.message}/>
@@ -254,7 +254,7 @@ class TextStep extends Component {
       me
     } = this.props;
     const { loading } = this.state;
-    const { avatar, stageName, message } = step;
+    const { avatar, stageName, message, key } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
@@ -266,20 +266,22 @@ class TextStep extends Component {
         {/* {Card(DATA[0])} */}
 
         {Card({
-          id: 1,
+          id: key,
           author: stageName,
+          user,
           bio: "Bio: Not in use. Might add time and date later",
           message,
           photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
           adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
         })}
-        <ImageContainer className="rsc-ts-image-container" user={user}>
+
+
+        {/* <ImageContainer className="rsc-ts-image-container" user={user}>
         {!isSameUser && (
           <StageName>
             {stageName}
           </StageName>
         )}
-          {/* {isFirst && showAvatar && ( */}
             {!isSameUser && (
           <Image
               className="rsc-ts-image"
@@ -300,7 +302,9 @@ class TextStep extends Component {
           isLast={isLast}
         >
           {loading ? <Loading /> : this.renderMessage()}
-        </Bubble>
+        </Bubble> */}
+
+
       </TextStepContainer>
     );
   }
