@@ -64,6 +64,8 @@ export default class ChatAI {
         if (!this.userAttributes)
             return
         var stageName = this.stageName
+        if(!msg.message)
+            return
         var c = msg.message.charAt(msg.message.length - 1)
         if (c === '?') { //a question
             var ans = this.userAttributes.get(msg.message)
