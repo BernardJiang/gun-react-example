@@ -180,7 +180,7 @@ const Author = (props) => (
 )
 
 const Card = props => {
-    return <div style={{...largebox, ...flex}} key={props.id}>
+    return <div style={{...largebox, ...flex, margin: props.user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px'}} key={props.id}>
       <div style={{...Photo, backgroundImage: `url(${props.photo})`}}></div>
       <div>
         <Author author={props.author}/>
@@ -259,7 +259,7 @@ class TextStep extends Component {
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
-
+    
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         {/* <FormCard data={DATA} /> */}
