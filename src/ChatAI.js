@@ -13,6 +13,7 @@ export default class ChatAI {
     }
 
     setSelf(stageName) {
+        // this should be replaced with real id. stageName can be changed.
         this.stageName = stageName
     }
     process(msg) {  //process message of self.
@@ -55,17 +56,24 @@ export default class ChatAI {
     }
 
     processRespond(msg) { // respond the message from others and self.
-
-        var chat = this.gun.get('chat')
-        this.user = this.gun.user()
-        if(!this.user.is)
-            return
-        this.userAttributes = this.user.get('Attributes')
-        if (!this.userAttributes)
-            return
-        var stageName = this.stageName
         if(!msg.message)
             return
+        var chat = this.gun.get('chat')
+        this.user = this.gun.user()
+        if(!this.user.is)  //if not log in.
+            return
+
+        if(msg.user === this.user) {
+            this.process(msg)
+            return
+        }
+
+         //process others message.
+    
+        this.userAttributes = this.user.get('Attributes')
+        if (!this.userAttributes)  //if no userAttributes
+            return
+        var stageName = this.stageName
         var c = msg.message.charAt(msg.message.length - 1)
         if (c === '?') { //a question
             var ans = this.userAttributes.get(msg.message)

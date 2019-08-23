@@ -169,7 +169,7 @@ export default class Entity {
 
     sendMessage(key, msg) {
         this.chat.path(key).put(msg);
-        this.chatAI.process(msg);
+        // this.chatAI.process(msg);
     }
 
     //prepare data for UI.
