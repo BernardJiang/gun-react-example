@@ -19,8 +19,9 @@ export default class ChatAI {
     process(msg) {  //process message of self.
         // console.log("In chatAI")
         this.user = this.gun.user()
+
         this.userAttributes = this.user.get('Attributes')
-        if (!this.userAttributes)
+        if (!this.userAttributes) //validate attributes.
             return
 
         var c = msg.message.charAt(msg.message.length - 1)
@@ -29,6 +30,7 @@ export default class ChatAI {
                 message: msg.message
             });
             this.userAttributes.get(msg.message).put({
+                user: this.user,
                 message: msg.message,
                 when: msg.when
             }, function (ack) {
@@ -56,66 +58,65 @@ export default class ChatAI {
     }
 
     processRespond(msg) { // respond the message from others and self.
-        if(!msg.message)
+        if (!msg.message)
             return
         var chat = this.gun.get('chat')
         this.user = this.gun.user()
-        if(!this.user.is)  //if not log in.
+
+        if (!this.user.is)  //if not log in.
             return
 
-        if(msg.user === this.user) {
+        if (msg.user === this.user) {  //process self's messages.
             this.process(msg)
             return
         }
 
-         //process others message.
-    
+        //process others message.
+
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)  //if no userAttributes
             return
         var stageName = this.stageName
         var c = msg.message.charAt(msg.message.length - 1)
-        if (c === '?') { //a question
-            var ans = this.userAttributes.get(msg.message)
-            // console.log("ans:", ans);
-            if (ans) {
-                var user = this.user
-                var userAttributes = this.userAttributes
+        if (c !== '?')
+            return; //not a question, ignore.
+        var ans = this.userAttributes.get(msg.message)
+        // console.log("ans:", ans);
+        if (!ans)
+            return //answer is null, then ignore it.
 
-                ans.once(function (data) {
-                    if (!data) { //never hear this question. Save the question.
+        var user = this.user
+        var userAttributes = this.userAttributes
 
-                        user.get('lastquestion').put({
-                            message: msg.message
-                        });
-                        console.log("save question from others: ", msg.message)
-                        userAttributes.get(msg.message).put({
-                            message: msg.message,
-                            when: msg.when
-                        }, function (ack) {
-                            console.log("save question status=", ack.err)
-                        });
+        ans.once(function (data) {
+            if (!data) { //never hear this question. Save the question.
 
-                        return
-                    }
-                    if (!data.answer) return //means question exists without an answer.
-                    const when = Gun.time.is()
-                    const key = `${when}_${Gun.text.random()}`
-                    // const who = stageName;
-                    var answer = {
-                        stageName,
-                        when,
-                        message: data.answer
-                    }
-                    // console.log("data answer", answer);
-                    chat.path(key).put(answer);
-                })
+                user.get('lastquestion').put({
+                    message: msg.message
+                });
+                console.log("save question from others: ", msg.message)
+                userAttributes.get(msg.message).put({
+                    message: msg.message,
+                    when: msg.when
+                }, function (ack) {
+                    console.log("save question status=", ack.err)
+                });
+
+                return
             }
-        }
+            if (!data.answer)
+                return //means question exists without an answer.
+            const when = Gun.time.is()
+            const key = `${when}_${Gun.text.random()}`
+            // const who = stageName;
+            var answer = {
+                stageName,
+                when,
+                message: data.answer
+            }
+            // console.log("data answer", answer);
+            chat.path(key).put(answer);
+        })
+
     }
-
-
-
-
-
 }
