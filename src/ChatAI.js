@@ -30,7 +30,6 @@ export default class ChatAI {
                 message: msg.message
             });
             this.userAttributes.get(msg.message).put({
-                user: this.user,
                 message: msg.message,
                 when: msg.when
             }, function (ack) {
@@ -60,8 +59,7 @@ export default class ChatAI {
 
     
     processRespond(msg) { // respond the message from others and self.
-        if (!msg.message)
-            return
+
         var chat = this.gun.get('chat')
         this.user = this.gun.user()
 
@@ -71,7 +69,7 @@ export default class ChatAI {
         if (msg.stageName === this.stageName) {  
             //If the message is sent by myself, process self's messages.
             // this.process(msg)
-            return
+            //return
         }
 
         //process others message.
@@ -80,6 +78,8 @@ export default class ChatAI {
         if (!this.userAttributes)  //if no userAttributes
             return
         var stageName = this.stageName
+        if(!msg.message)
+            return
         var c = msg.message.charAt(msg.message.length - 1)
         if (c !== '?')
             return; //not a question, ignore.
@@ -100,8 +100,7 @@ export default class ChatAI {
                 console.log("save question from others: ", msg.message)
                 userAttributes.get(msg.message).put({
                     message: msg.message,
-                    when: msg.when,
-                    to: msg
+                    when: msg.when
                 }, function (ack) {
                     console.log("save question status=", ack.err)
                 });
