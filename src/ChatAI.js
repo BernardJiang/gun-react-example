@@ -57,6 +57,8 @@ export default class ChatAI {
         }
     }
 
+
+    
     processRespond(msg) { // respond the message from others and self.
         if (!msg.message)
             return
@@ -66,7 +68,8 @@ export default class ChatAI {
         if (!this.user.is)  //if not log in.
             return
 
-        if (msg.user === this.user) {  //process self's messages.
+        if (msg.stageName === this.stageName) {  
+            //If the message is sent by myself, process self's messages.
             this.process(msg)
             return
         }
@@ -97,7 +100,8 @@ export default class ChatAI {
                 console.log("save question from others: ", msg.message)
                 userAttributes.get(msg.message).put({
                     message: msg.message,
-                    when: msg.when
+                    when: msg.when,
+                    to: msg
                 }, function (ack) {
                     console.log("save question status=", ack.err)
                 });
