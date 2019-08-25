@@ -70,7 +70,7 @@ export default class ChatAI {
 
         if (msg.stageName === this.stageName) {  
             //If the message is sent by myself, process self's messages.
-            this.process(msg)
+            // this.process(msg)
             return
         }
 
