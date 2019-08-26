@@ -254,7 +254,7 @@ class TextStep extends Component {
       me
     } = this.props;
     const { loading } = this.state;
-    const { avatar, stageName, message, key } = step;
+    const { avatar, stageName, message, key, when } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
@@ -269,7 +269,7 @@ class TextStep extends Component {
           id: key,
           author: stageName,
           user,
-          bio: "Bio: Not in use. Might add time and date later",
+          bio:  new Date(when).toLocaleString().toLowerCase(),
           message,
           photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
           adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
