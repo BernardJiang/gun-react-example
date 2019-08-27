@@ -3,7 +3,6 @@ import textSchema from './textSchema';
 import optionsSchema from './optionsSchema';
 import customSchema from './customSchema';
 import updateSchema from './updateSchema';
-import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 const JSON = require('circular-json');
 
