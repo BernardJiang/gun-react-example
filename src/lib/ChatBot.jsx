@@ -401,7 +401,15 @@ class ChatBot extends Component {
 
   isInputValueEmpty = () => {
     const { inputValue } = this.state;
-    return !inputValue || inputValue.length === 0;
+    // console.log("InputValue =" + inputValue);
+    // if(/\S/.test(inputValue)){
+    //   console.log("Bernard", "not empty");
+    // }else{
+    //   var vv = !inputValue || inputValue.length === 0 || !(/\S/.test(inputValue));
+    //   console.log("Bernard", "empty" + vv );
+
+    // }
+    return !inputValue || inputValue.length === 0 || !(/\S/.test(inputValue));
   };
 
   isLastPosition = step => {
@@ -457,7 +465,7 @@ class ChatBot extends Component {
       if (!speaking) {
         this.setState({ speaking: true });
       }
-      return;
+      return
     }
 
     this.submitUserMessage();
@@ -471,6 +479,9 @@ class ChatBot extends Component {
     }
     const { defaultUserSettings, inputValue, previousSteps, renderedSteps } = this.state;
     let { currentStep } = this.state;
+
+    if(this.isInputValueEmpty())
+      return
 
     const isInvalid = currentStep.validator && this.checkInvalidInput();
 
