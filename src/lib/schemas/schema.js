@@ -3,6 +3,7 @@ import textSchema from './textSchema';
 import optionsSchema from './optionsSchema';
 import customSchema from './customSchema';
 import updateSchema from './updateSchema';
+import { SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS } from 'constants';
 
 const JSON = require('circular-json');
 
@@ -21,7 +22,10 @@ const schema = {
     } else if (step.update) {
       parser = updateSchema;
     } else {
-      throw new Error(`The step ${JSON.stringify(step)} is invalid`);
+      // throw new Error(`The step ${JSON.stringify(step)} is invalid`);
+      console.log("err", "Warning: step.message = " + step.message);
+      step.message = "empty";  //temp solution.
+      parser = textSchema;
     }
 
     for (let i = 0, len = parser.length; i < len; i += 1) {
