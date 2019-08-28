@@ -21,7 +21,10 @@ const schema = {
     } else if (step.update) {
       parser = updateSchema;
     } else {
-      throw new Error(`The step ${JSON.stringify(step)} is invalid`);
+      // throw new Error(`The step ${JSON.stringify(step)} is invalid`);
+      console.log("err", "Warning: step.message = " + step.message);
+      step.message = "empty";  //temp solution.
+      parser = textSchema;
     }
 
     for (let i = 0, len = parser.length; i < len; i += 1) {
