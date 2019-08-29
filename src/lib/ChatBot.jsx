@@ -180,7 +180,7 @@ class ChatBot extends Component {
 
   componentDidMount() {
     console.log("ChatBot", "componentDidMount")
-
+   
     this.entity && this.entity.onChatBotMessage(this.updateUIChatBot)
 
   }
@@ -514,7 +514,8 @@ class ChatBot extends Component {
         },
         () => {
           if (this.input) {
-            this.input.blur();
+            // this.input.blur();
+            this.input.focus();
           }
         }
       );
