@@ -11,26 +11,6 @@ import Settings from './Settings'
 import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
-const steps = [];
-const steps2 = [
-  {
-    id: 'aa',
-    message: 'What is your name?',
-    trigger: '2b',
-  },
-  {
-    id: '2b',
-    user: true,
-    trigger: '3c',
-  },
-  {
-    id: '3c',
-    message: 'Hi {previousValue}, nice to meet you!',
-    // end: true,
-    // user: true,
-    trigger: '2b'
-  },
-];
 class App extends Component {
   constructor() {
     super();
@@ -65,7 +45,7 @@ class App extends Component {
           <Sign entity={this.entity} />
           <Attributes entity={this.entity} />
         </div>
-        <ChatBot steps={steps} entity={this.entity}/>
+        <ChatBot entity={this.entity}/>
         <Settings entity={this.entity} />
       </div>
     );
