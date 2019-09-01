@@ -24,12 +24,12 @@ import { speakFn } from './speechSynthesis';
 import Entity from '../Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
-  .map(key => ({key, ...msgs[key]}))
+  .map(key => ({ key, ...msgs[key] }))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id=m.key), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id = m.key), m))
 
-  //, m.id=m.key, m.value=1, m.metadata='')
+//, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
   /* istanbul ignore next */
   constructor(props) {
@@ -68,19 +68,19 @@ class ChatBot extends Component {
   }
 
   updateUIChatBot = obj => {
-    if(obj.stageName){
+    if (obj.stageName) {
       this.setState(obj);
       return;
     }
 
     //assume it has msgs.
-    if(obj.msgs){
+    if (obj.msgs) {
       const msgs = formatMsgs(obj.msgs)
       msgs.forEach(a => {
         console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message)
       })
 
-      this.processSteps(msgs);  
+      this.processSteps(msgs);
     }
 
   }
@@ -121,7 +121,7 @@ class ChatBot extends Component {
 
     let firstStep = {}
 
-    if(steps.length>0){
+    if (steps.length > 0) {
       firstStep = steps[0];
 
       if (firstStep.message) {
@@ -129,7 +129,7 @@ class ChatBot extends Component {
         firstStep.message = typeof message === 'function' ? message() : message;
         chatSteps[firstStep.id].message = firstStep.message;
       }
-  
+
     }
 
     const { recognitionEnable } = this.state;
@@ -180,7 +180,7 @@ class ChatBot extends Component {
 
   componentDidMount() {
     console.log("ChatBot", "componentDidMount")
-   
+
     this.entity && this.entity.onChatBotMessage(this.updateUIChatBot)
 
   }
@@ -248,7 +248,7 @@ class ChatBot extends Component {
     const steps = {};
 
     for (let i = 0, len = previousSteps.length; i < len; i += 1) {
-      if(!previousSteps[i]) 
+      if (!previousSteps[i])
         continue;
       const { id, message, value, metadata } = previousSteps[i];
 
@@ -480,7 +480,7 @@ class ChatBot extends Component {
     const { defaultUserSettings, inputValue, previousSteps, renderedSteps } = this.state;
     let { currentStep } = this.state;
 
-    if(this.isInputValueEmpty())
+    if (this.isInputValueEmpty())
       return
 
     const isInvalid = currentStep.validator && this.checkInvalidInput();
@@ -582,7 +582,7 @@ class ChatBot extends Component {
 
   renderStep = (step, index) => {
     console.log("real step key=" + step.key + ". msg=" + step.message + ". index=" + index + ". when=" + step.when);
-    if(!step)
+    if (!step)
       return;
     const { renderedSteps, stageName } = this.state;
     const {
@@ -640,15 +640,13 @@ class ChatBot extends Component {
         hideBotAvatar={hideBotAvatar}
         hideUserAvatar={hideUserAvatar}
         speechSynthesis={speechSynthesis}
-        isFirst={this.isFirstPosition(step)} 
+        isFirst={this.isFirstPosition(step)}
         isLast={this.isLastPosition(step)}
-        me={stageName} 
+        me={stageName}
       />
     );
   };
-//  {previousStep ? previousStep.value : '2'}
-// {this.isFirstPosition(step)}
-//{this.isLastPosition(step)}
+
   render() {
     const {
       currentStep,

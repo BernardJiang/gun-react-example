@@ -90,7 +90,7 @@ const largebox = {
   width: '650px',
   margin: '20px auto',
   padding: '15px',
-  justifyContent: 'center'
+  justifyContent: 'left'
 }
 
 const blue = {
@@ -281,8 +281,8 @@ class TextStep extends Component {
           user,
           bio:  new Date(when).toLocaleString().toLowerCase(),
           message,
-          photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
-          adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg',
+          photo: 'https://therawherbalist.com/wp-content/uploads/2017/12/04-ZS-Banned-Fruit-80-ab.jpg',
+          adpic: 'https://spindriftfresh.com/wp-content/uploads/2017/12/fruit-header-1.jpg',
           currentQuestion
         })}
 
