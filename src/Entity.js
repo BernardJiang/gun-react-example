@@ -168,7 +168,7 @@ export default class Entity {
     // }
 
     sendMessage(key, msg) {
-        this.chat.path(key).put(msg);
+        this.chat.set(msg);
         this.chatAI.process(msg);
     }
 
@@ -179,8 +179,8 @@ export default class Entity {
         var chat = this.chat
         var chatAI = this.chatAI;
         this.cbUpdateUIChat = cbUpdateUIChat
-        this.chat.map().once((msg, key) => {
-            tmpState[key] = msg
+        this.chat.map().once(msg => {
+            tmpState[msg.key] = msg
             // console.log('Entity onChatMessage', key)
             // var date = new Date(msg.when).toLocaleString().toLowerCase()
             // console.log('Entity onChatMessage', " key=" + key + " who=" + msg.stageName + ". msg=" + msg.message)
@@ -196,17 +196,17 @@ export default class Entity {
     }
 
         //prepare data for UI.
-        onChatBotMessage(cbUpdateUIChatBot) {
+    onChatBotMessage(cbUpdateUIChatBot) {
           console.log('Entity onChatBotMessage', 'entered')
           const tmpState = {}
           var chat = this.chat
           var chatAI = this.chatAI;
           this.cbUpdateUIChatBot = cbUpdateUIChatBot
-          this.chat.map().once((msg, key) => {
-              tmpState[key] = msg
+          this.chat.map().once((msg) => {
+              tmpState[msg.key] = msg
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
-              console.log('Entity onChatBotMessage', " key=" + key + " who=" + msg.stageName + ". msg=" + msg.message)
+              console.log('Entity onChatBotMessage', " key=" + msg.key + " who=" + msg.stageName + ". msg=" + msg.message)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
               // console.log("tmpState len=", Object.keys(tmpState).length)
               this.msgs = Object.assign({}, this.msgs, tmpState)
@@ -216,7 +216,7 @@ export default class Entity {
 
               chatAI.processRespond(msg)
           })
-      }
+    }
 
     onAttributesChange(cbUpdateUIAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
@@ -224,8 +224,8 @@ export default class Entity {
         const tmpState = {}
         if (this.userAttributes == null)
             return;
-        this.userAttributes.map().on((msg, key) => {
-            tmpState[key] = msg
+        this.userAttributes.map().on((msg) => {
+            tmpState[msg.message] = msg
             // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.message + ". A="+ msg.answer)
             // console.log('Entity onAttributesChange', msg)
             // console.log("local msgs len=", Object.keys(this.msgs).length)

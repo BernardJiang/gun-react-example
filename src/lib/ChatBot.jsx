@@ -489,9 +489,14 @@ class ChatBot extends Component {
       const when = Entity.time()
       const key = `${when}_${Entity.random()}`
       this.entity.sendMessage(key, {
+        key,
+        who: this.state.stageName,
         stageName: this.state.stageName,
         when,
+        where: null,
         message: inputValue,
+        uplink: null,
+        downlink: null
       })
 
         const step = {

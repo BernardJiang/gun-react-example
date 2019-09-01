@@ -113,12 +113,13 @@ export default class ChatAI {
             const key = `${when}_${Gun.text.random()}`
             // const who = stageName;
             var answer = {
+                key,
                 stageName,
                 when,
                 message: data.answer
             }
             // console.log("data answer", answer);
-            chat.path(key).put(answer);
+            chat.set(answer);
         })
 
     }
