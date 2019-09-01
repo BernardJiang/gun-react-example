@@ -5,6 +5,7 @@ import Entity from './Entity';
 import Sign from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
+import Settings from './Settings'
 // import Json from './Json'
 // import logo from './logo.svg';
 import './App.css';
@@ -65,7 +66,7 @@ class App extends Component {
           <Attributes entity={this.entity} />
         </div>
         <ChatBot steps={steps} entity={this.entity}/>
-        {/* <Chat entity={this.entity} /> */}
+        <Settings entity={this.entity} />
       </div>
     );
   }

@@ -84,7 +84,7 @@ const largebox = {
   fontSize: '14px',
   lineHeight: '21px',
   border: '1px solid #eee',
-  borderRadius: '5px',
+  borderRadius: '15px',
   backgroundColor: 'green',
   boxShadow: '3px 5px 10px #9b7c6c',
   width: '650px',
@@ -168,6 +168,7 @@ const AdBox = (props) => (
 )
 
 
+
 const Message = (props) => (
   <div>
     <p>{props.bio}</p>
@@ -179,8 +180,16 @@ const Author = (props) => (
   <span style={bold}>{props.author}</span>
 )
 
+const handleClick = () => {
+  this.setState({
+    currentQuestion: true
+  })
+}
+
 const Card = props => {
-    return <div style={{...largebox, ...flex, margin: props.user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px'}} key={props.id}>
+  // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
+    console.log("Bernard", "currentQuestion=" + props.currentQuestion);
+    return <div onClick={handleClick} style={{...largebox, ...flex, margin: props.user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: props.currentQuestion ? 'yellow' : 'green'}} key={props.id}>
       <div style={{...Photo, backgroundImage: `url(${props.photo})`}}></div>
       <div>
         <Author author={props.author}/>
@@ -202,7 +211,8 @@ const FormCard = (props) => (
 class TextStep extends Component {
   /* istanbul ignore next */
   state = {
-    loading: true
+    loading: true,
+    currentQuestion: false
   };
 
   componentDidMount() {
@@ -253,7 +263,7 @@ class TextStep extends Component {
       hideUserAvatar,
       me
     } = this.props;
-    const { loading } = this.state;
+    const { loading, currentQuestion } = this.state;
     const { avatar, stageName, message, key, when } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
@@ -272,7 +282,8 @@ class TextStep extends Component {
           bio:  new Date(when).toLocaleString().toLowerCase(),
           message,
           photo: 'http://michaeldepippo.com/wp-content/uploads/2015/04/Monster_Bite_ChocolateChip_2.jpg',
-          adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg'
+          adpic: 'https://images-gmi-pmc.edge-generalmills.com/5504a4d4-ac62-4e63-b475-563ba492ccff.jpg',
+          currentQuestion
         })}
 
 

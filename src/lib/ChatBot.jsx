@@ -499,7 +499,7 @@ class ChatBot extends Component {
         downlink: null
       })
 
-        const step = {
+      const step = {
         message: inputValue,
         value: inputValue
       };
