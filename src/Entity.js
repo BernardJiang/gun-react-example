@@ -234,6 +234,7 @@ export default class Entity {
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.attrs = Object.assign({}, this.attrs, tmpState)
             cbUpdateUIAttributes({
+                stageName: this.stageName,
                 msgs: this.attrs
             })
         })

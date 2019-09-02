@@ -69,7 +69,7 @@ export default class Sign extends Component {
 					<button className="huet sap act symbol" onClick={this.signup} >sign up</button>
 				</div>
 				<div className="mid row col go">
-          <div> mencnt : {this.state.mencnt}</div>
+          <div> number of users : {this.state.mencnt}</div>
 				</div>
 				<a href="info">more info</a>
 			</form>
