@@ -64,7 +64,7 @@ export default class Attributes extends Component {
   render() {
     const msgs = formatMsgs(this.state.msgs)
     return <div>
-          Attributes 
+          Attributes for {this.state.stageName}
       <ul>
         {msgs.map(msg =>
           <li key={msg.key}><b> Q: {msg.message} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>

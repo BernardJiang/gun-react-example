@@ -25,12 +25,38 @@ export default class Settings extends Component {
   updateUISettings =  obj => {
     this.setState(obj);
   }
+  
+  onSubmitForm = async e => {
+    e.preventDefault()
+  }
+  handlestageNameChange = e => this.setState({ stageName: e.target.value})
 
   render() {
     // const msgs = formatMsgs(this.state.msgs)
 
     return <div>
           Settings
+
+          <form id="inup" className="sign pad center" onSubmit={this.onSubmitForm}>
+				<div className="mid row col">
+					<input value={this.state.stageName} className="huet jot sap" type="text" placeholder="alias" onChange={this.handlestageNameChange}/>
+					Enter your stageName.
+				</div>
+				<div className="mid row col">
+					<input value={this.state.password} className="huet jot sap" type="password" placeholder="password" onChange={this.handlePasswordChange}/>
+					And a long private passphrase.
+				</div>
+				<div className="mid row col go">
+					<button className="huet sap act symbol" onClick={this.signin} > {this.state.authenticated ? 'Sign Out' : 'Sign In'} </button>
+					<div className="or">or</div>
+					<button className="huet sap act symbol" onClick={this.signup} >sign up</button>
+				</div>
+				<div className="mid row col go">
+          <div> mencnt : {this.state.mencnt}</div>
+				</div>
+				<a href="info">more info</a>
+			</form>
+
       <ul>
         {/* {msgs.map(msg =>
           <li key={msg.key}><b> Q: {msg.message} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
