@@ -27,13 +27,17 @@ export default class Settings extends Component {
   }
 
   render() {
-    const msgs = formatMsgs(this.state.msgs)
+    // const msgs = formatMsgs(this.state.msgs)
+
     return <div>
           Settings
       <ul>
-        {msgs.map(msg =>
+        {/* {msgs.map(msg =>
           <li key={msg.key}><b> Q: {msg.message} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
-        )}
+        )} */}
+      <li> <b> StageName: A </b> </li>
+      <li> <b> Avatar: Avatar </b> </li>
+
       </ul>
     </div>
   }

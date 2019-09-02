@@ -187,9 +187,21 @@ const handleClick = () => {
 }
 
 const Card = props => {
+    const { currentQuestion, user, id, avatarStyle, showAvatar, src} = props;
   // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
-    console.log("Bernard", "currentQuestion=" + props.currentQuestion);
-    return <div onClick={handleClick} style={{...largebox, ...flex, margin: props.user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: props.currentQuestion ? 'yellow' : 'green'}} key={props.id}>
+    console.log("Bernard", "currentQuestion=" + currentQuestion);
+    return <div onClick={handleClick} 
+                style={{...largebox, ...flex, margin: user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: currentQuestion ? 'yellow' : 'green'}} 
+                key={id}>
+                <Image
+              className="rsc-ts-image"
+              style={avatarStyle}
+              showAvatar={showAvatar}
+              user={user}
+              src={src}
+              alt="avatar"
+            />
+
       <div style={{...Photo, backgroundImage: `url(${props.photo})`}}></div>
       <div>
         <Author author={props.author}/>
@@ -200,13 +212,13 @@ const Card = props => {
   </div>
 }
 
-const FormCard = (props) => (
-  <div>
-    {
-      Card(DATA[0])
-    }
-  </div>
-)
+// const FormCard = (props) => (
+//   <div>
+//     {
+//       Card(DATA[0])
+//     }
+//   </div>
+// )
 
 class TextStep extends Component {
   /* istanbul ignore next */
@@ -283,10 +295,13 @@ class TextStep extends Component {
           message,
           photo: 'https://therawherbalist.com/wp-content/uploads/2017/12/04-ZS-Banned-Fruit-80-ab.jpg',
           adpic: 'https://spindriftfresh.com/wp-content/uploads/2017/12/fruit-header-1.jpg',
-          currentQuestion
-        })}
-
-
+          currentQuestion,
+          style: avatarStyle,
+          showAvatar: showAvatar,
+          src: avatar,
+          alt:"avatar"
+    })}
+  
         {/* <ImageContainer className="rsc-ts-image-container" user={user}>
         {!isSameUser && (
           <StageName>
