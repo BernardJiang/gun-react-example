@@ -65,6 +65,7 @@ export default class Entity {
         // this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.userAttributes = null; // it's null before sign in. this.user.get('attributes')
+        this.userSettings = null; // it's null before sign in. this.user.get('settings')
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
         // this.userlist.on(this.cbNewUser);
@@ -137,6 +138,7 @@ export default class Entity {
         var user = this.user.get(stageName)
         this.userlist.unset(user)
         this.userAttributes = null
+        this.userSettings = null
         this.stageName = ""
         this.chatAI.setSelf("")
         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
@@ -155,13 +157,14 @@ export default class Entity {
             })
             this.userlist.set(user)
             this.userAttributes = this.user.get('Attributes')
+            this.userSettings = this.user.get('Settings')
             this.stageName = stageName;
             this.chatAI.setSelf(stageName)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
             this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
-            this.cbUpdateUIAttributes  && this.onSettingseChange(this.cbUpdateUISettings)
+            this.cbUpdateUISettings  && this.onSettingsChange(this.cbUpdateUISettings)
         });
     }
 
@@ -246,17 +249,26 @@ export default class Entity {
         const tmpState = {}
         if (this.userSettings == null)
             return;
-        // this.userAttributes.map().on((msg) => {
-        //     tmpState[msg.message] = msg
-        //     // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.message + ". A="+ msg.answer)
-        //     // console.log('Entity onAttributesChange', msg)
-        //     // console.log("local msgs len=", Object.keys(this.msgs).length)
-        //     // console.log("tmpState len=", Object.keys(tmpState).length)
-        //     this.attrs = Object.assign({}, this.attrs, tmpState)
-        //     cbUpdateUIAttributes({
-        //         msgs: this.attrs
-        //     })
-        // })
+        this.userSettings.map().on((msg) => {
+            tmpState[msg.message] = msg
+             console.log('Entity onSettingsChange : ' + this.stageName)
+            // console.log('Entity onAttributesChange', msg)
+            // console.log("local msgs len=", Object.keys(this.msgs).length)
+            // console.log("tmpState len=", Object.keys(tmpState).length)
+            this.attrs = Object.assign({}, this.attrs, tmpState)
+            cbUpdateUISettings({
+                stageName: this.stageName,
+                msgs: this.attrs
+            })
+        })
     }
+
+    changeSettings(key, msg) {
+        if (this.userSettings == null)
+            return;
+        this.userSettings.get(key).put(msg);
+        console.log('Entity changeSettings : ' +key + ". msg=" + msg)
+    }
+
 
 }
