@@ -249,10 +249,10 @@ export default class Entity {
         const tmpState = {}
         if (this.userSettings == null)
             return;
-        this.userSettings.map().on((msg) => {
-            tmpState[msg.message] = msg
+        this.userSettings.map().on((msg, key) => {
+            tmpState[key] = msg
              console.log('Entity onSettingsChange : ' + this.stageName)
-            // console.log('Entity onAttributesChange', msg)
+             console.log('Entity onSettingsChange', ". key=" + key + ". msg = " + msg  )
             // console.log("local msgs len=", Object.keys(this.msgs).length)
             // console.log("tmpState len=", Object.keys(tmpState).length)
             this.attrs = Object.assign({}, this.attrs, tmpState)

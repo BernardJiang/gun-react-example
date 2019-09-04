@@ -96,7 +96,7 @@ export default class Settings extends Component {
   
   handleCheckboxSpeakingChange = event =>{
     this.setState({ bSpeaking: event.target.checked })
-    this.entity.changeSettings('Speaking', event.target.checked)
+    this.entity.changeSettings('bSpeaking', event.target.checked)
   }
   render() {
     // const msgs = formatMsgs(this.state.msgs)
