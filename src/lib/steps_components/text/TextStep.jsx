@@ -193,7 +193,9 @@ const Card = props => {
     return <div onClick={handleClick} 
                 style={{...largebox, ...flex, margin: user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: currentQuestion ? 'yellow' : 'green'}} 
                 key={id}>
-                <Image
+
+      <div style={{...Photo, backgroundImage: `url(${props.photo})`}}>
+      <Image
               className="rsc-ts-image"
               style={avatarStyle}
               showAvatar={showAvatar}
@@ -202,7 +204,8 @@ const Card = props => {
               alt="avatar"
             />
 
-      <div style={{...Photo, backgroundImage: `url(${props.photo})`}}></div>
+      </div>
+
       <div>
         <Author author={props.author}/>
         <Message bio={props.bio} message={props.message}/>
