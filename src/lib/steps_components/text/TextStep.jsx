@@ -187,20 +187,20 @@ const handleClick = () => {
 }
 
 const Card = props => {
-    const { currentQuestion, user, id, avatarStyle, showAvatar, src} = props;
+    const { currentQuestion, user, id, avatarStyle, showAvatar, src, bot} = props;
   // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
-    console.log("Bernard", "currentQuestion=" + currentQuestion);
+    console.log("Bernard", "currentQuestion=" + currentQuestion + ". bot=" + bot);
     return <div onClick={handleClick} 
                 style={{...largebox, ...flex, margin: user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: currentQuestion ? 'yellow' : 'green'}} 
                 key={id}>
 
       <div style={{...Photo, backgroundImage: `url(${props.photo})`}}>
-      <Image
+      {bot && (<Image
               className="rsc-ts-image"
               user={user}
               src={src}
               alt="avatar"
-            />
+            />)}
 
       </div>
 
@@ -277,7 +277,7 @@ class TextStep extends Component {
       me
     } = this.props;
     const { loading, currentQuestion } = this.state;
-    const { avatar, stageName, message, key, when } = step;
+    const { avatar, stageName, message, key, when, bot } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
@@ -300,7 +300,8 @@ class TextStep extends Component {
           style: avatarStyle,
           showAvatar: showAvatar,
           src: avatar,
-          alt:"avatar"
+          alt:"avatar",
+          bot
     })}
   
         {/* <ImageContainer className="rsc-ts-image-container" user={user}>

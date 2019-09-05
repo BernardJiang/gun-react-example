@@ -43,7 +43,8 @@ export default class ChatAI {
                 lq.once(function (data) {
                     // console.log("get lastquestion object", data.message)
                     data && userAttributes.get(data.message).put({
-                        answer: msg.message
+                        answer: msg.message,
+                        bot: true
                     })
                     user.get('lastquestion').put(null);
                 })
@@ -116,7 +117,8 @@ export default class ChatAI {
                 key,
                 stageName,
                 when,
-                message: data.answer
+                message: data.answer,
+                bot: true
             }
             // console.log("data answer", answer);
             chat.set(answer);

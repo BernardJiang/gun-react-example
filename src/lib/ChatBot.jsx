@@ -77,7 +77,7 @@ class ChatBot extends Component {
     if (obj.msgs) {
       const msgs = formatMsgs(obj.msgs)
       msgs.forEach(a => {
-        console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message)
+        console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
       })
 
       this.processSteps(msgs);
@@ -115,6 +115,8 @@ class ChatBot extends Component {
       }
 
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+
+      console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
     }
 
     schema.checkInvalidIds(chatSteps);
@@ -493,10 +495,11 @@ class ChatBot extends Component {
         who: this.state.stageName,
         stageName: this.state.stageName,
         when,
-        where: null,
+        where: "empty",
         message: inputValue,
-        uplink: null,
-        downlink: null
+        bot: false,
+        uplink: "empty",
+        downlink: "empty"
       })
 
       const step = {
@@ -581,7 +584,7 @@ class ChatBot extends Component {
   }
 
   renderStep = (step, index) => {
-    console.log("real step key=" + step.key + ". msg=" + step.message + ". index=" + index + ". when=" + step.when);
+    // console.log("real step key=" + step.key + ". msg=" + step.message + ". index=" + index + ". when=" + step.when);
     if (!step)
       return;
     const { renderedSteps, stageName } = this.state;
