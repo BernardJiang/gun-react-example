@@ -197,8 +197,6 @@ const Card = props => {
       <div style={{...Photo, backgroundImage: `url(${props.photo})`}}>
       <Image
               className="rsc-ts-image"
-              style={avatarStyle}
-              showAvatar={showAvatar}
               user={user}
               src={src}
               alt="avatar"
