@@ -77,7 +77,8 @@ class ChatBot extends Component {
     if (obj.msgs) {
       const msgs = formatMsgs(obj.msgs)
       msgs.forEach(a => {
-        console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
+        // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
+        // console.log("Bernard", a)
       })
 
       this.processSteps(msgs);
@@ -116,7 +117,8 @@ class ChatBot extends Component {
 
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
 
-      console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
+      // console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
+      console.log("chatbot", step)
     }
 
     schema.checkInvalidIds(chatSteps);
@@ -489,9 +491,8 @@ class ChatBot extends Component {
 
     if (!isInvalid) {
       const when = Entity.time()
-      const key = `${when}_${Entity.random()}`
-      this.entity.sendMessage(key, {
-        key,
+      // const key = `${when}_${Entity.random()}`
+      this.entity.sendMessage({
         who: this.state.stageName,
         stageName: this.state.stageName,
         when,

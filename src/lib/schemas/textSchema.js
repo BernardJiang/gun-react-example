@@ -1,5 +1,10 @@
 export default [
   {
+    key: '_',
+    types: ['object'],
+    required: true
+  },
+  {
     key: 'id',
     types: ['string', 'number'],
     required: true
@@ -72,6 +77,26 @@ export default [
   {
     key: 'bot',
     types: ['boolean'],
+    required: false
+  },
+  {
+    key: 'downlink',
+    types: ['string'],
+    required: false
+  },
+  {
+    key: 'uplink',
+    types: ['string'],
+    required: false
+  },
+  {
+    key: 'who',
+    types: ['string', 'number'],
+    required: false
+  },
+  {
+    key: 'where',
+    types: ['string'],
     required: false
   },
 ];

@@ -114,7 +114,7 @@ export default class ChatAI {
             const key = `${when}_${Gun.text.random()}`
             // const who = stageName;
             var answer = {
-                key,
+                // key,
                 stageName,
                 when,
                 message: data.answer,

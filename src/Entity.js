@@ -172,7 +172,7 @@ export default class Entity {
     //     this.onSignChange(cb);
     // }
 
-    sendMessage(key, msg) {
+    sendMessage(msg) {
         this.chat.set(msg);
         this.chatAI.process(msg);
     }

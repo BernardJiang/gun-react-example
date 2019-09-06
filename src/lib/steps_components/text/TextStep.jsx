@@ -277,19 +277,22 @@ class TextStep extends Component {
       me
     } = this.props;
     const { loading, currentQuestion } = this.state;
-    const { avatar, stageName, message, key, when, bot } = step;
+    const { avatar, stageName, message, when, bot } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
     const user = stageName == me;
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
     
+    console.log("TextStep", step);
+    console.log("TextStep", "step #=" + step._['#']);
+
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         {/* <FormCard data={DATA} /> */}
         {/* {Card(DATA[0])} */}
 
         {Card({
-          id: key,
+          id: step._['#'],
           author: stageName,
           user,
           bio:  new Date(when).toLocaleString().toLowerCase(),
