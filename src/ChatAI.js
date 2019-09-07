@@ -111,7 +111,7 @@ export default class ChatAI {
             if (!data.answer)
                 return //means question exists without an answer.
             const when = Gun.time.is()
-            const key = `${when}_${Gun.text.random()}`
+            // const key = `${when}_${Gun.text.random()}`
             // const who = stageName;
             var answer = {
                 // key,

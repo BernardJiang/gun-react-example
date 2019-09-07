@@ -189,7 +189,7 @@ const handleClick = () => {
 const Card = props => {
     const { currentQuestion, user, id, avatarStyle, showAvatar, src, bot} = props;
   // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
-    console.log("Bernard", "currentQuestion=" + currentQuestion + ". bot=" + bot);
+    // console.log("Bernard", "currentQuestion=" + currentQuestion + ". bot=" + bot);
     return <div onClick={handleClick} 
                 style={{...largebox, ...flex, margin: user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: currentQuestion ? 'yellow' : 'green'}} 
                 key={id}>
@@ -283,8 +283,8 @@ class TextStep extends Component {
     const user = stageName == me;
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
     
-    console.log("TextStep", step);
-    console.log("TextStep", "step #=" + step._['#']);
+    // console.log("TextStep", step);
+    // console.log("TextStep", "step #=" + step._['#']);
 
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>

@@ -202,7 +202,7 @@ export default class Entity {
 
         //prepare data for UI.
     onChatBotMessage(cbUpdateUIChatBot) {
-          console.log('Entity onChatBotMessage', 'entered')
+        //   console.log('Entity onChatBotMessage', 'entered')
           const tmpState = {}
           var chat = this.chat
           var chatAI = this.chatAI;
@@ -211,7 +211,7 @@ export default class Entity {
               tmpState[msg._['#']] = msg
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
-              console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
+            //   console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
               // console.log("tmpState len=", Object.keys(tmpState).length)
               this.msgs = Object.assign({}, this.msgs, tmpState)

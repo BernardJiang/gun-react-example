@@ -50,8 +50,8 @@ const schema = {
         console.error(`Invalid key '${key}' in step '${step.id}'`);
         delete step[key];
       }
-      if(key=='bot')
-         console.log("schema", "key="+ key + ". bot="+ step.bot)
+      // if(key=='bot')
+      //    console.log("schema", "key="+ key + ". bot="+ step.bot)
     }
 
     return step;

@@ -123,7 +123,7 @@ class ChatBot extends Component {
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
 
       // console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
-      console.log("chatbot", step)
+      // console.log("chatbot", step)
     }
 
     schema.checkInvalidIds(chatSteps);
