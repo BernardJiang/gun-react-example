@@ -244,7 +244,7 @@ export default class Entity {
     }
 
     onSettingsChange(cbUpdateUISettings) {
-        console.log('Entity onSettingsChange', 'entered')
+        // console.log('Entity onSettingsChange', 'entered')
         this.cbUpdateUISettings = cbUpdateUISettings;
         const tmpState = {}
         if (this.userSettings == null)
