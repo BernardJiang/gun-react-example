@@ -27,7 +27,7 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ key, ...msgs[key] }))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id = m.key), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id = m._['#']), m))
 
 //, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
@@ -78,10 +78,15 @@ class ChatBot extends Component {
       const msgs = formatMsgs(obj.msgs)
       msgs.forEach(a => {
         // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
-        // console.log("Bernard", a)
+        // console.log("BernardChatbot", a)
       })
 
       this.processSteps(msgs);
+      // msgs.forEach(a => {
+      //   // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
+      //   console.log("BernardChatbot2", a)
+      // })
+
     }
 
   }

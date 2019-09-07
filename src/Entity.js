@@ -208,10 +208,10 @@ export default class Entity {
           var chatAI = this.chatAI;
           this.cbUpdateUIChatBot = cbUpdateUIChatBot
           this.chat.map().once((msg) => {
-              tmpState[msg.key] = msg
+              tmpState[msg._['#']] = msg
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
-              console.log('Entity onChatBotMessage', " key=" + msg.key + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
+              console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
               // console.log("tmpState len=", Object.keys(tmpState).length)
               this.msgs = Object.assign({}, this.msgs, tmpState)
