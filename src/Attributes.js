@@ -62,12 +62,18 @@ export default class Attributes extends Component {
   // }
 
   render() {
+    
     const msgs = formatMsgs(this.state.msgs)
+    // console.log("attri:", "total attrs=" +Object.keys(this.state.msgs) + " .... msgs = " + Object.keys(msgs))
+    //  msgs.forEach(a => {
+    //     console.log("Bernard", "msg=" + a.message + '. bot='+ a.bot)
+    //     console.log(a.message, a)
+    //   })
     return <div>
           Attributes for {this.state.stageName}
       <ul>
         {msgs.map(msg =>
-          <li key={msg.key}><b> Q: {msg.message} </b> A: {msg.answer}<span className="when">{msg.whenFmt}</span></li>
+          <li key={msg.message}><b> Q: {msg.message} </b> A: { "answer" in msg ? msg.answer : ""}<span className="when">{msg.whenFmt}</span></li>
         )}
       </ul>
     </div>

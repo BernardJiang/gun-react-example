@@ -86,7 +86,7 @@ export default [
   },
   {
     key: 'uplink',
-    types: ['string'],
+    types: ['string','object'],
     required: false
   },
   {

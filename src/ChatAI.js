@@ -16,7 +16,7 @@ export default class ChatAI {
         // this should be replaced with real id. stageName can be changed.
         this.stageName = stageName
     }
-    process(msg) {  //process message of self.
+    process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
         // console.log("In chatAI")
         this.user = this.gun.user()
 
@@ -29,6 +29,7 @@ export default class ChatAI {
             this.user.get('lastquestion').put({
                 message: msg.message
             });
+            console.log("attr", "save key=" + msg.message + ". message=" + msg.when)
             this.userAttributes.get(msg.message).put({
                 message: msg.message,
                 when: msg.when
@@ -67,14 +68,6 @@ export default class ChatAI {
         if (!this.user.is)  //if not log in.
             return
 
-        if (msg.stageName === this.stageName) {  
-            //If the message is sent by myself, process self's messages.
-            // this.process(msg)
-            //return
-        }
-
-        //process others message.
-
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)  //if no userAttributes
             return
@@ -108,8 +101,11 @@ export default class ChatAI {
 
                 return
             }
-            if (!data.answer)
+            if (!("answer" in data))
                 return //means question exists without an answer.
+            
+            // var gQuestion = chat.get(msg._['#']);
+
             const when = Gun.time.is()
             // const key = `${when}_${Gun.text.random()}`
             // const who = stageName;
@@ -119,9 +115,15 @@ export default class ChatAI {
                 when,
                 message: data.answer,
                 bot: true
+                // uplink: gQuestion,
             }
+                       
+            // console.log("data msg", msg);
             // console.log("data answer", answer);
-            chat.set(answer);
+            var gAns = chat.set(answer);
+            // gQuestion.get("answer").set(gAns);
+            // console.log("data gQuestion", gQuestion);
+            // console.log("data gAns", gAns);
         })
 
     }
