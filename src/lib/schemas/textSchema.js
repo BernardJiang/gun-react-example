@@ -81,7 +81,7 @@ export default [
   },
   {
     key: 'downlink',
-    types: ['string'],
+    types: ['string','object'],
     required: false
   },
   {

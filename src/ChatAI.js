@@ -104,26 +104,57 @@ export default class ChatAI {
             if (!("answer" in data))
                 return //means question exists without an answer.
             
-            // var gQuestion = chat.get(msg._['#']);
-
             const when = Gun.time.is()
-            // const key = `${when}_${Gun.text.random()}`
-            // const who = stageName;
+
             var answer = {
-                // key,
                 stageName,
                 when,
                 message: data.answer,
-                bot: true
-                // uplink: gQuestion,
+                bot: true,
             }
                        
-            // console.log("data msg", msg);
-            // console.log("data answer", answer);
+            // console.log("ChatAI msg", msg);
+            // console.log("ChatAI answer", answer);
+
             var gAns = chat.set(answer);
-            // gQuestion.get("answer").set(gAns);
-            // console.log("data gQuestion", gQuestion);
-            // console.log("data gAns", gAns);
+
+            var soul = msg._['#'];
+            var gQuestion = chat.get(soul);
+
+            console.log("ChatAI question soul", soul)
+            console.log("ChatAI answer soul ", gAns._.get);  //why is this undefined?
+
+            gQuestion.get('downlink').put(gAns);   //link question to answer.
+            gAns.get('uplink').put(gQuestion);    //link answer to question.
+            
+            console.log("ChatAI gQuestion", gQuestion);  
+            console.log("ChatAI gAns", gAns);
+
+            //get both question and answer from questin node.
+            gQuestion.get('message').once( msg => {
+                console.log("ChatAI from question Q=", msg)
+            })
+            gQuestion.get('downlink').once( msg => {
+                console.log("ChatAI from question A.message=", msg.message)
+                console.log("ChatAI from question answer soul=", msg._['#'])
+            })
+            // gQuestion.get('_').once( msg => {
+               console.log("ChatAI from question Question soul=", gQuestion._.get)
+               console.log("ChatAI from question Question =", gQuestion._.put.message)
+               console.log("ChatAI from question answer soul =", gQuestion._.put.downlink)
+            // })
+
+            //get both question and answer from answer node.
+            gAns.get('uplink').once( ques => {
+                console.log("ChatAI from gAns questione=", ques.message)
+            })
+            gAns.get('message').once( ans => {
+                console.log("ChatAI from gAns answer=", ans)
+            })
+            console.log("ChatAI from answer answer soul=", gAns._.get)
+            console.log("ChatAI from answer answer =", gAns._.put.message)
+            console.log("ChatAI from answer question soul =", gAns._.put.uplink)
+
         })
 
     }
