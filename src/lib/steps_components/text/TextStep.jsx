@@ -284,14 +284,14 @@ class TextStep extends Component {
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
     
     // console.log("TextStep", step);
-    // console.log("TextStep", "step #=" + step._['#']);
+    // console.log("TextStep", "step #=" + step._ + (step._ === undefined));
 
     return (
       <TextStepContainer className={`rsc-ts ${user ? 'rsc-ts-user' : 'rsc-ts-bot'}`} user={user}>
         {/* <FormCard data={DATA} /> */}
         {/* {Card(DATA[0])} */}
 
-        {Card({
+        { !(step._ === undefined) && Card({
           id: step._['#'],
           author: stageName,
           user,
@@ -305,7 +305,7 @@ class TextStep extends Component {
           src: avatar,
           alt:"avatar",
           bot
-    })}
+        })}
   
         {/* <ImageContainer className="rsc-ts-image-container" user={user}>
         {!isSameUser && (

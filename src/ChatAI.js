@@ -29,7 +29,7 @@ export default class ChatAI {
             this.user.get('lastquestion').put({
                 message: msg.message
             });
-            console.log("attr", "save key=" + msg.message + ". message=" + msg.when)
+            // console.log("attr", "save key=" + msg.message + ". message=" + msg.when)
             this.userAttributes.get(msg.message).put({
                 message: msg.message,
                 when: msg.when

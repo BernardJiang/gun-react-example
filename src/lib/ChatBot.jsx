@@ -76,10 +76,10 @@ class ChatBot extends Component {
     //assume it has msgs.
     if (obj.msgs) {
       const msgs = formatMsgs(obj.msgs)
-      msgs.forEach(a => {
-        // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
-        // console.log("BernardChatbot", a)
-      })
+      // msgs.forEach(a => {
+      //   // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
+      //   console.log("BernardChatbot", a)
+      // })
 
       this.processSteps(msgs);
       // msgs.forEach(a => {
@@ -120,10 +120,11 @@ class ChatBot extends Component {
         settings = defaultCustomSettings;
       }
 
+      // console.log("chatbot before", step)
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
 
       // console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
-      // console.log("chatbot", step)
+      // console.log("chatbot after", step)
     }
 
     schema.checkInvalidIds(chatSteps);
@@ -504,14 +505,14 @@ class ChatBot extends Component {
         where: "empty",
         message: inputValue,
         bot: false,
-        uplink: "empty",
-        downlink: "empty"
+        // uplink: "empty",
+        // downlink: "empty"
       })
 
-      const step = {
-        message: inputValue,
-        value: inputValue
-      };
+      const step = {};
+      //   message: inputValue,
+      //   value: inputValue
+      // };
 
       currentStep = Object.assign({}, defaultUserSettings, currentStep, step);
 
@@ -738,7 +739,7 @@ class ChatBot extends Component {
             height={height}
             hideInput={currentStep.hideInput}
           >
-            {renderedSteps.map(this.renderStep)}
+            { (renderedSteps.length > 0) && renderedSteps.map(this.renderStep)}
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
             {/*!currentStep.hideInput && */(
@@ -818,7 +819,7 @@ ChatBot.propTypes = {
         ? PropTypes.instanceOf(window.SpeechSynthesisVoice)
         : PropTypes.any
   }),
-  steps: PropTypes.arrayOf(PropTypes.object).isRequired,
+  steps: PropTypes.arrayOf(PropTypes.object),
   style: PropTypes.objectOf(PropTypes.any),
   submitButtonStyle: PropTypes.objectOf(PropTypes.any),
   userAvatar: PropTypes.string,
