@@ -4,6 +4,11 @@ import path from 'gun/lib/path'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 
+// ? 0x3F; . 0x2E; ; 0x3B; ! 0x21
+const PatternQuestion = /\x3F$/g
+const PatternAnswer = /\x2E$/g
+const PatternQuestionWithOptions = /.*\x3F(.*\x3B)+.*\x2E/g
+    
 export default class ChatAI {
     constructor(gun) {
         this.gun = gun
@@ -23,10 +28,6 @@ export default class ChatAI {
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes) //validate attributes.
             return
-            // ? 0x3F; . 0x2E; ; 0x3B; ! 0x21
-        const PatternQuestion = /\x3F$/g
-        const PatternAnswer = /\x2E$/g
-        const PatternQuestionWithOptions = /.*\x3F(.*\x3B)+.*\x2E/g
         // var c = msg.message.charAt(msg.message.length - 1)
         // var resans2 = PatternAnswer.test(msg.message)
         // console.log("new messaage." + msg.message + ". " + PatternAnswer.test(msg.message))
@@ -84,6 +85,10 @@ export default class ChatAI {
         var c = msg.message.charAt(msg.message.length - 1)
         if (c !== '?')
             return; //not a question, ignore.
+        // var resans = PatternQuestion.test(msg.message)
+        // if(!resans) 
+        //     return; //not a question, ignore.
+
         var ans = this.userAttributes.get(msg.message)
         // console.log("ans:", ans);
         if (!ans)
