@@ -23,9 +23,16 @@ export default class ChatAI {
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes) //validate attributes.
             return
+            // ? 0x3F; . 0x2E; ; 0x3B; ! 0x21
+        const PatternQuestion = /\x3F$/g
+        const PatternAnswer = /\x2E$/g
+        const PatternQuestionWithOptions = /.*\x3F(.*\x3B)+.*\x2E/g
+        // var c = msg.message.charAt(msg.message.length - 1)
+        // var resans2 = PatternAnswer.test(msg.message)
+        // console.log("new messaage." + msg.message + ". " + PatternAnswer.test(msg.message))
+        var resans = PatternAnswer.test(msg.message)
 
-        var c = msg.message.charAt(msg.message.length - 1)
-        if (c === '?') { //a question
+        if (PatternQuestion.test(msg.message)) { //a question
             this.user.get('lastquestion').put({
                 message: msg.message
             });
@@ -36,7 +43,7 @@ export default class ChatAI {
             }, function (ack) {
                 // console.log("save attribute", ack)
             });
-        } else if (c === '.') { // an answer
+        } else if ( resans ) { // an answer
             var userAttributes = this.userAttributes
             var user = this.user;
             var lq = this.user.get('lastquestion')
@@ -54,7 +61,7 @@ export default class ChatAI {
                 console.log("Ignore an answer.", msg.message)
             }
         } else { //ignore chats.
-            console.log("Ignore a messaage.")
+            console.log("Ignore a messaage." + msg.message)
         }
     }
 
