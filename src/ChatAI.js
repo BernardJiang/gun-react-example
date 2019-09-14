@@ -5,9 +5,9 @@ import 'gun/lib/open'
 import 'gun/lib/unset'
 
 // ? 0x3F; . 0x2E; ; 0x3B; ! 0x21
-const PatternQuestion = /\x3F$/g
-const PatternAnswer = /\x2E$/g
-const PatternQuestionWithOptions = /.*\x3F(.*\x3B)+.*\x2E/g
+const PatternQuestion = /\x3F$/
+const PatternAnswer = /\x2E$/
+const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
     
 export default class ChatAI {
     constructor(gun) {
@@ -82,12 +82,12 @@ export default class ChatAI {
         var stageName = this.stageName
         if(!msg.message)
             return
-        var c = msg.message.charAt(msg.message.length - 1)
-        if (c !== '?')
-            return; //not a question, ignore.
-        // var resans = PatternQuestion.test(msg.message)
-        // if(!resans) 
+        // var c = msg.message.charAt(msg.message.length - 1)
+        // if (c !== '?')
         //     return; //not a question, ignore.
+        var resans = PatternQuestion.test(msg.message)
+        if(!resans) 
+            return; //not a question, ignore.
 
         var ans = this.userAttributes.get(msg.message)
         // console.log("ans:", ans);

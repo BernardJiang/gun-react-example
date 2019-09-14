@@ -56,6 +56,9 @@ import chatAI from './ChatAI'
        }
    }
 */
+
+const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
+
 export default class Entity {
     constructor(url: string) {
 
@@ -173,6 +176,23 @@ export default class Entity {
     // }
 
     sendMessage(msg) {
+        var res = PatternQuestionWithOptions.exec(msg.message)
+        if(res !== null){
+            msg.message = res[1];
+            if(res[2] === undefined){ 
+                //just answer.
+                msg.answer = res[3]
+
+            }else{
+                var options = res[2].split(';')
+                options.push(res[3])
+                msg.options = res[2] + res[3];
+                // var msg2 = Object.assign({}, msg, {options: options})
+                // this.chat.set(msg2);
+                // this.chatAI.process(msg2);
+                // return
+            }
+        }
         this.chat.set(msg);
         this.chatAI.process(msg);
     }
