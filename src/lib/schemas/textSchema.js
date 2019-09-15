@@ -99,4 +99,19 @@ export default [
     types: ['string'],
     required: false
   },
+  {
+    key: 'post',
+    types: ['object'],
+    required: false
+  },
+  {
+    key: 'author',
+    types: ['object'],
+    required: false
+  },
+  {
+    key: 'options',
+    types: ['object'],
+    required: false
+  },
 ];

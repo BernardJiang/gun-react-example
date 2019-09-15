@@ -60,7 +60,7 @@ import chatAI from './ChatAI'
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
 
 export default class Entity {
-    constructor(url: string) {
+    constructor(url) {
 
         localStorage.clear();
 
@@ -75,7 +75,7 @@ export default class Entity {
         this.msgs = {}
         this.attrs = {}
         this.stageName = ''
-        this.cbUpdateUIChat = ''
+        // this.cbUpdateUIChat = ''
         this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
         this.cbUpdateUISettings = ''
@@ -149,22 +149,23 @@ export default class Entity {
 
     auth(stageName, password) {
         this.stageName = stageName;
+        this.myself = "";
         this.user.auth(stageName, password, ack => {
             if (ack.err) {
                 console.log('err', ack.err);
                 this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
                 return;
             }
-            var user = this.user.get(stageName).put({
+            this.myself = this.user.get(stageName).put({
                 stageName: stageName
             })
-            this.userlist.set(user)
+            this.userlist.set(this.myself)
             this.userAttributes = this.user.get('Attributes')
             this.userSettings = this.user.get('Settings')
             this.stageName = stageName;
             this.chatAI.setSelf(stageName)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
-            this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
+            // this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
             this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
             this.cbUpdateUISettings  && this.onSettingsChange(this.cbUpdateUISettings)
@@ -186,39 +187,40 @@ export default class Entity {
             }else{
                 var options = res[2].split(';')
                 options.push(res[3])
-                msg.options = res[2] + res[3];
+                // msg.options = res[2] + res[3];
                 // var msg2 = Object.assign({}, msg, {options: options})
                 // this.chat.set(msg2);
                 // this.chatAI.process(msg2);
                 // return
             }
         }
-        this.chat.set(msg);
+        var newmsg = this.chat.set(msg);
+        newmsg.path('author').put(this.myself).path('post').set(newmsg);
         this.chatAI.process(msg);
     }
 
-    //prepare data for UI.
-    onChatMessage(cbUpdateUIChat) {
-        // console.log('Entity onChatMessage', 'entered')
-        const tmpState = {}
-        var chat = this.chat
-        var chatAI = this.chatAI;
-        this.cbUpdateUIChat = cbUpdateUIChat
-        this.chat.map().once(msg => {
-            tmpState[msg.key] = msg
-            // console.log('Entity onChatMessage', key)
-            // var date = new Date(msg.when).toLocaleString().toLowerCase()
-            console.log('Entity onChatMessage', " key=" + msg.key + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
-            // console.log("local msgs len=", Object.keys(this.msgs).length)
-            // console.log("tmpState len=", Object.keys(tmpState).length)
-            this.msgs = Object.assign({}, this.msgs, tmpState)
-            cbUpdateUIChat({
-                msgs: this.msgs
-            })
+    // //prepare data for UI.
+    // onChatMessage(cbUpdateUIChat) {
+    //     // console.log('Entity onChatMessage', 'entered')
+    //     const tmpState = {}
+    //     var chat = this.chat
+    //     var chatAI = this.chatAI;
+    //     this.cbUpdateUIChat = cbUpdateUIChat
+    //     this.chat.map().once(msg => {
+    //         tmpState[msg.key] = msg
+    //         // console.log('Entity onChatMessage', key)
+    //         // var date = new Date(msg.when).toLocaleString().toLowerCase()
+    //         console.log('Entity onChatMessage', " key=" + msg.key + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
+    //         // console.log("local msgs len=", Object.keys(this.msgs).length)
+    //         // console.log("tmpState len=", Object.keys(tmpState).length)
+    //         this.msgs = Object.assign({}, this.msgs, tmpState)
+    //         cbUpdateUIChat({
+    //             msgs: this.msgs
+    //         })
 
-            msg && chatAI.processRespond(msg)
-        })
-    }
+    //         msg && chatAI.processRespond(msg)
+    //     })
+    // }
 
         //prepare data for UI.
     onChatBotMessage(cbUpdateUIChatBot) {
@@ -227,8 +229,19 @@ export default class Entity {
           var chat = this.chat
           var chatAI = this.chatAI;
           this.cbUpdateUIChatBot = cbUpdateUIChatBot
-          this.chat.map().once((msg) => {
+          this.chat.map().once(async (msg) => {
               tmpState[msg._['#']] = msg
+            //   console.log('Entity onChatBotMessage', msg.author )
+                var n = await this.userlist.get(msg.author).then();
+                // n.on(function(data, key){
+                //     console.log("Entity data", data)
+                //     console.log("Entity key", key)
+                //     console.log("Entity data", data.stageName)
+                // })
+              console.log('Entity onChatBotMessage', n )
+              console.log('Entity onChatBotMessage n name=', n.stageName )
+              tmpState[msg._['#']].stageName = "fromGUN" + n.stageName
+            //   this.userlist.get(msg.author)
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
             //   console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
