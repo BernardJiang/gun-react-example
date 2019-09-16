@@ -172,6 +172,8 @@ export default class ChatAI {
             // console.log("ChatAI from answer answer soul=", gAns._.get)
             // console.log("ChatAI from answer answer =", gAns._.put.message)
             // console.log("ChatAI from answer question soul =", gAns._.put.uplink)
+             console.log("ChatAI from gAns", gAns)
+             console.log("ChatAI from myself", myself)
  
             gAns.path('author').put(myself).path('post').set(gAns);
 

@@ -241,11 +241,11 @@ export default class Entity {
               console.log('Entity n=', n )
               if(n == undefined){
                 console.log('Entity onChatBotMessage n name=', "unknown" )
-                tmpState[msg._['#']].stageName = "fromGUN" + "unknown"
+                tmpState[msg._['#']].stageName = "unknown"
 
               }else{
                 console.log('Entity onChatBotMessage n name=', n.stageName )
-                tmpState[msg._['#']].stageName = "fromGUN" + n.stageName
+                tmpState[msg._['#']].stageName = n.stageName
               }
             //   this.userlist.get(msg.author)
               // console.log('Entity onChatMessage', key)
