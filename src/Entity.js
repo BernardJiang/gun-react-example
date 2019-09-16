@@ -163,7 +163,7 @@ export default class Entity {
             this.userAttributes = this.user.get('Attributes')
             this.userSettings = this.user.get('Settings')
             this.stageName = stageName;
-            this.chatAI.setSelf(stageName)
+            this.chatAI.setSelf(this.myself)
             this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
             // this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
             this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
@@ -239,8 +239,14 @@ export default class Entity {
                 //     console.log("Entity data", data.stageName)
                 // })
               console.log('Entity onChatBotMessage', n )
-              console.log('Entity onChatBotMessage n name=', n.stageName )
-              tmpState[msg._['#']].stageName = "fromGUN" + n.stageName
+              if(n == undefined){
+                console.log('Entity onChatBotMessage n name=', "unknown" )
+                tmpState[msg._['#']].stageName = "fromGUN" + "unknown"
+
+              }else{
+                console.log('Entity onChatBotMessage n name=', n.stageName )
+                tmpState[msg._['#']].stageName = "fromGUN" + n.stageName
+              }
             //   this.userlist.get(msg.author)
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()

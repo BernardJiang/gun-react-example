@@ -14,13 +14,16 @@ export default class ChatAI {
         this.gun = gun
 
         // this.userAttributes = userAttributes
-        this.stageName = ''
+        // this.stageName = ''
+        this.myself = ''
     }
 
-    setSelf(stageName) {
+    setSelf(myself) {
         // this should be replaced with real id. stageName can be changed.
-        this.stageName = stageName
+        // this.stageName = stageName
+        this.myself = myself
     }
+
     process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
         // console.log("In chatAI")
         this.user = this.gun.user()
@@ -79,7 +82,7 @@ export default class ChatAI {
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes)  //if no userAttributes
             return
-        var stageName = this.stageName
+        // var stageName = this.stageName
         if(!msg.message)
             return
         // var c = msg.message.charAt(msg.message.length - 1)
@@ -96,6 +99,7 @@ export default class ChatAI {
 
         var user = this.user
         var userAttributes = this.userAttributes
+        var myself = this.myself
 
         ans.once(function (data) {
             if (!data) { //never hear this question. Save the question.
@@ -119,7 +123,7 @@ export default class ChatAI {
             const when = Gun.time.is()
 
             var answer = {
-                stageName,
+                // stageName,
                 when,
                 message: data.answer,
                 bot: true,
@@ -166,6 +170,8 @@ export default class ChatAI {
             console.log("ChatAI from answer answer soul=", gAns._.get)
             console.log("ChatAI from answer answer =", gAns._.put.message)
             console.log("ChatAI from answer question soul =", gAns._.put.uplink)
+ 
+            gAns.path('author').put(myself).path('post').set(gAns);
 
         })
 
