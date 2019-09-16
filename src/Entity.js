@@ -230,15 +230,15 @@ export default class Entity {
           var chatAI = this.chatAI;
           this.cbUpdateUIChatBot = cbUpdateUIChatBot
           this.chat.map().once(async (msg) => {
-              tmpState[msg._['#']] = msg
-            //   console.log('Entity onChatBotMessage', msg.author )
+            console.log('Entity msg=', msg )
+            tmpState[msg._['#']] = msg
                 var n = await this.userlist.get(msg.author).then();
                 // n.on(function(data, key){
                 //     console.log("Entity data", data)
                 //     console.log("Entity key", key)
                 //     console.log("Entity data", data.stageName)
                 // })
-              console.log('Entity onChatBotMessage', n )
+              console.log('Entity n=', n )
               if(n == undefined){
                 console.log('Entity onChatBotMessage n name=', "unknown" )
                 tmpState[msg._['#']].stageName = "fromGUN" + "unknown"
