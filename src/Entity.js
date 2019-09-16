@@ -196,7 +196,7 @@ export default class Entity {
         }
         var newmsg = this.chat.set(msg);
         newmsg.path('author').put(this.myself).path('post').set(newmsg);
-        this.chatAI.process(msg);
+        this.chatAI.process(newmsg);
     }
 
     // //prepare data for UI.

@@ -31,19 +31,21 @@ export default class ChatAI {
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes) //validate attributes.
             return
+        
+        var currMessage = msg._.put.message
         // var c = msg.message.charAt(msg.message.length - 1)
         // var resans2 = PatternAnswer.test(msg.message)
         // console.log("new messaage." + msg.message + ". " + PatternAnswer.test(msg.message))
-        var resans = PatternAnswer.test(msg.message)
+        var resans = PatternAnswer.test(currMessage)
 
-        if (PatternQuestion.test(msg.message)) { //a question
+        if (PatternQuestion.test(currMessage)) { //a question
             this.user.get('lastquestion').put({
-                message: msg.message
+                message: currMessage
             });
             // console.log("attr", "save key=" + msg.message + ". message=" + msg.when)
-            this.userAttributes.get(msg.message).put({
-                message: msg.message,
-                when: msg.when
+            this.userAttributes.get(currMessage).put({
+                message: currMessage,
+                when: msg._.put.when
             }, function (ack) {
                 // console.log("save attribute", ack)
             });
@@ -55,17 +57,17 @@ export default class ChatAI {
                 lq.once(function (data) {
                     // console.log("get lastquestion object", data.message)
                     data && userAttributes.get(data.message).put({
-                        answer: msg.message,
+                        answer: currMessage,
                         bot: true
                     })
                     user.get('lastquestion').put(null);
                 })
             } else {
                 //ignore answer without a question.
-                console.log("Ignore an answer.", msg.message)
+                console.log("Ignore an answer.", currMessage)
             }
         } else { //ignore chats.
-            console.log("Ignore a messaage." + msg.message)
+            console.log("Ignore a messaage." + currMessage)
         }
     }
 
@@ -137,39 +139,39 @@ export default class ChatAI {
             var soul = msg._['#'];
             var gQuestion = chat.get(soul);
 
-            console.log("ChatAI question soul", soul)
-            console.log("ChatAI answer soul ", gAns._.get);  //why is this undefined?
+            // console.log("ChatAI question soul", soul)
+            // console.log("ChatAI answer soul ", gAns._.get);  //why is this undefined?
 
             gQuestion.get('downlink').put(gAns);   //link question to answer.
             gAns.get('uplink').put(gQuestion);    //link answer to question.
             
-            console.log("ChatAI gQuestion", gQuestion);  
-            console.log("ChatAI gAns", gAns);
+            // console.log("ChatAI gQuestion", gQuestion);  
+            // console.log("ChatAI gAns", gAns);
 
-            //get both question and answer from questin node.
-            gQuestion.get('message').once( msg => {
-                console.log("ChatAI from question Q=", msg)
-            })
-            gQuestion.get('downlink').once( msg => {
-                console.log("ChatAI from question A.message=", msg.message)
-                console.log("ChatAI from question answer soul=", msg._['#'])
-            })
-            // gQuestion.get('_').once( msg => {
-               console.log("ChatAI from question Question soul=", gQuestion._.get)
-               console.log("ChatAI from question Question =", gQuestion._.put.message)
-               console.log("ChatAI from question answer soul =", gQuestion._.put.downlink)
+            // //get both question and answer from questin node.
+            // gQuestion.get('message').once( msg => {
+            //     console.log("ChatAI from question Q=", msg)
             // })
+            // gQuestion.get('downlink').once( msg => {
+            //     console.log("ChatAI from question A.message=", msg.message)
+            //     console.log("ChatAI from question answer soul=", msg._['#'])
+            // })
+            // // gQuestion.get('_').once( msg => {
+            //    console.log("ChatAI from question Question soul=", gQuestion._.get)
+            //    console.log("ChatAI from question Question =", gQuestion._.put.message)
+            //    console.log("ChatAI from question answer soul =", gQuestion._.put.downlink)
+            // // })
 
-            //get both question and answer from answer node.
-            gAns.get('uplink').once( ques => {
-                console.log("ChatAI from gAns questione=", ques.message)
-            })
-            gAns.get('message').once( ans => {
-                console.log("ChatAI from gAns answer=", ans)
-            })
-            console.log("ChatAI from answer answer soul=", gAns._.get)
-            console.log("ChatAI from answer answer =", gAns._.put.message)
-            console.log("ChatAI from answer question soul =", gAns._.put.uplink)
+            // //get both question and answer from answer node.
+            // gAns.get('uplink').once( ques => {
+            //     console.log("ChatAI from gAns questione=", ques.message)
+            // })
+            // gAns.get('message').once( ans => {
+            //     console.log("ChatAI from gAns answer=", ans)
+            // })
+            // console.log("ChatAI from answer answer soul=", gAns._.get)
+            // console.log("ChatAI from answer answer =", gAns._.put.message)
+            // console.log("ChatAI from answer question soul =", gAns._.put.uplink)
  
             gAns.path('author').put(myself).path('post').set(gAns);
 
