@@ -176,7 +176,7 @@ export default class ChatAI {
              console.log("ChatAI from myself", myself)
  
             gAns.path('author').put(myself)
-            .path('post').set(gAns);
+            myself.path('post').set(gAns);
 
         })
 

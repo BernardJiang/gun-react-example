@@ -197,8 +197,14 @@ export default class Entity {
         var newmsg = this.chat.set(msg);
         console.log("Entity newmsg=", newmsg)
         console.log("Entity myself=", this.myself)
-        newmsg.path('author').put(this.myself)
-        .path('post').set(newmsg);
+        if(newmsg == undefined){
+            console.log("err", newmsg)
+        }
+        
+        newmsg.path('author').put(this.myself);
+
+        this.myself.path('post').set(newmsg);
+
         this.chatAI.process(newmsg);
     }
 
