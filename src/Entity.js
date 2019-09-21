@@ -177,6 +177,8 @@ export default class Entity {
     // }
 
     sendMessage(msg) {
+        var options = {}
+        var optionsarray = []
         var res = PatternQuestionWithOptions.exec(msg.message)
         if(res !== null){
             msg.message = res[1];
@@ -185,8 +187,15 @@ export default class Entity {
                 msg.answer = res[3]
 
             }else{
-                var options = res[2].split(';')
-                options.push(res[3])
+
+                optionsarray = res[2].substr(0, res[2].length-1).split(';')
+                optionsarray.push(res[3].substr(0, res[3].length-1))
+                var cnt = optionsarray.length;
+                options.count = cnt
+                options.when = msg.when
+                optionsarray.forEach((opt, idx) => {
+                    options = Object.assign({}, options, {["option"+idx]: opt}) 
+                })
                 // msg.options = res[2] + res[3];
                 // var msg2 = Object.assign({}, msg, {options: options})
                 // this.chat.set(msg2);
@@ -202,8 +211,14 @@ export default class Entity {
         }
         
         newmsg.path('author').put(this.myself);
-
         this.myself.path('post').set(newmsg);
+        if(optionsarray.length>0){
+            var gOptions = this.chat.set(options)
+            newmsg.path('options').put(gOptions)
+            gOptions.path('questions').put(newmsg)
+            gOptions.path('author').put(this.myself)
+            this.myself.path('post').set(newmsg);
+        }
 
         this.chatAI.process(newmsg);
     }
