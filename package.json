@@ -5,7 +5,7 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "circular-json": "^0.5.9",
-    "gun": ">=0.2019.416",
+    "gun": ">=0.2019.910",
     "lodash": "^4.17.11",
     "onchange": "^5.2.0",
     "prettier": "^1.16.4",
