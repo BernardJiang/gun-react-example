@@ -16,7 +16,7 @@ class OptionsStep extends Component {
     const { bubbleOptionStyle, step } = this.props;
     const { user } = step;
     const { value, label } = option;
-
+    console.log(option)
     return (
       <Option key={value} className="rsc-os-option">
         <OptionElement

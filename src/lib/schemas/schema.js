@@ -62,26 +62,34 @@ const schema = {
     for (const key in steps) {
       const step = steps[key];
       const triggerId = steps[key].trigger;
+      // console.log("checkInvalidIds key", key)
+      // console.log("checkInvalidIds step", step)
 
       if (typeof triggerId !== 'function') {
-        if (step.options) {
+        if (!step.message) {
+          if(step.options == undefined)
+            continue
           const triggers = step.options.filter(option => typeof option.trigger !== 'function');
           const optionsTriggerIds = triggers.map(option => option.trigger);
 
           for (let i = 0, len = optionsTriggerIds.length; i < len; i += 1) {
             const optionTriggerId = optionsTriggerIds[i];
             if (optionTriggerId && !steps[optionTriggerId]) {
-              throw new Error(
-                `The id '${optionTriggerId}' triggered by option ${i + 1} in step '${
-                  steps[key].id
-                }' does not exist`
-              );
+              console.error( `The id '${optionTriggerId}' triggered by option ${i + 1} in step '${
+                     steps[key].id
+                   }' does not exist`)
+              // throw new Error(
+              //   `The id '${optionTriggerId}' triggered by option ${i + 1} in step '${
+              //     steps[key].id
+              //   }' does not exist`
+              // );
             }
           }
         } else if (triggerId && !steps[triggerId]) {
-          throw new Error(
-            `The id '${triggerId}' triggered by step '${steps[key].id}' does not exist`
-          );
+          console.error( 'err', `The id '${triggerId}' triggered by step '${steps[key].id}' does not exist`)
+          // throw new Error(
+          //   `The id '${triggerId}' triggered by step '${steps[key].id}' does not exist`
+          // );
         }
       }
     }
