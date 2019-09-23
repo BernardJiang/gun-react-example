@@ -26,6 +26,10 @@ const schema = {
       step.message = "empty";  //temp solution.
       parser = textSchema;
     }
+    //only deal with text and option for now.
+    if(step.count && step.count > 1){
+      parser = optionsSchema;
+    }
 
     for (let i = 0, len = parser.length; i < len; i += 1) {
       const { key, types, required } = parser[i];
@@ -47,8 +51,8 @@ const schema = {
 
     for (const key in step) {
       if (keys.indexOf(key) < 0) {
-        console.error(`Invalid key '${key}' in step '${step.id}'`);
-        console.error("step", step)
+        console.error(`scheme Invalid key '${key}' in step '${step.id}'`);
+        console.error("scheme step", step)
         delete step[key];
       }
       // if(key=='bot')

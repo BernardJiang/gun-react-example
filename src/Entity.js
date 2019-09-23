@@ -56,6 +56,11 @@ import chatAI from './ChatAI'
 
        }
    }
+
+In async function () {
+Var bob = gun.get(‘people).get(‘bob’).promOnce();
+Console.log((await bob).data)
+}
 */
 
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
@@ -264,7 +269,7 @@ export default class Entity {
           var counter=0;
           this.chat.map().once(async (msg) => {
             // console.log('Entity counter=', counter++ )
-            // console.log('Entity msg=', msg )
+            console.log('Entity msg=', msg )
             if(msg.message === undefined && msg.options === undefined){
                 console.log("wrong message", msg)
                 return

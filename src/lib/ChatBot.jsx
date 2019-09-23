@@ -24,10 +24,10 @@ import { speakFn } from './speechSynthesis';
 import Entity from '../Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
-  .map(key => ({ key, ...msgs[key] }))
+  .map(key => ({ id: key, ...msgs[key] }))
   .filter(m => Boolean(m.when) && m.key !== '_')
   .sort((a, b) => a.when - b.when)
-  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase(), m.id = m._['#']), m))
+  .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 //, m.id=m.key, m.value=1, m.metadata='')
 class ChatBot extends Component {
@@ -105,20 +105,20 @@ class ChatBot extends Component {
     const chatSteps = {};
 
     const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
-    const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
-    const defaultCustomSettings = { delay: customDelay };
+    // const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
+    // const defaultCustomSettings = { delay: customDelay };
 
     for (let i = 0, len = steps.length; i < len; i += 1) {
       const step = steps[i];
       let settings = {};
 
-      if (step.user) {
-        settings = defaultUserSettings;
-      } else if (step.message || step.asMessage) {
+      // if (step.user) {
+      //   settings = defaultUserSettings;
+      // } else if (step.message || step.asMessage) {
         settings = defaultBotSettings;
-      } else if (step.component) {
-        settings = defaultCustomSettings;
-      }
+      // } else if (step.component) {
+      //   settings = defaultCustomSettings;
+      // }
 
       // console.log("chatbot before", step)
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
@@ -180,7 +180,7 @@ class ChatBot extends Component {
 
     this.setState({
       currentStep,
-      defaultUserSettings,
+      // defaultUserSettings,
       previousStep,
       previousSteps,
       renderedSteps,

@@ -69,4 +69,9 @@ export default [
     types: ['string'],
     required: false
   },
+  {
+    key: 'whenFmt',
+    types: ['string'],
+    required: false
+  },
 ];
