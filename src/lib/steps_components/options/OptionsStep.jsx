@@ -8,7 +8,7 @@ import OptionsStepContainer from './OptionsStepContainer';
 class OptionsStep extends Component {
   onOptionClick = ({ value }) => {
     const { triggerNextStep } = this.props;
-
+    console.log("No action yet to value", value)
     triggerNextStep({ value });
   };
 
@@ -16,7 +16,7 @@ class OptionsStep extends Component {
     const { bubbleOptionStyle, step } = this.props;
     const { user } = step;
     const { value, label } = option;
-    console.log(option)
+    // console.log(option)
     return (
       <Option key={value} className="rsc-os-option">
         <OptionElement
