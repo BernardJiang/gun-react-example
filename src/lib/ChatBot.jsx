@@ -131,8 +131,8 @@ class ChatBot extends Component {
 
     let firstStep = {}
 
-    if (steps.length > 0) {
-      firstStep = steps[0];
+    if (chatSteps.length > 0) {
+      firstStep = chatSteps[0];
 
       if (firstStep.message) {
         const { message } = firstStep;
