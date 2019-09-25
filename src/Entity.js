@@ -2,6 +2,7 @@ import Gun from 'gun/gun'
 import Sea from 'gun/sea'
 import path from 'gun/lib/path'
 import {promOnce, promPut, promSet, promOn} from 'gun/lib/path'
+import open from 'gun/lib/open'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 // import _ from 'lodash'
@@ -231,6 +232,11 @@ export default class Entity {
             // gOptions.path('author').put(this.myself)
             // this.myself.path('post').set(gOptions)
             // console.log("Entity goption=", gOptions)
+
+            // gOptions.open( optionobj => {
+            //     console.log("open nested object", optionobj)
+            // })
+
         }
 
         this.chatAI.process(newmsg);
@@ -304,6 +310,9 @@ export default class Entity {
 
                     // var opt1 = await this.gun.get(opts.idx).then();
                     // console.log("options1=", opt1)
+                    var optionobj = await this.gun.get(msg._['#']).open().then(); 
+                    console.log("open nested object", optionobj)
+                    
                 
 
             }else{  //regular message
