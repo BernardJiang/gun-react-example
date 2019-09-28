@@ -198,15 +198,15 @@ export default class Entity {
                 optionsarray = res[2].substr(0, res[2].length-1).split(';')
                 optionsarray.push(res[3].substr(0, res[3].length-1))
                 var cnt = optionsarray.length;
-                optionobj.count = cnt
-                optionobj.when = msg.when
-                optionobj.options = {}
+                // msg.count = cnt
+                // optionobj.when = msg.when
+                msg.options = {}
                 //{ value: 'op2', label: 'Option 2', trigger: '6' },
                 
                 optionsarray.forEach((opt, idx) => {
                     // console.log("Opt opt=", opt)
                     // console.log("Opt idx=", idx)
-                    optionobj.options = Object.assign({}, optionobj.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
+                    msg.options = Object.assign({}, msg.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
                 })
                 // msg.options = res[2] + res[3];
                 // var msg2 = Object.assign({}, msg, {options: options})
@@ -215,18 +215,18 @@ export default class Entity {
                 // return
             }
         }
-        var newmsg = this.chat.set(msg);
-        // console.log("Entity newmsg=", newmsg)
+        var gmsg = this.chat.set(msg);
+        console.log("Entity Send message=", msg)
         // console.log("Entity myself=", this.myself)
-        if(newmsg == undefined){
-            console.log("err", newmsg)
+        if(gmsg == undefined){
+            console.log("err", gmsg)
         }
         
-        newmsg.path('author').put(this.myself);
-        this.myself.path('post').set(newmsg);
-        if(optionsarray.length>0){
+        gmsg.path('author').put(this.myself);
+        this.myself.path('post').set(gmsg);
+        // if(optionsarray.length>0){
             // console.log("Entity optionobj=", optionobj)
-            var gOptions = this.chat.set(optionobj)
+            // var gOptions = this.chat.set(optionobj)
             // newmsg.path('options').put(gOptions)
             // gOptions.path('questions').put(newmsg)
             // gOptions.path('author').put(this.myself)
@@ -237,9 +237,9 @@ export default class Entity {
             //     console.log("open nested object", optionobj)
             // })
 
-        }
+        // }
 
-        this.chatAI.process(newmsg);
+        this.chatAI.process(gmsg);
     }
 
     // //prepare data for UI.
@@ -280,42 +280,7 @@ export default class Entity {
                 console.log("wrong message", msg)
                 return
             }
-            if(msg.count){  //this is an option 
-                var opts = {}
-                var optarr = []
-                    opts = await this.gun.get(msg.options['#']).then();
-                    // console.log("options=", opts)
-                    // Object.keys(opts).map( (key, idx) => {
-                    //     console.log("option  ==== key", key)
-                    //     console.log("option ===== idx" , idx)
-                    //     if(key === '_')
-                    //         return
-                    //     var opt = this.gun.get(opts[key]['#']).then()
-                    //     console.log("option now =", opt)
-                    //     optarr.push(opt)
-                    // })
-                    // var op0 = await this.gun.get(opts.op0['#']).then();
-                    // var op1 = await this.gun.get(opts.op1['#']).then();
-                    for(var i=0; i< msg.count; i++){
-                        var key = 'op' + i
-                        var currop = await this.gun.get(opts[key]['#']).then();
-                        optarr.push(currop)
-                    }
-                    // console.log('op0', op0)
-                    // console.log('op1', op1)
-
-                    // console.log("option all =", optarr)
-                    msg.options = optarr
-                    tmpState[msg._['#']] = msg
-
-                    // var opt1 = await this.gun.get(opts.idx).then();
-                    // console.log("options1=", opt1)
-                    var optionobj = await this.gun.get(msg._['#']).open().then(); 
-                    console.log("open nested object", optionobj)
-                    
-                
-
-            }else{  //regular message
+  //regular message
                 tmpState[msg._['#']] = msg
                 var author = await this.userlist.get(msg.author).then();
                 // console.log('Entity n=', author )
@@ -326,19 +291,51 @@ export default class Entity {
                     // console.log('Entity onChatBotMessage n name=', author.stageName )
                     tmpState[msg._['#']].stageName = author.stageName
                 }
-            }
-                // n.on(function(data, key){
-                //     console.log("Entity data", data)
-                //     console.log("Entity key", key)
-                //     console.log("Entity data", data.stageName)
-                // })
+
+                console.log("msg.options=", msg.options)
+                if(msg.options){  //this is an option 
+                    var opts = {}
+                    var optarr = []
+                    opts = await this.gun.get(msg.options['#']).then();
+                    console.log("opts=", opts)
+                        // Object.keys(opts).map( (key, idx) => {
+                        //     console.log("option  ==== key", key)
+                        //     console.log("option ===== idx" , idx)
+                        //     if(key === '_')
+                        //         return
+                        //     var opt = this.gun.get(opts[key]['#']).then()
+                        //     console.log("option now =", opt)
+                        //     optarr.push(opt)
+                        // })
+                        // var op0 = await this.gun.get(opts.op0['#']).then();
+                        // var op1 = await this.gun.get(opts.op1['#']).then();
+                        var self = this.gun;
+                        Object.keys(opts).forEach(async function(key){
+                            if(key.startsWith("op")){
+                                console.log('key= '+key, opts[key])
+                                var currop = await self.get(opts[key]['#']).then();
+                                optarr.push(currop)    
+                            }
+                        })
+    
+                        console.log("option all =", optarr)
+                    msg.options = optarr
+                    tmpState[msg._['#']] = msg
+    
+                    // var opt1 = await this.gun.get(opts.idx).then();
+                    // console.log("options1=", opt1)
+                    // var optionobj = await this.gun.get(msg._['#']).open().then(); 
+                    // console.log("open nested object", optionobj)
+                }
+
             //   this.userlist.get(msg.author)
               // console.log('Entity onChatMessage', key)
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
             //   console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
-            //   console.log("tmpState =", tmpState)
+              console.log("tmpState =", tmpState)
               this.msgs = Object.assign({}, this.msgs, tmpState)
+
               cbUpdateUIChatBot({
                   msgs: this.msgs
               })

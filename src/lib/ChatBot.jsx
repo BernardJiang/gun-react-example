@@ -591,7 +591,7 @@ class ChatBot extends Component {
   }
 
   renderStep = (step, index) => {
-    // console.log("real step key=" + step.key + ". msg=" + step.message + ". index=" + index + ". when=" + step.when);
+    console.log("renderStep index="+index, step);
     if (!step)
       return;
     const { renderedSteps, stageName } = this.state;
@@ -612,7 +612,6 @@ class ChatBot extends Component {
       return (
         <CustomStep
           key={index}
-          speak={this.speak}
           step={step}
           steps={steps}
           style={customStyle}
@@ -623,18 +622,18 @@ class ChatBot extends Component {
       );
     }
 
-    if (options) {
-      return (
-        <OptionsStep
-          key={index}
-          step={step}
-          speak={this.speak}
-          previousValue={previousStep.value}
-          triggerNextStep={this.triggerNextStep}
-          bubbleOptionStyle={bubbleOptionStyle}
-        />
-      );
-    }
+    // if (options) {
+    //   return (
+    //     <OptionsStep
+    //       key={index}
+    //       step={step}
+    //       speak={this.speak}
+    //       previousValue={previousStep.value}
+    //       triggerNextStep={this.triggerNextStep}
+    //       bubbleOptionStyle={bubbleOptionStyle}
+    //     />
+    //   );
+    // }
 
     return (
       <TextStep
@@ -653,7 +652,9 @@ class ChatBot extends Component {
         isFirst={this.isFirstPosition(step)}
         isLast={this.isLastPosition(step)}
         me={stageName}
-      />
+        triggerNextStep={this.triggerNextStep}
+        bubbleOptionStyle={bubbleOptionStyle}
+    />
     );
   };
 

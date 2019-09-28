@@ -8,6 +8,7 @@ import StageName from './StageName';
 import ImageContainer from './ImageContainer';
 import Loading from '../common/Loading';
 import TextStepContainer from './TextStepContainer';
+import OptionsStep from '../options/OptionsStep';
 
 const Photo = {
   width: '60px',
@@ -187,7 +188,7 @@ const handleClick = () => {
 }
 
 const Card = props => {
-    const { currentQuestion, user, id, avatarStyle, showAvatar, src, bot} = props;
+    const { currentQuestion, user, id, avatarStyle, showAvatar, src, bot, step,  index,   previousStep, bubbleOptionStyle, speak, triggerNextStep } = props;
   // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
     // console.log("Bernard", "currentQuestion=" + currentQuestion + ". bot=" + bot);
     return <div onClick={handleClick} 
@@ -208,6 +209,14 @@ const Card = props => {
         <Author author={props.author}/>
         <Message bio={props.bio} message={props.message}/>
         {/* <AdBox adpic={props.adpic} /> */}
+        {step.options && (<OptionsStep
+          key={step._['#']}
+          step={step}
+          speak={speak}
+          previousValue={previousStep.value}
+          triggerNextStep={triggerNextStep}
+          bubbleOptionStyle={bubbleOptionStyle}
+        />)}
         <IconBox />
       </div>
   </div>
@@ -274,7 +283,9 @@ class TextStep extends Component {
       bubbleStyle,
       hideBotAvatar,
       hideUserAvatar,
-      me
+      me,
+      bubbleOptionStyle,
+      key
     } = this.props;
     const { loading, currentQuestion } = this.state;
     const { avatar, stageName, message, when, bot } = step;
@@ -304,7 +315,11 @@ class TextStep extends Component {
           showAvatar: showAvatar,
           src: avatar,
           alt:"avatar",
-          bot
+          bot,
+          step,
+          index: key,
+          previousStep,
+          bubbleOptionStyle
         })}
   
         {/* <ImageContainer className="rsc-ts-image-container" user={user}>
