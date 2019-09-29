@@ -13,10 +13,10 @@ class OptionsStep extends Component {
   };
 
   renderOption = option => {
+    console.log("Enter into renderOption:", option)
     const { bubbleOptionStyle, step } = this.props;
     const { user } = step;
     const { value, label } = option;
-    // console.log(option)
     return (
       <Option key={value} className="rsc-os-option">
         <OptionElement
@@ -34,6 +34,13 @@ class OptionsStep extends Component {
   render() {
     const { step } = this.props;
     const { options } = step;
+    console.log("Step =", step)
+    console.log("Type of Options is array =", options instanceof Array )
+    console.log("Options =", options)
+    console.log("Option totals=: ", Object.keys(step.options).length);
+    Object.values(options).map(obj => {
+      console.log("option: ", obj);
+    })
 
     return (
       <OptionsStepContainer className="rsc-os">

@@ -319,8 +319,10 @@ export default class Entity {
                         })
     
                         console.log("option all =", optarr)
-                    msg.options = optarr
-                    tmpState[msg._['#']] = msg
+                    // msg.options = optarr
+                    // msg = Object.assign({}, ...msg, {options: optarr})
+                    // tmpState[msg._['#']].options = optarr
+                    tmpState[msg._['#']] = await Object.assign(tmpState[msg._['#']],  {options: optarr})
     
                     // var opt1 = await this.gun.get(opts.idx).then();
                     // console.log("options1=", opt1)
@@ -333,7 +335,12 @@ export default class Entity {
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
             //   console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
-              console.log("tmpState =", tmpState)
+              console.log("tmpState =", tmpState[msg._['#']])
+              if(tmpState[msg._['#']].options){
+                console.log("tmpState options total=", Object.keys(tmpState[msg._['#']].options).length)
+              }else{
+                  console.log("No options.")
+              }
               this.msgs = Object.assign({}, this.msgs, tmpState)
 
               cbUpdateUIChatBot({
