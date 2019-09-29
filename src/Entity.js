@@ -342,7 +342,7 @@ export default class Entity {
             //       console.log("No options.")
             //   }
               this.msgs = Object.assign({}, this.msgs, tmpState)
-
+                // console.log("Entity: all msgs=", this.msgs)
               cbUpdateUIChatBot({
                   msgs: this.msgs
               })

@@ -80,6 +80,7 @@ class ChatBot extends Component {
       //   // console.log("Bernard", "a.key=" + a.key + ". msg=" + a.message + '. bot='+ a.bot)
       //   console.log("BernardChatbot", a)
       // })
+      // console.log("ChatBox after format msgs=", msgs)
 
       this.processSteps(msgs);
       // msgs.forEach(a => {
@@ -126,21 +127,23 @@ class ChatBot extends Component {
       // console.log("chatbot", "step.bot=" + step.bot + ". charstep.bot=" + chatSteps[step.id].bot)
       // console.log("chatbot after", step)
     }
+    // console.log("chatbot after forloop chatSteps=", chatSteps)
 
     schema.checkInvalidIds(chatSteps);
 
     let firstStep = {}
+    // console.log("chatbot chatSteps.length=", chatSteps.length)
 
-    if (chatSteps.length > 0) {
-      firstStep = chatSteps[0];
+    // if (chatSteps.length > 0) {
+    //   firstStep = chatSteps[0];
 
-      if (firstStep.message) {
-        const { message } = firstStep;
-        firstStep.message = typeof message === 'function' ? message() : message;
-        chatSteps[firstStep.id].message = firstStep.message;
-      }
+    //   if (firstStep.message) {
+    //     const { message } = firstStep;
+    //     firstStep.message = typeof message === 'function' ? message() : message;
+    //     chatSteps[firstStep.id].message = firstStep.message;
+    //   }
 
-    }
+    // }
 
     const { recognitionEnable } = this.state;
     const { recognitionLang } = this.props;
@@ -159,6 +162,7 @@ class ChatBot extends Component {
       window.addEventListener('resize', this.onResize);
     }
 
+    // console.log("Chatbot before renderedSteps=", renderedSteps)
     const { currentStep, previousStep, previousSteps, renderedSteps } = storage.getData(
       {
         cacheName,
@@ -178,11 +182,13 @@ class ChatBot extends Component {
       }
     );
 
+    // console.log("Chatbot renderedSteps=", renderedSteps)
+    // console.log("Chatbot steps=", chatSteps)
     this.setState({
-      currentStep,
+      // currentStep,
       // defaultUserSettings,
-      previousStep,
-      previousSteps,
+      // previousStep,
+      // previousSteps,
       renderedSteps,
       steps: chatSteps
     });
@@ -591,7 +597,7 @@ class ChatBot extends Component {
   }
 
   renderStep = (step, index) => {
-    // console.log("renderStep index="+index, step);
+    console.log("renderStep index="+index, step);
     if (!step)
       return;
     const { renderedSteps, stageName } = this.state;
@@ -604,23 +610,23 @@ class ChatBot extends Component {
       hideUserAvatar,
       speechSynthesis
     } = this.props;
-    const { options, component, asMessage } = step;
-    const steps = this.generateRenderedStepsById();
+    // const { options, component, asMessage } = step;
+    // const steps = this.generateRenderedStepsById();
     const previousStep = index > 0 ? renderedSteps[index - 1] : {};
 
-    if (component && !asMessage) {
-      return (
-        <CustomStep
-          key={index}
-          step={step}
-          steps={steps}
-          style={customStyle}
-          previousStep={previousStep}
-          previousValue={previousStep.value}
-          triggerNextStep={this.triggerNextStep}
-        />
-      );
-    }
+    // if (component && !asMessage) {
+    //   return (
+    //     <CustomStep
+    //       key={index}
+    //       step={step}
+    //       steps={steps}
+    //       style={customStyle}
+    //       previousStep={previousStep}
+    //       previousValue={previousStep.value}
+    //       triggerNextStep={this.triggerNextStep}
+    //     />
+    //   );
+    // }
 
     // if (options) {
     //   return (
@@ -830,7 +836,7 @@ ChatBot.propTypes = {
 
 ChatBot.defaultProps = {
   avatarStyle: {},
-  botDelay: 1000,
+  botDelay: 0,
   bubbleOptionStyle: {},
   bubbleStyle: {},
   cache: false,
