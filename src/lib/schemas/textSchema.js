@@ -114,4 +114,9 @@ export default [
     types: ['object'],
     required: false
   },
+  {
+    key: 'answer',
+    types: ['string'],
+    required: false
+  },
 ];

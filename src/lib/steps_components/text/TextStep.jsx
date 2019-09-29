@@ -292,7 +292,8 @@ class TextStep extends Component {
       hideUserAvatar,
       me,
       bubbleOptionStyle,
-      key
+      key,
+      triggerNextStep
     } = this.props;
     const { loading, currentQuestion } = this.state;
     const { avatar, stageName, message, when, bot } = step;
@@ -326,7 +327,8 @@ class TextStep extends Component {
           step,
           index: key,
           previousStep,
-          bubbleOptionStyle
+          bubbleOptionStyle,
+          triggerNextStep
         })}
   
         {/* <ImageContainer className="rsc-ts-image-container" user={user}>
