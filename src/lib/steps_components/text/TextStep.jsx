@@ -191,13 +191,13 @@ const Card = props => {
     const { currentQuestion, user, id, avatarStyle, showAvatar, src, bot, step,  index,   previousStep, bubbleOptionStyle, speak, triggerNextStep } = props;
   // const bQuestion = props.message.endsWith('?') ? 'green' : 'yellow';
     // console.log("Bernard", "currentQuestion=" + currentQuestion + ". bot=" + bot);
-    if(step.options){
-      console.log("card option totals=: ", Object.keys(step.options).length);
-      Object.values(step.options).map(obj => {
-        console.log("card option: ", obj);
-      })
-  
-    }
+    // if(step.options){
+    //   console.log("card option totals=: ", Object.keys(step.options).length);
+    //   Object.values(step.options).map(obj => {
+    //     console.log("card option: ", obj);
+    //   })
+    // }
+
     return <div onClick={handleClick} 
                 style={{...largebox, ...flex, margin: user ? '10px, 20px, 10px, 50px' : '10px, 50px, 10px, 20px', backgroundColor: currentQuestion ? 'yellow' : 'green'}} 
                 key={id}>

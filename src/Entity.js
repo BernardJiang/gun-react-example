@@ -275,7 +275,7 @@ export default class Entity {
           var counter=0;
           this.chat.map().once(async (msg) => {
             // console.log('Entity counter=', counter++ )
-            console.log('Entity msg=', msg )
+            // console.log('Entity msg=', msg )
             if(msg.message === undefined && msg.options === undefined){
                 console.log("wrong message", msg)
                 return
@@ -292,12 +292,12 @@ export default class Entity {
                     tmpState[msg._['#']].stageName = author.stageName
                 }
 
-                console.log("msg.options=", msg.options)
+                // console.log("msg.options=", msg.options)
                 if(msg.options){  //this is an option 
                     var opts = {}
                     var optarr = []
                     opts = await this.gun.get(msg.options['#']).then();
-                    console.log("opts=", opts)
+                    // console.log("opts=", opts)
                         // Object.keys(opts).map( (key, idx) => {
                         //     console.log("option  ==== key", key)
                         //     console.log("option ===== idx" , idx)
@@ -312,13 +312,13 @@ export default class Entity {
                         var self = this.gun;
                         Object.keys(opts).forEach(async function(key){
                             if(key.startsWith("op")){
-                                console.log('key= '+key, opts[key])
+                                // console.log('key= '+key, opts[key])
                                 var currop = await self.get(opts[key]['#']).then();
                                 optarr.push(currop)    
                             }
                         })
     
-                        console.log("option all =", optarr)
+                        // console.log("option all =", optarr)
                     // msg.options = optarr
                     // msg = Object.assign({}, ...msg, {options: optarr})
                     // tmpState[msg._['#']].options = optarr
@@ -335,12 +335,12 @@ export default class Entity {
               // var date = new Date(msg.when).toLocaleString().toLowerCase()
             //   console.log('Entity onChatBotMessage', " key .#=" + msg._['#'] + " who=" + msg.stageName + ". msg=" + msg.message + ". bot=" + msg.bot)
               // console.log("local msgs len=", Object.keys(this.msgs).length)
-              console.log("tmpState =", tmpState[msg._['#']])
-              if(tmpState[msg._['#']].options){
-                console.log("tmpState options total=", Object.keys(tmpState[msg._['#']].options).length)
-              }else{
-                  console.log("No options.")
-              }
+            //   console.log("tmpState =", tmpState[msg._['#']])
+            //   if(tmpState[msg._['#']].options){
+            //     console.log("tmpState options total=", Object.keys(tmpState[msg._['#']].options).length)
+            //   }else{
+            //       console.log("No options.")
+            //   }
               this.msgs = Object.assign({}, this.msgs, tmpState)
 
               cbUpdateUIChatBot({

@@ -591,7 +591,7 @@ class ChatBot extends Component {
   }
 
   renderStep = (step, index) => {
-    console.log("renderStep index="+index, step);
+    // console.log("renderStep index="+index, step);
     if (!step)
       return;
     const { renderedSteps, stageName } = this.state;
