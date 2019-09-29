@@ -292,10 +292,9 @@ class TextStep extends Component {
       hideUserAvatar,
       me,
       bubbleOptionStyle,
-      key,
       triggerNextStep
     } = this.props;
-    const { loading, currentQuestion } = this.state;
+    const { loading, currentQuestion, key } = this.state;
     const { avatar, stageName, message, when, bot } = step;
     const { previousStep } = this.props;
     const isSameUser = previousStep && stageName == previousStep.stageName;
