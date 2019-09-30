@@ -217,7 +217,7 @@ const Card = props => {
         <Message bio={props.bio} message={props.message}/>
         {/* <AdBox adpic={props.adpic} /> */}
         {step.options && (<OptionsStep
-          key={step._['#']}
+          key={step.id}
           step={step}
           speak={speak}
           previousValue={previousStep.value}
@@ -309,8 +309,8 @@ class TextStep extends Component {
         {/* <FormCard data={DATA} /> */}
         {/* {Card(DATA[0])} */}
 
-        { !(step._ === undefined) && Card({
-          id: step._['#'],
+        { (step.id !== undefined) && Card({
+          id: step.id,
           author: stageName,
           user,
           bio:  new Date(when).toLocaleString().toLowerCase(),
@@ -324,7 +324,7 @@ class TextStep extends Component {
           alt:"avatar",
           bot,
           step,
-          index: key,
+          index: step.id,
           previousStep,
           bubbleOptionStyle,
           triggerNextStep
