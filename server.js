@@ -10,7 +10,7 @@ var server = http.createServer(app);
 
 var Gun = require('gun');
 var gun = Gun({
-	file: 'data2.json',
+	file: 'data1.json',
 	web: server
 });
 

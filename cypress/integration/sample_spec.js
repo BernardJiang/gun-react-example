@@ -74,7 +74,42 @@ describe('Sign up then sign in', function() {
         .should('have.value', 'A1.')
         .type('{enter}')
         .should('have.value', '')
-        
+
+        cy.get('.rsc-input')
+        .clear()
+        .type('Q1?A11;A12.')
+        .should('have.value', 'Q1?A11;A12.')
+        .type('{enter}')
+        .should('have.value', '')
+
+        cy.get('.rsc-input')
+        .clear()
+        .type('Q2?A21;A22.')
+        .should('have.value', 'Q2?A21;A22.')
+        .type('{enter}')
+        .should('have.value', '')
+
+        cy.get('.rsc-input')
+        .clear()
+        .type('Q3?A31;A32.')
+        .should('have.value', 'Q3?A31;A32.')
+        .type('{enter}')
+        .should('have.value', '')
+
+        cy.get('.rsc-input')
+        .clear()
+        .type('Q4?A4.')
+        .should('have.value', 'Q4?A4.')
+        .type('{enter}')
+        .should('have.value', '')
+
+        cy.get('.rsc-input')
+        .clear()
+        .type('Q5?A51;A52;A53.')
+        .should('have.value', 'Q5?A51;A52;A53.')
+        .type('{enter}')
+        .should('have.value', '')
+
     })
 
 
