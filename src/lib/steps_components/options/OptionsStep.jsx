@@ -6,10 +6,12 @@ import Options from './Options';
 import OptionsStepContainer from './OptionsStepContainer';
 
 class OptionsStep extends Component {
-  onOptionClick = ({ value }) => {
+  onOptionClick = ({ value, label }) => {
     const { triggerNextStep } = this.props;
     console.log("No action yet to value", value)
+    console.log("No action yet to label", label)
     triggerNextStep({ value });
+    return true
   };
 
   renderOption = option => {
@@ -23,7 +25,7 @@ class OptionsStep extends Component {
           className="rsc-os-option-element"
           style={bubbleOptionStyle}
           user={user}
-          onClick={() => this.onOptionClick({ value })}
+          onClick={e => { e.stopPropagation(); this.onOptionClick({ value, label })}}
         >
           {label}
         </OptionElement>

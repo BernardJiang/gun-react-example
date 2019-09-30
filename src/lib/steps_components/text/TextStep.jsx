@@ -182,9 +182,10 @@ const Author = (props) => (
 )
 
 const handleClick = () => {
-  this.setState({
-    currentQuestion: true
-  })
+  console.log("TextStep handleClick is clicked!!!")
+  // this.setState({
+  //   currentQuestion: true
+  // })
 }
 
 const Card = props => {
