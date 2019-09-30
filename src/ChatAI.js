@@ -33,6 +33,18 @@ export default class ChatAI {
             return
         
         var currMessage = msg._.put.message
+        var currAnswer = msg._.put.answer
+
+        if(currAnswer){
+            this.userAttributes.get(currMessage).put({
+                message: currMessage,
+                answer: currAnswer,
+                when: msg._.put.when
+            }, function (ack) {
+                // console.log("save attribute", ack)
+            });
+            return
+        }
         // var c = msg.message.charAt(msg.message.length - 1)
         // var resans2 = PatternAnswer.test(msg.message)
         // console.log("new messaage." + msg.message + ". " + PatternAnswer.test(msg.message))

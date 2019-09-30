@@ -197,12 +197,15 @@ export default class Entity {
 
                 optionsarray = res[2].substr(0, res[2].length-1).split(';')
                 optionsarray.push(res[3].substr(0, res[3].length-1))
-                var cnt = optionsarray.length;
+                // var cnt = optionsarray.length;
                 // msg.count = cnt
                 // optionobj.when = msg.when
                 msg.options = {}
                 //{ value: 'op2', label: 'Option 2', trigger: '6' },
                 
+                //The first option is my own answer if more than one option.
+                msg.answer = optionsarray[0]+"."
+
                 optionsarray.forEach((opt, idx) => {
                     // console.log("Opt opt=", opt)
                     // console.log("Opt idx=", idx)
