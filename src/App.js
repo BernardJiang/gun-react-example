@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } from "react-router-dom";
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
@@ -12,6 +12,89 @@ import Settings from './Settings'
 import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
+
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    this.isAuthenticated = true;
+    setTimeout(cb, 100); // fake async
+  },
+  signout(cb) {
+    this.isAuthenticated = false;
+    setTimeout(cb, 100);
+  }
+};
+
+const AuthButton = withRouter(({ history }) =>
+  fakeAuth.isAuthenticated ? (
+    <p>
+      Welcome!{" "}
+      <button
+        onClick={() => {
+          fakeAuth.signout(() => history.push("/"));
+        }}
+      >
+        Sign out
+      </button>
+    </p>
+  ) : (
+    <p>You are not logged in.</p>
+  )
+);
+
+function PrivateRoute({ component: Component, ...rest }) {
+  // console.log("PrivateRoute", this.props)
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        fakeAuth.isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+
+function Public() {
+  return <h3>Public</h3>;
+}
+
+function Protected() {
+  return <h3>Protected</h3>;
+}
+
+class Login extends Component {
+  state = { redirectToReferrer: false };
+
+  login = () => {
+    fakeAuth.authenticate(() => {
+      this.setState({ redirectToReferrer: true });
+    });
+  };
+
+  render() {
+    let { from } = this.props.location.state || { from: { pathname: "/" } };
+    let { redirectToReferrer } = this.state;
+
+    if (redirectToReferrer) return <Redirect to={from} />;
+
+    return (
+      <div>
+        <p>You must log in to view the page at {from.pathname}</p>
+        <button onClick={this.login}>Log in</button>
+      </div>
+    );
+  }
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -26,14 +109,16 @@ class App extends Component {
 
   }
   
+ 
   render() {
     return (
       <Router>
       <div>
+        <AuthButton />
         <nav>
           <ul>
             <li>
-              <Link to="/">Sign</Link>
+              <Link to="/">Sign in</Link>
             </li>
             <li>
               <Link to="/Settings">Settings</Link>
@@ -44,25 +129,32 @@ class App extends Component {
             <li>
               <Link to="/Chatbot">Chatbot</Link>
             </li>
+            <li>
+              <Link to="/public">Public Page</Link>
+            </li>
+            <li>
+              <Link to="/protected">Protected Page</Link>
+            </li>
           </ul>
         </nav>
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/Chatbot">
+          <Route path="/public" component={Public} />
+          <Route path="/login" component={Login} />
+          <PrivateRoute path="/protected" component={Protected} />
+          <PrivateRoute path="/Chatbot">
             <ChatBot entity={this.entity}/>
-          </Route>
-          <Route path="/Attributes">
+          </PrivateRoute>
+          <PrivateRoute path="/Attributes">
             <Attributes entity={this.entity}/>
-          </Route>
-          <Route path="/Settings">
+          </PrivateRoute>
+          <PrivateRoute path="/Settings">
             <Settings entity={this.entity}/>
-          </Route>
+          </PrivateRoute>
           <Route path="/">
             <Sign entity={this.entity}/>
           </Route>
-        </Switch>
       </div>
     </Router>
     );
