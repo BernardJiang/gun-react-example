@@ -9,7 +9,7 @@ export default class Sign extends Component {
     this.state = {
       stageName: 'alias', 
       password: 'unsafe', 
-      authenticated: false, 
+      authenticated: this.entity.isUserOnline(), 
       userlist: {},
       mencnt: 0
     }
