@@ -60,7 +60,7 @@ class ChatBot extends Component {
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
       defaultUserSettings: {},
-      stageName: "",
+      stageName: this.entity.getStageName(),
       msgs: {}
     };
 

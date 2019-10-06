@@ -109,6 +109,10 @@ export default class Entity {
         return this.user.is
     }
 
+    getStageName(){
+        return this.stageName;
+    }
+
     create(stageName, password) {
         return this.user.create(stageName, password);
     }
