@@ -65,6 +65,7 @@ Console.log((await bob).data)
 */
 
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
+const PatternQuestionWithOptions2 = /(.*)(\x3F)+((.*)(\x3B)+)*((.*)(\x2E)+$)/
 
 export default class Entity {
     constructor(url) {
@@ -405,5 +406,52 @@ export default class Entity {
         // console.log('Entity changeSettings : ' +key + ". msg=" + msg)
     }
 
+    addNewAttribute(newattr){
+        // { this.state.question, this.state.answer, this.state.options}
+        console.log("Attributes", 'question: ' + newattr.question);
+        console.log("Attributes", 'answer: ' + newattr.answer);
+        console.log("Attributes", 'options: ' + newattr.options);
+        var msg = {when: Entity.time()}
+        var optionobj = {}
+        var optionsarray = []
+        var res = PatternQuestionWithOptions.exec(newattr.question + newattr.answer + newattr.options)
+        console.log("Attributes", res);
 
+        if(res === null)  //no match
+            return
+        
+        msg.message = res[1];  //question
+        if(res[2] === undefined){ 
+                //just answer.
+                msg.answer = res[3]
+        }else{
+
+                optionsarray = res[2].substr(0, res[2].length-1).split(';')
+                optionsarray.push(res[3].substr(0, res[3].length-1))
+                // var cnt = optionsarray.length;
+                // msg.count = cnt
+                // optionobj.when = msg.when
+                msg.options = {}
+                //{ value: 'op2', label: 'Option 2', trigger: '6' },
+                
+                //The first option is my own answer if more than one option.
+                msg.answer = optionsarray[0]+"."
+
+                optionsarray.forEach((opt, idx) => {
+                    // console.log("Opt opt=", opt)
+                    // console.log("Opt idx=", idx)
+                    msg.options = Object.assign({}, msg.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
+                })
+                // msg.options = res[2] + res[3];
+                // var msg2 = Object.assign({}, msg, {options: options})
+                // this.chat.set(msg2);
+                // this.chatAI.process(msg2);
+                // return
+        }
+        console.log("After Attributes", msg)
+        this.userAttributes && this.userAttributes.get(msg.message).put(msg, function (ack) {
+            // console.log("save attribute", ack)
+        });
+
+    }
 }
