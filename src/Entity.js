@@ -65,7 +65,7 @@ Console.log((await bob).data)
 */
 
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
-const PatternQuestionWithOptions2 = /(.*)(\x3F)+((.*)(\x3B)+)*((.*)(\x2E)+$)/
+const PatternQuestionWithOptions2 = /((.*?)(\x3F)+)((.*?)(\x3B)+)*((.*?)(\x2E)+$)/
 
 export default class Entity {
     constructor(url) {
@@ -414,7 +414,7 @@ export default class Entity {
         var msg = {when: Entity.time()}
         var optionobj = {}
         var optionsarray = []
-        var res = PatternQuestionWithOptions.exec(newattr.question + newattr.answer + newattr.options)
+        var res = PatternQuestionWithOptions2.exec(newattr.question + newattr.answer + newattr.options)
         console.log("Attributes", res);
 
         if(res === null)  //no match
