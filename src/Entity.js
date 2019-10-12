@@ -65,7 +65,7 @@ Console.log((await bob).data)
 */
 
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
-const PatternQuestionWithOptions2 = /((.*?)(\x3F)+)((.*?)(\x3B)+)*((.*?)(\x2E)+$)/
+const PatternQuestionWithOptions2 = /((.*?)(\x3F)+)((.*)(\x3B)+)*((.*?)(\x2E)+$)/
 
 export default class Entity {
     constructor(url) {
@@ -414,20 +414,32 @@ export default class Entity {
         var msg = {when: Entity.time()}
         var optionobj = {}
         var optionsarray = []
-        var res = PatternQuestionWithOptions2.exec(newattr.question + newattr.answer + newattr.options)
+        var res = PatternQuestionWithOptions2.exec(newattr.question) // +"?"+ newattr.answer + ";" + newattr.options + ".")
         console.log("Attributes", res);
 
         if(res === null)  //no match
             return
+        //0: whole match string.
         
-        msg.message = res[1];  //question
-        if(res[2] === undefined){ 
-                //just answer.
-                msg.answer = res[3]
-        }else{
+        //1: question with ?
+        //2: question without ?
+        //3: ? 
 
-                optionsarray = res[2].substr(0, res[2].length-1).split(';')
-                optionsarray.push(res[3].substr(0, res[3].length-1))
+        //4: options except last option
+        //5: options without last ;
+        //6: ;
+
+        //7: last option
+        //8: last option without .
+        //9: .
+
+        msg.message = res[2];  //question without ?
+        if(res[4] === undefined){ 
+            //just answer.
+            msg.answer = res[8]
+        }else{
+                optionsarray = res[5].split(';')
+                optionsarray.push(res[8])
                 // var cnt = optionsarray.length;
                 // msg.count = cnt
                 // optionobj.when = msg.when
