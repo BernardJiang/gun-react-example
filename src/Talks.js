@@ -1,4 +1,7 @@
 import React, { Component }  from 'react'
+import ReactDOM from 'react-dom';
+import CytoscapeComponent from 'react-cytoscapejs';
+ 
 import Entity from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
@@ -91,7 +94,11 @@ export default class Talks extends Component {
   }
 
   render() {
-    
+    const elements = [
+      { data: { id: 'one', label: 'Node 1' }, position: { x: 0, y: 0 } },
+      { data: { id: 'two', label: 'Node 2' }, position: { x: 100, y: 0 } },
+      { data: { source: 'one', target: 'two', label: 'Edge from Node1 to Node2' } }
+   ];
     const msgs = formatMsgs(this.state.msgs)
     // console.log("attri:", "total attrs=" +Object.keys(this.state.msgs) + " .... msgs = " + Object.keys(msgs))
     //  msgs.forEach(a => {
@@ -117,6 +124,7 @@ export default class Talks extends Component {
           </label>
           <input type="submit" value="Submit" />
       </form>
+      <CytoscapeComponent elements={elements} style={ { width: '600px', height: '600px' } } />
       <ul>
         {msgs.map(msg =>
           <li key={msg.message}><b> Q: {msg.message} </b> A: { "answer" in msg ? msg.answer : ""}<span className="when">{msg.whenFmt}</span></li>
