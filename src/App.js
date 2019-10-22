@@ -63,13 +63,13 @@ function PrivateRoute({ component: Component, ...rest }) {
   );
 }
 
-function Public() {
-  return <h3>Public</h3>;
-}
+// function Public() {
+//   return <h3>Public</h3>;
+// }
 
-function Protected() {
-  return <h3>Protected</h3>;
-}
+// function Protected() {
+//   return <h3>Protected</h3>;
+// }
 
 class Login extends Component {
   state = { redirectToReferrer: false };
@@ -129,20 +129,20 @@ class App extends Component {
             <li>
               <Link to="/Chatbot">Chatbot</Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/public">Public Page</Link>
             </li>
             <li>
               <Link to="/protected">Protected Page</Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-          <Route path="/public" component={Public} />
+          {/* <Route path="/public" component={Public} />
           <Route path="/login" component={Login} />
-          <PrivateRoute path="/protected" component={Protected} />
+          <PrivateRoute path="/protected" component={Protected} /> */}
           <PrivateRoute path="/Chatbot">
             <ChatBot entity={this.entity}/>
           </PrivateRoute>
