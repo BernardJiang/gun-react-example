@@ -76,6 +76,7 @@ export default class Entity {
         // this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.userAttributes = null; // it's null before sign in. this.user.get('attributes')
+        this.userTalks = null;
         this.userSettings = null; // it's null before sign in. this.user.get('settings')
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
@@ -86,6 +87,7 @@ export default class Entity {
         // this.cbUpdateUIChat = ''
         this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
+        this.cbUpdateUITalks = ''
         this.cbUpdateUISettings = ''
         this.cbUpdateUISign = ''
         this.chatAI = new chatAI(this.gun);
@@ -153,6 +155,7 @@ export default class Entity {
         var user = this.user.get(stageName)
         this.userlist.unset(user)
         this.userAttributes = null
+        this.userTalks = null
         this.userSettings = null
         this.stageName = ""
         this.chatAI.setSelf("")
@@ -180,6 +183,7 @@ export default class Entity {
             // this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
             this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
             this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
+            this.cbUpdateUITalks && this.onTalksChange(this.cbUpdateUITalks)
             this.cbUpdateUISettings  && this.onSettingsChange(this.cbUpdateUISettings)
         });
     }
@@ -375,6 +379,26 @@ export default class Entity {
             cbUpdateUIAttributes({
                 stageName: this.stageName,
                 msgs: this.attrs
+            })
+        })
+    }
+
+    onTalksChange(cbUpdateUITalks) {
+        console.log('Entity onTalksChange', 'entered')
+        this.cbUpdateUITalks = cbUpdateUITalks;
+        const tmpState = {}
+        if (this.userTalks == null)
+            return;
+        this.userTalks.map().on((msg) => {
+            tmpState[msg.message] = msg
+            // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.message + ". A="+ msg.answer)
+            // console.log('Entity onAttributesChange', msg)
+            // console.log("local msgs len=", Object.keys(this.msgs).length)
+            // console.log("tmpState len=", Object.keys(tmpState).length)
+            this.talks = Object.assign({}, this.talks, tmpState)
+            cbUpdateUITalks({
+                stageName: this.stageName,
+                msgs: this.talks
             })
         })
     }

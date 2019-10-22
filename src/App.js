@@ -6,6 +6,7 @@ import Entity from './Entity';
 import Sign from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
+import Talks from './Talks' 
 import Settings from './Settings'
 // import Json from './Json'
 // import logo from './logo.svg';
@@ -127,6 +128,9 @@ class App extends Component {
               <Link to="/Attributes">Attributes</Link>
             </li>
             <li>
+              <Link to="/Talks">Talks</Link>
+            </li>
+            <li>
               <Link to="/Chatbot">Chatbot</Link>
             </li>
             {/* <li>
@@ -148,6 +152,9 @@ class App extends Component {
           </PrivateRoute>
           <PrivateRoute path="/Attributes">
             <Attributes entity={this.entity}/>
+          </PrivateRoute>
+          <PrivateRoute path="/Talks">
+            <Talks entity={this.entity}/>
           </PrivateRoute>
           <PrivateRoute path="/Settings">
             <Settings entity={this.entity}/>
