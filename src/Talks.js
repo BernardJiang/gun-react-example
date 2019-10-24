@@ -129,7 +129,32 @@ export default class Talks extends Component {
           </label>
           <input type="submit" value="Submit" />
       </form>
-      <CytoscapeComponent elements={elements} style={ { width: '600px', height: '600px' } } layout={layout} />
+      <CytoscapeComponent   stylesheet={[
+    {
+      selector: 'node',
+      style: {
+        width: 80,
+        height: 20,
+        shape: 'rectangle',
+        'background-fit': 'cover',
+                    'border-color': '#000',
+                    'border-width': 3,
+                    'border-opacity': 0.5,
+                    'content': 'data(label)',
+                    'text-valign': 'center',
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        width: 5,
+        'target-arrow-shape': 'triangle',
+                    'line-color': '#ffaaaa',
+                    'target-arrow-color': '#ffaaaa',
+                    'curve-style': 'bezier'
+      }
+    }
+  ]} elements={elements} style={ { width: '600px', height: '600px' } } layout={layout} />
       <ul>
         {msgs.map(msg =>
           <li key={msg.message}><b> Q: {msg.message} </b> A: { "answer" in msg ? msg.answer : ""}<span className="when">{msg.whenFmt}</span></li>
