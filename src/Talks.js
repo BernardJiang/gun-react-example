@@ -96,10 +96,37 @@ export default class Talks extends Component {
 
   render() {
     const elements = [
-      { data: { id: 'one', label: 'Node 1' }, position: { x: 0, y: 0 } },
-      { data: { id: 'two', label: 'Node 2' }, position: { x: 100, y: 0 } },
+      { data: { id: 'one', label: 'question 1' }, position: { x: 0, y: 0 } },
+      { data: { id: 'two', label: 'question 2' }, position: { x: 100, y: 0 } },
       { data: { source: 'one', target: 'two', label: 'Edge from Node1 to Node2' } }
    ];
+   const stylesheet = [
+    {
+      selector: 'node',
+      style: {
+        width: 80,
+        height: 20,
+        shape: 'rectangle',
+        'background-fit': 'cover',
+        'border-color': '#000',
+        'border-width': 3,
+        'border-opacity': 0.5,
+        'content': 'data(label)',
+        'text-valign': 'center',
+      }
+    },
+    {
+      selector: 'edge',
+      style: {
+        width: 3,
+        'target-arrow-shape': 'triangle',
+        'line-color': '#ffaaaa',
+        'target-arrow-color': '#ffaaaa',
+        'curve-style': 'bezier',
+        'content': 'data(label)'
+      }
+    }
+  ];
 
    cytoscape.use( dagre );
    const layout = { name: 'dagre' };
@@ -129,32 +156,7 @@ export default class Talks extends Component {
           </label>
           <input type="submit" value="Submit" />
       </form>
-      <CytoscapeComponent   stylesheet={[
-    {
-      selector: 'node',
-      style: {
-        width: 80,
-        height: 20,
-        shape: 'rectangle',
-        'background-fit': 'cover',
-                    'border-color': '#000',
-                    'border-width': 3,
-                    'border-opacity': 0.5,
-                    'content': 'data(label)',
-                    'text-valign': 'center',
-      }
-    },
-    {
-      selector: 'edge',
-      style: {
-        width: 5,
-        'target-arrow-shape': 'triangle',
-                    'line-color': '#ffaaaa',
-                    'target-arrow-color': '#ffaaaa',
-                    'curve-style': 'bezier'
-      }
-    }
-  ]} elements={elements} style={ { width: '600px', height: '600px' } } layout={layout} />
+      <CytoscapeComponent   stylesheet={stylesheet} elements={elements} style={ { width: '600px', height: '600px' } } layout={layout} />
       <ul>
         {msgs.map(msg =>
           <li key={msg.message}><b> Q: {msg.message} </b> A: { "answer" in msg ? msg.answer : ""}<span className="when">{msg.whenFmt}</span></li>
