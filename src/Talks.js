@@ -12,7 +12,8 @@ const formatMsgs = msgs => Object.keys(msgs)
   .map(m => ((m.whenFmt = new Date(m.when).toLocaleString().toLowerCase()), m))
 
 
-  
+cytoscape.use( dagre );  
+
 export default class Talks extends Component {
   constructor({entity}) {
     super()
@@ -24,11 +25,13 @@ export default class Talks extends Component {
       answer: '',
       options: '',
       msgs: {},
-    }
+    };
+    this.cy = '';
   }
   
   componentWillMount() {
-    this.entity && this.entity.onTalksChange(this.updateUITalks)   
+    this.entity && this.entity.onTalksChange(this.updateUITalks) 
+    // cytoscape.use( dagre );  
   }
 
   updateUITalks =  obj => {
@@ -96,16 +99,24 @@ export default class Talks extends Component {
 
   render() {
     const elements = [
-      { data: { id: 'one', label: 'question 1' }, position: { x: 0, y: 0 } },
-      { data: { id: 'two', label: 'question 2' }, position: { x: 100, y: 0 } },
-      { data: { source: 'one', target: 'two', label: 'Edge from Node1 to Node2' } }
+      { data: { id: 'n1', label: 'question 1' }  },
+      { data: { id: 'n2', label: 'question 2' }  },
+      { data: { id: 'n3', label: 'question 3' }  },
+      { data: { id: 'n4', label: 'question 4' }  },
+      { data: { id: 'n5', label: 'question 5' }  },
+      { data: { id: 'n6', label: 'question 6' }  },
+      { data: { source: 'n1', target: 'n2', label: 'E12' } },
+      { data: { source: 'n2', target: 'n3', label: 'E23' } },
+      { data: { source: 'n3', target: 'n4', label: 'E34' } },
+      { data: { source: 'n3', target: 'n5', label: 'E35' } },
+      { data: { source: 'n3', target: 'n6', label: 'E36' } },
    ];
    const stylesheet = [
     {
       selector: 'node',
       style: {
         width: 80,
-        height: 20,
+        height: 15,
         shape: 'rectangle',
         'background-fit': 'cover',
         'border-color': '#000',
@@ -128,7 +139,7 @@ export default class Talks extends Component {
     }
   ];
 
-   cytoscape.use( dagre );
+  //  cytoscape.use( dagre );
    const layout = { name: 'dagre' };
 
     const msgs = formatMsgs(this.state.msgs)
@@ -156,7 +167,7 @@ export default class Talks extends Component {
           </label>
           <input type="submit" value="Submit" />
       </form>
-      <CytoscapeComponent   stylesheet={stylesheet} elements={elements} style={ { width: '600px', height: '600px' } } layout={layout} />
+      <CytoscapeComponent   stylesheet={stylesheet} elements={elements} style={ { width: '1200px', height: '800px' } } layout={layout} cy={(cy) => { this.cy = cy }}/>
       <ul>
         {msgs.map(msg =>
           <li key={msg.message}><b> Q: {msg.message} </b> A: { "answer" in msg ? msg.answer : ""}<span className="when">{msg.whenFmt}</span></li>
