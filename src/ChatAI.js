@@ -25,13 +25,17 @@ export default class ChatAI {
     }
 
     process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
-        // console.log("In chatAI")
+        console.log("In chatAI msg=", msg)
         this.user = this.gun.user()
 
         this.userAttributes = this.user.get('Attributes')
         if (!this.userAttributes) //validate attributes.
             return
-        
+
+        if ( msg == undefined || msg._ == undefined || msg._.put == undefined)
+            return
+        if(!("message" in msg._.put))
+            return 
         var currMessage = msg._.put.message
         var currAnswer = msg._.put.answer
 

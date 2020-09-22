@@ -181,7 +181,9 @@ class ChatBot extends Component {
         });
       }
     );
-
+    const re1 = renderedSteps.filter( x => x.when > 1600542171426 )
+    console.log("size of re1 is array = ", Array.isArray(re1))
+    console.log("size of renderedSteps = ", re1.length)
     // console.log("Chatbot renderedSteps=", renderedSteps)
     // console.log("Chatbot steps=", chatSteps)
     this.setState({
@@ -189,7 +191,7 @@ class ChatBot extends Component {
       // defaultUserSettings,
       // previousStep,
       // previousSteps,
-      renderedSteps,
+      renderedSteps: re1,
       steps: chatSteps
     });
   }
@@ -287,10 +289,12 @@ class ChatBot extends Component {
     const isEnd = currentStep.end;
 
     console.log("TriggerNextStep data=", data);
-    if(data == "op0")
+    if( data == undefined )
       return;
-    else
-      return;
+    // if(data == "op0")
+    //   return;
+    // else
+    //   return;
       
     if (data && data.value) {
       currentStep.value = data.value;
