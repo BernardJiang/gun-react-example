@@ -27,6 +27,10 @@ export default class Attributes extends Component {
     this.entity && this.entity.onAttributesChange(this.updateUIAttributes)   
   }
 
+  componentWillUnmount() {
+    this.entity && this.entity.onAttributesChange(null)   
+  }
+
   updateUIAttributes =  obj => {
     this.setState(obj);
   }

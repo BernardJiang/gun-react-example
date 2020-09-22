@@ -322,14 +322,16 @@ export default class Entity {
                         // var op0 = await this.gun.get(opts.op0['#']).then();
                         // var op1 = await this.gun.get(opts.op1['#']).then();
                         var self = this.gun;
-                        Object.keys(opts).forEach(async function(key){
-                            if(key.startsWith("op")){
+                        if (opts ){
+                            
+                            Object.keys(opts).forEach(async function(key){
+                                if(key.startsWith("op")){
                                 // console.log('key= '+key, opts[key])
-                                var currop = await self.get(opts[key]['#']).then();
-                                optarr.push(currop)    
-                            }
-                        })
-    
+                                    var currop = await self.get(opts[key]['#']).then();
+                                    optarr.push(currop)    
+                                }
+                            })
+                        }
                         // console.log("option all =", optarr)
                     // msg.options = optarr
                     // msg = Object.assign({}, ...msg, {options: optarr})
@@ -366,21 +368,30 @@ export default class Entity {
     onAttributesChange(cbUpdateUIAttributes) {
         // console.log('Entity onAttributesChange', 'entered')
         this.cbUpdateUIAttributes = cbUpdateUIAttributes;
-        const tmpState = {}
-        if (this.userAttributes == null)
-            return;
-        this.userAttributes.map().on((msg) => {
-            tmpState[msg.message] = msg
-            // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.message + ". A="+ msg.answer)
-            // console.log('Entity onAttributesChange', msg)
-            // console.log("local msgs len=", Object.keys(this.msgs).length)
-            // console.log("tmpState len=", Object.keys(tmpState).length)
-            this.attrs = Object.assign({}, this.attrs, tmpState)
-            cbUpdateUIAttributes({
-                stageName: this.stageName,
-                msgs: this.attrs
+        if(this.cbUpdateUIAttributes){
+            const tmpState = {}
+            if (this.userAttributes == null)
+                return;
+            this.userAttributes.map().on((msg) => {
+                tmpState[msg.message] = msg
+                // console.log('Entity onAttributesChange : ' + key + ". Q=" + msg.message + ". A="+ msg.answer)
+                // console.log('Entity onAttributesChange', msg)
+                // console.log("local msgs len=", Object.keys(this.msgs).length)
+                // console.log("tmpState len=", Object.keys(tmpState).length)
+                this.attrs = Object.assign({}, this.attrs, tmpState)
+                cbUpdateUIAttributes({
+                    stageName: this.stageName,
+                    msgs: this.attrs
+                })
             })
-        })
+    
+        }else{
+            const tmpState = {}
+            if (this.userAttributes == null)
+                return;
+            this.userAttributes.map().off()
+    
+        }
     }
 
     onTalksChange(cbUpdateUITalks) {
