@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cycle/react": "^2.7.0",
     "bootstrap": "^4.3.1",
     "circular-json": "^0.5.9",
+    "cyclejs": "^0.26.0",
     "cytoscape": "^3.11.0",
     "cytoscape-dagre": "^2.2.2",
     "gun": ">=0.2019.910",
@@ -21,7 +23,8 @@
     "react-load-image": "^0.1.7",
     "react-router-dom": "^5.1.1",
     "react-scripts": "2.1.5",
-    "styled-components": "^4.3.2"
+    "styled-components": "^4.3.2",
+    "xstream": "^11.13.0"
   },
   "scripts": {
     "start": "react-scripts start",
