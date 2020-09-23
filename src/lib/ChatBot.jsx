@@ -22,6 +22,7 @@ import { isMobile } from './utils';
 import { speakFn } from './speechSynthesis';
 
 import Entity from '../Entity'
+import { set } from 'lodash';
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ id: key, ...msgs[key] }))
@@ -183,7 +184,15 @@ class ChatBot extends Component {
     );
     const re1 = renderedSteps.filter( x => x.when > 1600542171426 )
     console.log("size of re1 is array = ", Array.isArray(re1))
-    console.log("size of renderedSteps = ", re1.length)
+    console.log("size of re1 = ", re1.length)
+    const re2 = [... new Set(re1)]
+    const re3 = re2.filter((o, i) => 
+      !i || !((o.when - re2[i-1].when < 200 ) && (o.stageName == re2[i-1].stageName)));
+    console.log("size of re3 is array = ", Array.isArray(re3))
+    console.log("size of re3 = ", re3.length)
+
+    console.log(re3[re3.length-2])
+    console.log(re3[re3.length-1])
     // console.log("Chatbot renderedSteps=", renderedSteps)
     // console.log("Chatbot steps=", chatSteps)
     this.setState({
@@ -191,7 +200,7 @@ class ChatBot extends Component {
       // defaultUserSettings,
       // previousStep,
       // previousSteps,
-      renderedSteps: re1,
+      renderedSteps: re3,
       steps: chatSteps
     });
   }
