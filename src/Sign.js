@@ -20,7 +20,7 @@ export default class Sign extends Component {
   }
 
   componentWillUnmount() {
-    this.entity.leave(this.state.stageName, this.state.password)
+    this.entity && this.entity.leave(this.state.stageName, this.state.password) && this.entity.onSignChange(null);
   }
 
  session = () => {

@@ -127,27 +127,32 @@ export default class Entity {
 
     onSignChange = UpdateUISign => {
         this.cbUpdateUISign = UpdateUISign
-        this.userlist.open((list) => {
-            const reducer = (newList, key) => {
-                if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
-                    return [...newList, {
-                        text: list[key].stageName,
-                        key
-                    }];
-                } else {
-                    return newList;
-                };
-            }
-            const keylist = Object.keys(list);
-            if (keylist === undefined) {
-                return;
-            }
-            var userList1 = keylist.reduce(reducer, []);
-            UpdateUISign && UpdateUISign({
-                userlist: userList1 || [],
-                mencnt :  userList1.length
+        if(this.cbUpdateUISign){
+            this.userlist.open((list) => {
+                const reducer = (newList, key) => {
+                    if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
+                        return [...newList, {
+                            text: list[key].stageName,
+                            key
+                        }];
+                    } else {
+                        return newList;
+                    };
+                }
+                const keylist = Object.keys(list);
+                if (keylist === undefined) {
+                    return;
+                }
+                var userList1 = keylist.reduce(reducer, []);
+                UpdateUISign && UpdateUISign({
+                    userlist: userList1 || [],
+                    mencnt :  userList1.length
+                });
             });
-        });
+    
+        } else{
+                //should unregister callback here.
+        }
     }
 
     leave(stageName, password) {
