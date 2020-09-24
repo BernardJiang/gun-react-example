@@ -182,17 +182,19 @@ class ChatBot extends Component {
         });
       }
     );
-    const re1 = renderedSteps.filter( x => x.when > 1600542171426 )
-    console.log("size of re1 is array = ", Array.isArray(re1))
-    console.log("size of re1 = ", re1.length)
-    const re2 = [... new Set(re1)]
-    const re3 = re2.filter((o, i) => 
-      !i || !(o.stageName == re2[i-1].stageName && o.message == re2[i-1].message));
-    console.log("size of re3 is array = ", Array.isArray(re3))
-    console.log("size of re3 = ", re3.length)
+    const d = new Date();
+    const tlimit = d.getTime() - 1000*60*60*24*1;
+    const re1 = renderedSteps.filter( x => x.when > tlimit)
+    // console.log("size of re1 is array = ", Array.isArray(re1))
+    // console.log("size of re1 = ", re1.length)
+    // const re2 = [... new Set(re1)]
+    const re3 = re1.filter((o, i) => 
+      !i || !(o.stageName == re1[i-1].stageName && o.message == re1[i-1].message));
+    // console.log("size of re3 is array = ", Array.isArray(re3))
+    // console.log("size of re3 = ", re3.length)
 
-    console.log(re3[re3.length-2])
-    console.log(re3[re3.length-1])
+    // console.log(re3[re3.length-2])
+    // console.log(re3[re3.length-1])
     // console.log("Chatbot renderedSteps=", renderedSteps)
     // console.log("Chatbot steps=", chatSteps)
     this.setState({
