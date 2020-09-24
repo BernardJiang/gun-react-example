@@ -187,7 +187,7 @@ class ChatBot extends Component {
     console.log("size of re1 = ", re1.length)
     const re2 = [... new Set(re1)]
     const re3 = re2.filter((o, i) => 
-      !i || !((o.when - re2[i-1].when < 200 ) && (o.stageName == re2[i-1].stageName)));
+      !i || !(o.stageName == re2[i-1].stageName && o.message == re2[i-1].message));
     console.log("size of re3 is array = ", Array.isArray(re3))
     console.log("size of re3 = ", re3.length)
 
@@ -534,22 +534,18 @@ class ChatBot extends Component {
         // downlink: "empty"
       })
 
-      const step = {};
-      //   message: inputValue,
-      //   value: inputValue
-      // };
+      // const step = {};
+      // //   message: inputValue,
+      // //   value: inputValue
+      // // };
 
-      currentStep = Object.assign({}, defaultUserSettings, currentStep, step);
+      // currentStep = Object.assign({}, defaultUserSettings, currentStep, step);
 
-      renderedSteps.push(currentStep);
-      previousSteps.push(currentStep);
+      // renderedSteps.push(currentStep);
+      // previousSteps.push(currentStep);
 
       this.setState(
         {
-          currentStep,
-          renderedSteps,
-          previousSteps,
-          disabled: false,
           inputValue: ''
         },
         () => {
