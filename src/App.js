@@ -43,25 +43,34 @@ const AuthButton = withRouter(({ history }) =>
   )
 );
 
-function PrivateRoute({ component: Component, ...rest }) {
-  // console.log("PrivateRoute", this.props)
+// A wrapper for <Route> that redirects to the login
+// screen if you're not yet authenticated.
+function PrivateRoute({ children, ...rest }) {
   return (
     <Route
       {...rest}
-      render={props =>
+      render={({ location }) =>
         fakeAuth.isAuthenticated ? (
-          <Component {...props} />
+          children
         ) : (
           <Redirect
             to={{
-              pathname: "/login",
-              state: { from: props.location }
+              pathname: "/SignIn",
+              state: { from: location }
             }}
           />
         )
       }
     />
   );
+}
+
+function PublicPage() {
+  return <h3>Public</h3>;
+}
+
+function ProtectedPage() {
+  return <h3>Protected</h3>;
 }
 
 // function Public() {
@@ -110,16 +119,13 @@ class App extends Component {
 
   }
   
- 
-  render() {
+ render() {
     return (
       <Router>
       <div>
-        <AuthButton />
-        <nav>
           <ul>
             <li>
-              <Link to="/">Sign in</Link>
+              <Link to="/SignIn">Sign in</Link>
             </li>
             <li>
               <Link to="/Settings">Settings</Link>
@@ -133,35 +139,41 @@ class App extends Component {
             <li>
               <Link to="/Chatbot">Chatbot</Link>
             </li>
-            {/* <li>
+            <li>
               <Link to="/public">Public Page</Link>
             </li>
             <li>
               <Link to="/protected">Protected Page</Link>
-            </li> */}
+            </li>
           </ul>
-        </nav>
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-          {/* <Route path="/public" component={Public} />
-          <Route path="/login" component={Login} />
-          <PrivateRoute path="/protected" component={Protected} /> */}
-          <PrivateRoute path="/Chatbot">
-            <ChatBot entity={this.entity}/>
+          <Switch>
+          <PrivateRoute path="/protected">
+            <ProtectedPage />
           </PrivateRoute>
+          <Route path="/public">
+            <PublicPage />
+          </Route>
+          
+          <Route path="/Chatbot">
+            <ChatBot entity={this.entity}/>
+          </Route>
           <PrivateRoute path="/Attributes">
             <Attributes entity={this.entity}/>
           </PrivateRoute>
-          <PrivateRoute path="/Talks">
+          <Route path="/Talks">
             <Talks entity={this.entity}/>
-          </PrivateRoute>
-          <PrivateRoute path="/Settings">
+          </Route>
+          <Route path="/Settings">
             <Settings entity={this.entity}/>
-          </PrivateRoute>
+          </Route>
+          <Route path="/SignIn">
+            <Sign entity={this.entity}/>
+          </Route>
           <Route path="/">
             <Sign entity={this.entity}/>
           </Route>
+          </Switch>
+          <AuthButton />
       </div>
     </Router>
     );
@@ -193,5 +205,61 @@ class App extends Component {
     );
   }
 }
+
+function NavLink(props) {
+  return (
+    <li style={styles.navItem}>
+      <Link {...props} style={{ color: "inherit" }} />
+    </li>
+  );
+}
+
+
+const styles = {};
+
+styles.fill = {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0
+};
+
+styles.content = {
+  ...styles.fill,
+  top: "0px",
+  textAlign: "center"
+};
+
+styles.nav = {
+  padding: 0,
+  margin: 0,
+  position: "absolute",
+  top: 0,
+  height: "40px",
+  width: "100%",
+  display: "flex"
+};
+
+styles.navItem = {
+  textAlign: "center",
+  flex: 1,
+  listStyleType: "none",
+  padding: "10px"
+};
+
+styles.hsl = {
+  ...styles.fill,
+  color: "red",
+  paddingTop: "20px",
+  fontSize: "30px"
+};
+
+styles.rgb = {
+  ...styles.fill,
+  color: "white",
+  paddingTop: "20px",
+  fontSize: "30px"
+};
 
 export default App;
