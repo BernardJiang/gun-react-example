@@ -26,22 +26,19 @@ const fakeAuth = {
   }
 };
 
-const AuthButton = withRouter(({ history }) =>
-  fakeAuth.isAuthenticated ? (
+const AuthButton = withRouter(({ history, ...rest }) => {
+  let obj1 = { ...rest }
+  let isAuthenticated = obj1.entity.isUserOnline()
+  return isAuthenticated ? (
     <p>
       Welcome!{" "}
-      <button
-        onClick={() => {
-          fakeAuth.signout(() => history.push("/"));
-        }}
-      >
-        Sign out
-      </button>
     </p>
   ) : (
     <p>You are not logged in.</p>
   )
-);
+}
+)
+
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
@@ -151,7 +148,7 @@ class App extends Component {
             <Sign entity={this.entity}/>
           </Route>
           </Switch>
-          <AuthButton />
+          <AuthButton entity={this.entity}/>
       </div>
     </Router>
     );
