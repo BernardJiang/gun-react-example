@@ -12,7 +12,7 @@ export default class Json extends Component {
     this.state = { newField: '', json: [] }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.gun.on(json => this.setState({ json: formatJson(json) }))
   }
 

@@ -20,7 +20,7 @@ export default class Chat extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
       this.entity && this.entity.onChatMessage(this.updateUIChat)
   }
 

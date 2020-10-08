@@ -75,7 +75,7 @@ export default class Settings extends Component {
     }
   } 
    
-  componentWillMount() {
+  componentDidMount() {
     this.entity && this.entity.onSettingsChange(this.updateUISettings)   
   }
 

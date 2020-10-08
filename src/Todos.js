@@ -14,7 +14,7 @@ export default class Todos extends Component {
     this.state = {newTodo: '', todos: []}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.gun.on(todos => this.setState({
       todos: formatTodos(todos)
     }))

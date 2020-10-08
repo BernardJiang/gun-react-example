@@ -29,7 +29,7 @@ export default class Talks extends Component {
     this.cy = '';
   }
   
-  componentWillMount() {
+  componentDidMount() {
     this.entity && this.entity.onTalksChange(this.updateUITalks) 
     // cytoscape.use( dagre );  
   }

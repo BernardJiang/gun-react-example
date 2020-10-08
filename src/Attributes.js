@@ -23,7 +23,7 @@ export default class Attributes extends Component {
     }
   }
   
-  componentWillMount() {
+  componentDidMount() {
     this.entity && this.entity.onAttributesChange(this.updateUIAttributes)   
   }
 
