@@ -7,27 +7,28 @@ export default class Sign extends Component {
     super()
     this.entity = entity;
     this.state = {
-      stageName: 'alias', 
-      password: 'unsafe', 
+      stageName: this.entity.isUserOnline() ? this.entity.getStageName() : 'alias', 
+      password: this.entity.isUserOnline() ? '' : 'unsafe', 
       authenticated: this.entity.isUserOnline(), 
       userlist: {},
       mencnt: 0
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.entity && this.entity.onSignChange(this.updateUISign);
   }
 
   componentWillUnmount() {
-    this.entity && this.entity.leave(this.state.stageName, this.state.password) && this.entity.onSignChange(null);
+    this.entity && this.entity.onSignChange(null);
+    // this.entity.leave(this.state.stageName, this.state.password)
   }
 
- session = () => {
-  if(!sessionStorage){ return }
-  sessionStorage.alias = this.state.stageName;
-  sessionStorage.tmp = this.state.password;
- }
+  session = () => {
+    if(!sessionStorage){ return }
+    sessionStorage.alias = this.state.stageName;
+    sessionStorage.tmp = this.state.password;
+  }
 
   signup = async e => {
     e.preventDefault()
@@ -83,9 +84,6 @@ export default class Sign extends Component {
 		</div>
 
   }
-
-
-
 
 }
 
