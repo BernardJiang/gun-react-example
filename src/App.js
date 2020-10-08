@@ -46,11 +46,15 @@ const AuthButton = withRouter(({ history }) =>
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 function PrivateRoute({ children, ...rest }) {
+  let obj1 = { ...rest };
+  console.log("obj1  entity=", obj1.entity.stageName)
+  console.log("rest useronline =", obj1.entity.stageName === "")
+  // var entity = rest.Entity
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        fakeAuth.isAuthenticated ? (
+        (obj1.entity.stageName !== "") ? (
           children
         ) : (
           <Redirect
@@ -65,21 +69,7 @@ function PrivateRoute({ children, ...rest }) {
   );
 }
 
-function PublicPage() {
-  return <h3>Public</h3>;
-}
 
-function ProtectedPage() {
-  return <h3>Protected</h3>;
-}
-
-// function Public() {
-//   return <h3>Public</h3>;
-// }
-
-// function Protected() {
-//   return <h3>Protected</h3>;
-// }
 
 class Login extends Component {
   state = { redirectToReferrer: false };
@@ -139,25 +129,13 @@ class App extends Component {
             <li>
               <Link to="/Chatbot">Chatbot</Link>
             </li>
-            <li>
-              <Link to="/public">Public Page</Link>
-            </li>
-            <li>
-              <Link to="/protected">Protected Page</Link>
-            </li>
           </ul>
           <Switch>
-          <PrivateRoute path="/protected">
-            <ProtectedPage />
-          </PrivateRoute>
-          <Route path="/public">
-            <PublicPage />
-          </Route>
           
           <Route path="/Chatbot">
             <ChatBot entity={this.entity}/>
           </Route>
-          <PrivateRoute path="/Attributes">
+          <PrivateRoute path="/Attributes" entity={this.entity} >
             <Attributes entity={this.entity}/>
           </PrivateRoute>
           <Route path="/Talks">

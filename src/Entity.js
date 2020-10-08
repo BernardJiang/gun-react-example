@@ -109,6 +109,11 @@ export default class Entity {
     }
 
     isUserOnline() {
+        if (this.user.is) {
+            console.log('You are logged in');
+         } else {
+            console.log('You are not logged in');
+         }
         return this.user.is
     }
 
