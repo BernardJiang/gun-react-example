@@ -109,7 +109,8 @@ class App extends Component {
  render() {
     return (
       <Router>
-          <ul style={{display: "flex", flexDirection: 'row'}}>
+        <div style={{display: "flex", flexDirection: 'column'}}>
+          <ul style={{display: "flex", flex: 1, flexDirection: 'row'}}>
             <li style={styles.navItem} >
               <Link to="/SignIn">{ this.entity.isUserOnline() ? 'Sign Out' : 'Sign In' }</Link>
             </li>
@@ -127,7 +128,7 @@ class App extends Component {
             </li>
           </ul>
 
-          <Switch>
+          <Switch style={{display: "flex", flex: 16, flexDirection: 'row'}}>
           <Route path="/Chatbot">
             <ChatBot entity={this.entity}/>
           </Route>
@@ -147,7 +148,8 @@ class App extends Component {
             <Sign entity={this.entity}/>
           </Route>
           </Switch>
-          <AuthButton entity={this.entity}/>
+          <AuthButton style={{display: "flex", flex: 1, flexDirection: 'row'}} entity={this.entity}/>
+          </div>          
     </Router>
     );
   }
