@@ -109,26 +109,25 @@ class App extends Component {
  render() {
     return (
       <Router>
-      <div>
-          <ul>
-            <li>
+          <ul style={{display: "flex", flexDirection: 'row'}}>
+            <li style={styles.navItem} >
               <Link to="/SignIn">Sign in</Link>
             </li>
-            <li>
+            <li  style={styles.navItem} >
               <Link to="/Settings">Settings</Link>
             </li>
-            <li>
+            <li  style={styles.navItem} >
               <Link to="/Attributes">Attributes</Link>
             </li>
-            <li>
+            <li  style={styles.navItem} >
               <Link to="/Talks">Talks</Link>
             </li>
-            <li>
+            <li  style={styles.navItem} >
               <Link to="/Chatbot">Chatbot</Link>
             </li>
           </ul>
+
           <Switch>
-          
           <Route path="/Chatbot">
             <ChatBot entity={this.entity}/>
           </Route>
@@ -149,7 +148,6 @@ class App extends Component {
           </Route>
           </Switch>
           <AuthButton entity={this.entity}/>
-      </div>
     </Router>
     );
   }
@@ -197,12 +195,12 @@ styles.fill = {
   left: 0,
   right: 0,
   top: 0,
-  bottom: 0
+  bottom: 0,
 };
 
 styles.content = {
   ...styles.fill,
-  top: "0px",
+  top: "40px",
   textAlign: "center"
 };
 
@@ -213,7 +211,7 @@ styles.nav = {
   top: 0,
   height: "40px",
   width: "100%",
-  display: "flex"
+  display: "flex",
 };
 
 styles.navItem = {
