@@ -111,7 +111,7 @@ class App extends Component {
       <Router>
           <ul style={{display: "flex", flexDirection: 'row'}}>
             <li style={styles.navItem} >
-              <Link to="/SignIn">Sign in</Link>
+              <Link to="/SignIn">{ this.entity.isUserOnline() ? 'Sign Out' : 'Sign In' }</Link>
             </li>
             <li  style={styles.navItem} >
               <Link to="/Settings">Settings</Link>
