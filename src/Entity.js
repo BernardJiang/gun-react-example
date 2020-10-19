@@ -84,6 +84,7 @@ export default class Entity {
         this.msgs = {}
         this.attrs = {}
         this.stageName = ''
+        this.userNameList = []
         // this.cbUpdateUIChat = ''
         this.cbUpdateUIChatBot = ''
         this.cbUpdateUIAttributes = ''
@@ -132,32 +133,7 @@ export default class Entity {
 
     onSignChange = UpdateUISign => {
         this.cbUpdateUISign = UpdateUISign
-        if(this.cbUpdateUISign){
-            this.userlist.open((list) => {
-                const reducer = (newList, key) => {
-                    if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
-                        return [...newList, {
-                            text: list[key].stageName,
-                            key
-                        }];
-                    } else {
-                        return newList;
-                    };
-                }
-                const keylist = Object.keys(list);
-                if (keylist === undefined) {
-                    return;
-                }
-                var userList1 = keylist.reduce(reducer, []);
-                UpdateUISign && UpdateUISign({
-                    userlist: userList1 || [],
-                    mencnt :  userList1.length
-                });
-            });
-    
-        } else{
-                //should unregister callback here.
-        }
+        console.log("Registered cbUpdateUISign ", UpdateUISign)
     }
 
     leave(stageName, password) {
@@ -189,12 +165,45 @@ export default class Entity {
             this.userSettings = this.user.get('Settings')
             this.stageName = stageName;
             this.chatAI.setSelf(this.myself)
-            this.cbUpdateUISign && this.cbUpdateUISign({authenticated: true})
-            // this.cbUpdateUIChat && this.cbUpdateUIChat({stageName});
+
+            if(this.cbUpdateUISign){
+                console.log("calling userlist open");
+                this.userlist.open((list) => {
+                    console.log("Begin of userlist callback list =", list);
+                    const reducer = (newList, key) => {
+                        if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
+                            return [...newList, {
+                                text: list[key].stageName,
+                                key
+                            }];
+                        } else {
+                            return newList;
+                        };
+                    }
+                    const keylist = Object.keys(list);
+                    if (keylist === undefined) {
+                        return;
+                    }
+                    this.userNameList = keylist.reduce(reducer, []);
+                    console.log("Will call setState from userlist callback this.userNameList =", this.userNameList);
+                    this.cbUpdateUISign && this.cbUpdateUISign({
+                        userlist: this.userNameList || [],
+                        mencnt :  this.userNameList.length,
+                        authenticated: true
+                    });
+                    console.log("End of userlist callback");
+                });
+                console.log("end of calling userlist open");
+        
+            } else{
+                    //should unregister callback here.
+            }
+            //If these callbacks are available, then call to notify them.
             this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
-            this.cbUpdateUIAttributes && this.onAttributesChange(this.cbUpdateUIAttributes)
-            this.cbUpdateUITalks && this.onTalksChange(this.cbUpdateUITalks)
-            this.cbUpdateUISettings  && this.onSettingsChange(this.cbUpdateUISettings)
+            this.cbUpdateUIAttributes && this.cbUpdateUIAttributes({})
+            this.cbUpdateUITalks && this.cbUpdateUITalks({})
+            this.cbUpdateUISettings  &&  this.cbUpdateUISettings({stageName})
+    
         });
     }
 

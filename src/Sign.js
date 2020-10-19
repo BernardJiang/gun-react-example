@@ -10,8 +10,8 @@ export default class Sign extends Component {
       stageName: this.entity.isUserOnline() ? this.entity.getStageName() : 'alias', 
       password: this.entity.isUserOnline() ? '' : 'unsafe', 
       authenticated: this.entity.isUserOnline(), 
-      userlist: {},
-      mencnt: 0
+      userlist: this.entity.userNameList,
+      mencnt: this.entity.userNameList.length
     }
   }
 
