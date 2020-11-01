@@ -1,15 +1,10 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-import {createElement} from 'react';
-import {render} from 'react-dom';
 import './index.css';
-import App, { greeter } from './App';
+import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { run } from "@cycle/run";
-import { div, h1, input, makeDOMDriver } from "@cycle/react-dom";
+import { makeDOMDriver } from "@cycle/react-dom";
 
-// render(createElement(App), document.getElementById('root'));
-run(greeter, {
+run(App, {
     react: makeDOMDriver(document.getElementById("root"))
   });
   

@@ -44,8 +44,8 @@ export function greeter(sources) {
   return { react: elem$ };
 }
 
- const Greeter = makeComponent(greeter);
- 
+const Greeter = makeComponent(greeter);
+
 const fakeAuth = {
   isAuthenticated: false,
   authenticate(cb) {
@@ -245,5 +245,5 @@ styles.rgb = {
   fontSize: "30px"
 };
 
-const App = Greeter;
+const App = greeter;
 export default App;
