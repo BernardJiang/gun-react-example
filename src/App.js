@@ -6,7 +6,8 @@ import xs from 'xstream';
 import {run} from '@cycle/run'
 import makeRoutingDriver, {routes} from 'cycle-routing-driver'
 import {render} from 'react-dom';
-
+// import {Router, Route, Link, useRoute} from 'cycle-routing-driver/dist/react/router'
+ 
 
 import Entity from './Entity';
 // import Gun from 'gun/gun'
@@ -22,7 +23,7 @@ import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
 
-function greeter(sources) {
+export function greeter(sources) {
   const input$ = sources.react
     .select('name')
     .events('input')
@@ -31,7 +32,7 @@ function greeter(sources) {
   const name$ = xs.merge(
     sources.react.props().map(p => p.initial),
     input$
-  );
+  )
 
   const elem$ = name$.map(name =>
     div([
@@ -44,9 +45,7 @@ function greeter(sources) {
 }
 
  const Greeter = makeComponent(greeter);
- const App = Greeter;
- export default App;
-
+ 
 const fakeAuth = {
   isAuthenticated: false,
   authenticate(cb) {
@@ -246,4 +245,5 @@ styles.rgb = {
   fontSize: "30px"
 };
 
-// export default App_old;
+const App = Greeter;
+export default App;
