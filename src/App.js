@@ -43,7 +43,7 @@ function greeter(sources) {
   return { react: elem$ };
 }
 
-const Greeter = makeComponent(greeter);
+export const Greeter = makeComponent(greeter);
 
 const fakeAuth = {
   isAuthenticated: false,
