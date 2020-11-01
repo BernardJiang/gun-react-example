@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } from "react-router-dom";
+import {h,  makeComponent} from '@cycle/react';
+import { div, h1, input, p, button} from "@cycle/react-dom";
+import xs from 'xstream';
+import {run} from '@cycle/run'
+import makeRoutingDriver, {routes} from 'cycle-routing-driver'
+import {render} from 'react-dom';
+
+
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
@@ -13,6 +21,29 @@ import Settings from './Settings'
 import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
+
+function greeter(sources) {
+  const input$ = sources.react
+    .select('name')
+    .events('input')
+    .map(ev => ev.target.value);
+
+  const name$ = xs.merge(
+    sources.react.props().map(p => p.initial),
+    input$
+  );
+
+  const elem$ = name$.map(name =>
+    div([
+      h1(name ? 'Welcome, ' + name : 'What\'s your name?'),
+      input({ sel: 'name', type: 'text' })
+    ])
+  );
+
+  return { react: elem$ };
+}
+
+const Greeter = makeComponent(greeter);
 
 const fakeAuth = {
   isAuthenticated: false,
@@ -149,36 +180,12 @@ class App extends Component {
           </Route>
           </Switch>
           <AuthButton style={{display: "flex", flex: 1, flexDirection: 'row'}} entity={this.entity}/>
+          <Greeter initial={"person"} />
           </div>          
     </Router>
     );
   }
-  render1() {
-    return (
-      <div className={['rowC']}>
-        {/* <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header> */}
-        <div className={['column']}>
-          <Sign entity={this.entity} />
-          <Attributes entity={this.entity} />
-        </div>
-        <ChatBot entity={this.entity}/>
-        <Settings entity={this.entity} />
-      </div>
-    );
-  }
+  
 }
 
 function NavLink(props) {
