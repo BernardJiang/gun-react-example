@@ -43,7 +43,9 @@ function greeter(sources) {
   return { react: elem$ };
 }
 
-export const Greeter = makeComponent(greeter);
+ const Greeter = makeComponent(greeter);
+ const App = Greeter;
+ export default App;
 
 const fakeAuth = {
   isAuthenticated: false,
@@ -123,7 +125,7 @@ class Login extends Component {
   }
 }
 
-class App extends Component {
+class App_old extends Component {
   constructor() {
     super();
     var newloc = window.location.origin;
@@ -244,4 +246,4 @@ styles.rgb = {
   fontSize: "30px"
 };
 
-export default App;
+// export default App_old;

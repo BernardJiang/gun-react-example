@@ -3,11 +3,11 @@ import React from 'react';
 import {createElement} from 'react';
 import {render} from 'react-dom';
 import './index.css';
-import App,{ Greeter } from './App';
+import App from './App';
 import * as serviceWorker from './serviceWorker';
 
   
-render(createElement(Greeter), document.getElementById('root'));
+render(createElement(App), document.getElementById('root'));
   
 
 // If you want your app to work offline and load faster, you can change
