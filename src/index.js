@@ -3,9 +3,12 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { run } from "@cycle/run";
 import { makeDOMDriver } from "@cycle/react-dom";
+import {makeHashHistoryDriver} from '@cycle/history';
 
 run(App, {
-    react: makeDOMDriver(document.getElementById("root"))
+    react: makeDOMDriver(document.getElementById("root")),
+    history: makeHashHistoryDriver()
+
   });
   
 

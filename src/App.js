@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } from "react-router-dom";
 import {h,  makeComponent} from '@cycle/react';
-import { div, h1, input, p, button} from "@cycle/react-dom";
+import { div, h1, h3, br, span, input, p, nav, button} from "@cycle/react-dom";
 import xs from 'xstream';
 import {run} from '@cycle/run'
 import makeRoutingDriver, {routes} from 'cycle-routing-driver'
 import {render} from 'react-dom';
 // import {Router, Route, Link, useRoute} from 'cycle-routing-driver/dist/react/router'
+import placeholderText from 'lorem-ipsum';
+import dropRepeats from 'xstream/extra/dropRepeats';
  
 
 import Entity from './Entity';
@@ -24,7 +26,7 @@ import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
 
 export function greeter(sources) {
-  const input$ = sources.react
+    const input$ = sources.react
     .select('name')
     .events('input')
     .map(ev => ev.target.value);
@@ -41,7 +43,7 @@ export function greeter(sources) {
     ])
   );
 
-  return { react: elem$ };
+    return { react: elem$ };
 }
 
 const Greeter = makeComponent(greeter);
@@ -245,5 +247,78 @@ styles.rgb = {
   fontSize: "30px"
 };
 
-const App = greeter;
+function navigation(pathname) {
+  return nav([
+    span({
+      dataset: {page: 'home'},
+      class: {'active': pathname === '/home'}
+    }, 'Home'),
+    span({
+      dataset: {page: 'about'},
+      class: {'active': pathname === '/about'}
+    }, 'About'),
+    span({
+      dataset: {page: 'contacts'},
+      class: {'active': pathname === '/contacts'}
+    }, 'Contacts')
+  ])
+}
+
+function homePageView() {
+  return div([
+    h1('Welcome to History Examples!'),
+    p(placeholderText())
+  ])
+}
+
+function aboutPageView() {
+  return div([
+    h1('About me'),
+    p(placeholderText())
+  ])
+}
+
+function contactsPageView() {
+  return div([
+    h1('Contact me'),
+    p(placeholderText())
+  ])
+}
+
+function view(history$) {
+  return history$.map(history => {
+    const {pathname} = history;
+    let page = h1('404 not found');
+    if (pathname === '/home') {
+      page = homePageView();
+    } else if (pathname === '/about') {
+      page = aboutPageView();
+    } else if (pathname === '/contacts') {
+      page = contactsPageView();
+    }
+
+    return div([
+      navigation(pathname),
+      page,
+      br(),
+      h3('History object'),
+      p(JSON.stringify(history))
+    ]);
+  });
+}
+
+function main(sources) {
+  const history$ = sources.react.select('nav').events('click')
+    .map(e => e.target.dataset.page)
+    .compose(dropRepeats())
+
+  const vdom$ = view(sources.history);
+
+  return {
+    react: vdom$,
+    history: history$,
+  };
+}
+
+const App = main;
 export default App;
