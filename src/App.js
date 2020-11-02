@@ -248,8 +248,8 @@ styles.rgb = {
 };
 
 function navigation(pathname) {
-  return nav([
-    span({
+  return nav('nav', [
+    span('span', {
       dataset: {page: 'home'},
       class: {'active': pathname === '/home'}
     }, 'Home'),
@@ -288,7 +288,7 @@ function contactsPageView() {
 function greeterView(name) {
   return div([
     h1(name ? 'Welcome, ' + name : 'What\'s your name?'),
-    input({ sel: 'name', type: 'text' })
+    input({ sel: 'nameqqq', type: 'text' })
   ])
 }
 
@@ -319,13 +319,18 @@ function view(history$) {
 
 function main(sources) {
   const history$ = sources.react.select('nav').events('click')
-    .map(e => e.target.dataset.page)
+    .map(e => { 
+      console.log("I am here e", e);
+      return e.target.dataset.page})
     .compose(dropRepeats())
 
   const input$ = sources.react
-    .select('name')
+    .select('nameqqq')
     .events('input')
-    .map(ev => ev.target.value);
+    .map(ev => { 
+      console.log(" ev=", ev);
+      return ev.target.value
+    });
 
   const name$ = xs.merge(
     sources.react.props().map(p => p.initial),

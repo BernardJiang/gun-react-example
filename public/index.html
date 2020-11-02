@@ -25,6 +25,33 @@
     <title>React App Bernard</title>
   </head>
   <body>
+    <style>
+      div {
+        margin: .2em;
+      }
+      nav {
+        width: 100%;
+        margin: 0 auto;
+        padding: .5em;
+        text-align: center;
+      }
+      nav > span {
+        padding: .3em;
+        margin: .2em;
+        font-size: 2em;
+        cursor: pointer;
+        background-color: #aeaeae;
+      }
+
+      nav > span.active {
+        background-color: #6e6e6e;
+        color: #cccccc;
+      }
+
+      nav > span:hover {
+        opacity: 0.4;
+      }
+    </style>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
