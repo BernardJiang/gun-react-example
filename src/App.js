@@ -285,8 +285,17 @@ function contactsPageView() {
   ])
 }
 
+function greeterView(name) {
+  return div([
+    h1(name ? 'Welcome, ' + name : 'What\'s your name?'),
+    input({ sel: 'name', type: 'text' })
+  ])
+}
+
 function view(history$) {
-  return history$.map(history => {
+  return history$.map( ([history, name]) => {
+    console.log("History ", history)
+    console.log("name is ", name)
     const {pathname} = history;
     let page = h1('404 not found');
     if (pathname === '/home') {
@@ -302,7 +311,8 @@ function view(history$) {
       page,
       br(),
       h3('History object'),
-      p(JSON.stringify(history))
+      p(JSON.stringify(history)),
+      greeterView(name)
     ]);
   });
 }
@@ -312,7 +322,18 @@ function main(sources) {
     .map(e => e.target.dataset.page)
     .compose(dropRepeats())
 
-  const vdom$ = view(sources.history);
+  const input$ = sources.react
+    .select('name')
+    .events('input')
+    .map(ev => ev.target.value);
+
+  const name$ = xs.merge(
+    sources.react.props().map(p => p.initial),
+    input$
+  )
+  const actions$ = xs.combine(sources.history, name$)
+
+  const vdom$ = view(actions$);
 
   return {
     react: vdom$,
