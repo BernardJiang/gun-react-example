@@ -248,16 +248,16 @@ styles.rgb = {
 };
 
 function navigation(pathname) {
-  return nav('nav', [
-    span('span', {
+  return nav('nav22', [
+    span('span1', {
       dataset: {page: 'home'},
       class: {'active': pathname === '/home'}
     }, 'Home'),
-    span({
+    span('span2', {
       dataset: {page: 'about'},
       class: {'active': pathname === '/about'}
     }, 'About'),
-    span({
+    span('span3', {
       dataset: {page: 'contacts'},
       class: {'active': pathname === '/contacts'}
     }, 'Contacts')
@@ -318,10 +318,19 @@ function view(history$) {
 }
 
 function main(sources) {
-  const history$ = sources.react.select('nav').events('click')
+  const history$ = sources.react.select('nav22').events('click')
     .map(e => { 
-      console.log("I am here e", e);
-      return e.target.dataset.page})
+      // console.log("I am here e", e);
+      console.log("I am here 33 e.target.dataset", e.target.dataset);
+      var et = e.target.dataset;
+      console.log(" 55 e.target", et);
+      et.map(  item => 
+        console.log(item)
+      );
+      // e.target.dataset.foreach (key => {
+      //   console.log("I am here e.target.dataset ", key + " | " + e.target.dataset[key]);
+      // })dataset.page
+      return e.target.textContent})
     .compose(dropRepeats())
 
   const input$ = sources.react
