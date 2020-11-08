@@ -319,7 +319,7 @@ function view(history$) {
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
-      page = greeterView()
+      page = greeterView(name)
     } else if (pathname === '/Sign In') {
       page = signInView()
     } else if (pathname === '/Home') {
@@ -335,7 +335,7 @@ function view(history$) {
       page,
       br(),
       h3('History object'),
-      p(JSON.stringify(history)),
+      p(JSON.stringify(history))
     ]);
   });
 }
