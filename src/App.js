@@ -247,12 +247,12 @@ styles.rgb = {
   fontSize: "30px"
 };
 
-    // span({
-    //   dataset: {page: 'greeter'},
-    //   class: {'active': pathname === '/greeter'}
-    // }, 'Greeter'),
 function navigation(pathname) {
   return nav('main_nav', [
+    span({
+      dataset: {page: 'greeter'},
+      class: {'active': pathname === '/greeter'}
+    }, 'Greeter'),
     span({
       dataset: {page: 'home'},
       class: {'active': pathname === '/home'}
@@ -306,11 +306,10 @@ function view(history$) {
     // console.log("astr is ", astr)
     const {pathname} = history;
     console.log("pathname is ", pathname)
-    let page = div([h1('404 not found'), h1('another line')])
-    if (pathname === '/greeter') {
+    let page = h1('404 not found')
+    if (pathname === '/Greeter') {
       page = greeterView();
     } else if (pathname === '/Home') {
-      // page = div([h1('Welcome to History Examples!'), h1('placeholderText()')])
       page = homePageView()
     } else if (pathname === '/About') {
       page = aboutPageView()
@@ -324,7 +323,6 @@ function view(history$) {
       br(),
       h3('History object'),
       p(JSON.stringify(history)),
-      greeterView(name)
     ]);
   });
 }
