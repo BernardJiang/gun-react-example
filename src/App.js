@@ -247,17 +247,21 @@ styles.rgb = {
   fontSize: "30px"
 };
 
+    // span({
+    //   dataset: {page: 'greeter'},
+    //   class: {'active': pathname === '/greeter'}
+    // }, 'Greeter'),
 function navigation(pathname) {
-  return nav('nav22', [
-    span('span1', {
+  return nav('main_nav', [
+    span({
       dataset: {page: 'home'},
       class: {'active': pathname === '/home'}
     }, 'Home'),
-    span('span2', {
+    span({
       dataset: {page: 'about'},
       class: {'active': pathname === '/about'}
     }, 'About'),
-    span('span3', {
+    span({
       dataset: {page: 'contacts'},
       class: {'active': pathname === '/contacts'}
     }, 'Contacts')
@@ -267,21 +271,23 @@ function navigation(pathname) {
 function homePageView() {
   return div([
     h1('Welcome to History Examples!'),
-    p(placeholderText())
+    p('a paragram'),
+    h1('placeholderTssssext()')
   ])
 }
 
 function aboutPageView() {
+  // var astring = placeholderText();
   return div([
     h1('About me'),
-    p(placeholderText())
+    h1('astring')
   ])
 }
 
 function contactsPageView() {
   return div([
     h1('Contact me'),
-    p(placeholderText())
+    h1('placeholderText()')
   ])
 }
 
@@ -294,16 +300,22 @@ function greeterView(name) {
 
 function view(history$) {
   return history$.map( ([history, name]) => {
+    // var astr = placeholderText()
     console.log("History ", history)
     console.log("name is ", name)
+    // console.log("astr is ", astr)
     const {pathname} = history;
-    let page = h1('404 not found');
-    if (pathname === '/home') {
-      page = homePageView();
-    } else if (pathname === '/about') {
-      page = aboutPageView();
-    } else if (pathname === '/contacts') {
-      page = contactsPageView();
+    console.log("pathname is ", pathname)
+    let page = div([h1('404 not found'), h1('another line')])
+    if (pathname === '/greeter') {
+      page = greeterView();
+    } else if (pathname === '/Home') {
+      // page = div([h1('Welcome to History Examples!'), h1('placeholderText()')])
+      page = homePageView()
+    } else if (pathname === '/About') {
+      page = aboutPageView()
+    } else if (pathname === '/Contacts') {
+      page = contactsPageView()
     }
 
     return div([
@@ -318,18 +330,16 @@ function view(history$) {
 }
 
 function main(sources) {
-  const history$ = sources.react.select('nav22').events('click')
+  const history$ = sources.react.select('main_nav').events('click')
     .map(e => { 
-      // console.log("I am here e", e);
-      console.log("I am here 33 e.target.dataset", e.target.dataset);
-      var et = e.target.dataset;
-      console.log(" 55 e.target", et);
-      et.map(  item => 
-        console.log(item)
-      );
-      // e.target.dataset.foreach (key => {
-      //   console.log("I am here e.target.dataset ", key + " | " + e.target.dataset[key]);
-      // })dataset.page
+      // console.log("selected ", e.target.textContent);
+      // var v = e.target.attributes.getNamedItem('dataset');
+      // console.log("type of v: ", typeof v);
+      // console.log(" v: ", v);
+      // // console.log("page: ", v[0]);
+      //  for( const [k, vv] of Object.entries(v) ) {
+      //    console.log(`${k} : ${vv}`);
+      //  }
       return e.target.textContent})
     .compose(dropRepeats())
 
