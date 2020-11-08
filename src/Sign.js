@@ -92,8 +92,8 @@ export function signIn(state) {
   return div('.hue.page', [
     form('#inup.sign.pad.center',[
       div('.mid.row.col',[
-        h1('Enter your stageName:'),
-        input('.huet.jot.sap', {sel: 'stagename', value: state.stageName, type: '"text', placeholder: 'alias'})
+        h1('Enter your stageName: ' + state.stageName),
+        input({sel: 'stagenameinput',  type: '"text', placeholder: 'alias'})
       ]),
       div('.mid.row.col',[
         h1('And a long private passphrase.'),

@@ -14,6 +14,7 @@ import dropRepeats from 'xstream/extra/dropRepeats';
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
+import { greeter2View } from './greeter2View'
 import Sign, { signIn }from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
@@ -350,18 +351,19 @@ function greeterView(name) {
 }
 
 function view(history$) {
-  return history$.map( ([history, name]) => {
+  return history$.map( ([history, name, stageName]) => {
     // var astr = placeholderText()
     console.log("History ", history)
     console.log("name is ", name)
+    console.log("stageName is ", stageName)
     // console.log("astr is ", astr)
     const {pathname} = history;
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
-      page = greeterView(name)
+      page = greeter2View(name)
     } else if (pathname === '/Sign In') {
-      page = signIn({stageName: "abc", password: "pwd", authenticated: false, userlist: []})
+      page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {
@@ -396,32 +398,31 @@ function main(sources) {
     .compose(dropRepeats())
 
   const input$ = sources.react
-    .select('nameqqq')
+    .select('greeter2namewwww')
     .events('input')
     .map(ev => { 
-      console.log(" ev=", ev);
+      console.log(" greeter input ev=", ev);
       return ev.target.value
     });
 
   const stageNameInput$ = sources.react
-  .select('stagename')
+  .select('stagenameinput')
   .events('input')
   .map(ev => { 
-    console.log(" ev=", ev);
+    console.log(" stagename ev=", ev);
     return ev.target.value
   });
 
-  // const stagename$ = xs.merge(
-  //   sources.react.props().map(p => p.initial),
-  //   stageNameInput$
-  // )
+  const stagename$ = xs.merge(
+    sources.react.props().map(p => p.initial),
+    stageNameInput$
+  );
   const name$ = xs.merge(
     sources.react.props().map(p => p.initial),
-    input$,
-    stageNameInput$
-  )
+    input$    
+  );
 
-  const actions$ = xs.combine(sources.history, name$)
+  const actions$ = xs.combine(sources.history, name$, stagename$);
 
   const vdom$ = view(actions$);
 
