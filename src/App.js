@@ -254,21 +254,37 @@ function navigation(pathname) {
       class: {'active': pathname === '/signin'}
     }, 'Sign In'),
     span({
+      dataset: {page: 'settings'},
+      class: {'active': pathname === '/settings'}
+    }, 'Settings'),
+    span({
+      dataset: {page: 'attributes'},
+      class: {'active': pathname === '/attributes'}
+    }, 'Attributes'),
+    span({
+      dataset: {page: 'talks'},
+      class: {'active': pathname === '/talks'}
+    }, 'Talks'),
+    span({
+      dataset: {page: 'chatbot'},
+      class: {'active': pathname === '/chatbot'}
+    }, 'Chatbot'),
+    span({
       dataset: {page: 'greeter'},
       class: {'active': pathname === '/greeter'}
-    }, 'Greeter'),
-    span({
-      dataset: {page: 'home'},
-      class: {'active': pathname === '/home'}
-    }, 'Home'),
-    span({
-      dataset: {page: 'about'},
-      class: {'active': pathname === '/about'}
-    }, 'About'),
-    span({
-      dataset: {page: 'contacts'},
-      class: {'active': pathname === '/contacts'}
-    }, 'Contacts')
+    }, 'Greeter')
+    // span({
+    //   dataset: {page: 'home'},
+    //   class: {'active': pathname === '/home'}
+    // }, 'Home'),
+    // span({
+    //   dataset: {page: 'about'},
+    //   class: {'active': pathname === '/about'}
+    // }, 'About'),
+    // span({
+    //   dataset: {page: 'contacts'},
+    //   class: {'active': pathname === '/contacts'}
+    // }, 'Contacts')
   ])
 }
 
@@ -278,29 +294,53 @@ function signInView() {
     p('Here to sign in/ up '),
   ])
 }
-
-function homePageView() {
+function settingsView() {
   return div([
-    h1('Welcome to History Examples!'),
-    p('a paragram'),
-    h1('placeholderTssssext()')
+    h1('Settings!'),
+    p('Here to edit settings '),
+  ])
+}
+function attributesView() {
+  return div([
+    h1('Attributes !'),
+    p('Here to attributes '),
+  ])
+}
+function talksView() {
+  return div([
+    h1('Talks !'),
+    p('Here to talks'),
+  ])
+}
+function chatbotView() {
+  return div([
+    h1('Chat bot !'),
+    p('Here to chat bot in/ up '),
   ])
 }
 
-function aboutPageView() {
-  // var astring = placeholderText();
-  return div([
-    h1('About me'),
-    h1('astring')
-  ])
-}
+// function homePageView() {
+//   return div([
+//     h1('Welcome to History Examples!'),
+//     p('a paragram'),
+//     h1('placeholderTssssext()')
+//   ])
+// }
 
-function contactsPageView() {
-  return div([
-    h1('Contact me'),
-    h1('placeholderText()')
-  ])
-}
+// function aboutPageView() {
+//   // var astring = placeholderText();
+//   return div([
+//     h1('About me'),
+//     h1('astring')
+//   ])
+// }
+
+// function contactsPageView() {
+//   return div([
+//     h1('Contact me'),
+//     h1('placeholderText()')
+//   ])
+// }
 
 function greeterView(name) {
   return div([
@@ -322,13 +362,22 @@ function view(history$) {
       page = greeterView(name)
     } else if (pathname === '/Sign In') {
       page = signInView()
-    } else if (pathname === '/Home') {
-      page = homePageView()
-    } else if (pathname === '/About') {
-      page = aboutPageView()
-    } else if (pathname === '/Contacts') {
-      page = contactsPageView()
-    }
+    } else if (pathname === '/Settings') {
+      page = settingsView()
+    } else if (pathname === '/Attributes') {
+      page = attributesView()
+    } else if (pathname === '/Talks') {
+      page = talksView()
+    } else if (pathname === '/Chatbot') {
+      page = chatbotView()
+    } 
+    // else if (pathname === '/Home') {
+    //   page = homePageView()
+    // } else if (pathname === '/About') {
+    //   page = aboutPageView()
+    // } else if (pathname === '/Contacts') {
+    //   page = contactsPageView()
+    // }
 
     return div([
       navigation(pathname),
