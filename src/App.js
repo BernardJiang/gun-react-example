@@ -250,6 +250,10 @@ styles.rgb = {
 function navigation(pathname) {
   return nav('main_nav', [
     span({
+      dataset: {page: 'signin'},
+      class: {'active': pathname === '/signin'}
+    }, 'Sign In'),
+    span({
       dataset: {page: 'greeter'},
       class: {'active': pathname === '/greeter'}
     }, 'Greeter'),
@@ -265,6 +269,13 @@ function navigation(pathname) {
       dataset: {page: 'contacts'},
       class: {'active': pathname === '/contacts'}
     }, 'Contacts')
+  ])
+}
+
+function signInView() {
+  return div([
+    h1('Sign In !'),
+    p('Here to sign in/ up '),
   ])
 }
 
@@ -308,7 +319,9 @@ function view(history$) {
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
-      page = greeterView();
+      page = greeterView()
+    } else if (pathname === '/Sign In') {
+      page = signInView()
     } else if (pathname === '/Home') {
       page = homePageView()
     } else if (pathname === '/About') {
@@ -330,14 +343,6 @@ function view(history$) {
 function main(sources) {
   const history$ = sources.react.select('main_nav').events('click')
     .map(e => { 
-      // console.log("selected ", e.target.textContent);
-      // var v = e.target.attributes.getNamedItem('dataset');
-      // console.log("type of v: ", typeof v);
-      // console.log(" v: ", v);
-      // // console.log("page: ", v[0]);
-      //  for( const [k, vv] of Object.entries(v) ) {
-      //    console.log(`${k} : ${vv}`);
-      //  }
       return e.target.textContent})
     .compose(dropRepeats())
 
