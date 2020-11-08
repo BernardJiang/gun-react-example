@@ -14,7 +14,7 @@ import dropRepeats from 'xstream/extra/dropRepeats';
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
-import Sign from './Sign'
+import Sign, { signIn }from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
 import Talks from './Talks' 
@@ -361,7 +361,7 @@ function view(history$) {
     if (pathname === '/Greeter') {
       page = greeterView(name)
     } else if (pathname === '/Sign In') {
-      page = signInView()
+      page = signIn({stageName: "abc", password: "pwd", authenticated: false, userlist: []})
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {
