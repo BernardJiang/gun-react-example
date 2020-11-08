@@ -403,10 +403,24 @@ function main(sources) {
       return ev.target.value
     });
 
+  const stageNameInput$ = sources.react
+  .select('stagename')
+  .events('input')
+  .map(ev => { 
+    console.log(" ev=", ev);
+    return ev.target.value
+  });
+
+  // const stagename$ = xs.merge(
+  //   sources.react.props().map(p => p.initial),
+  //   stageNameInput$
+  // )
   const name$ = xs.merge(
     sources.react.props().map(p => p.initial),
-    input$
+    input$,
+    stageNameInput$
   )
+
   const actions$ = xs.combine(sources.history, name$)
 
   const vdom$ = view(actions$);
