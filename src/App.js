@@ -14,7 +14,7 @@ import dropRepeats from 'xstream/extra/dropRepeats';
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
-import { greeter2View } from './greeter2View'
+import { greeter2View, greeterComponent } from './greeter2View'
 import Sign, { signIn }from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
@@ -44,7 +44,7 @@ export function greeter(sources) {
     ])
   );
 
-    return { react: elem$ };
+  return { react: elem$ };
 }
 
 const Greeter = makeComponent(greeter);
@@ -350,6 +350,7 @@ function greeterView(name) {
   ])
 }
 
+
 function view(history$) {
   return history$.map( ([history, name, stageName]) => {
     // var astr = placeholderText()
@@ -361,6 +362,11 @@ function view(history$) {
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
+      // const greeter = greeterComponent(childSources);
+      // const childVDom$ = greeter.react;
+      // const childValue$ = greeter.value;
+
+
       page = greeter2View(name)
     } else if (pathname === '/Sign In') {
       page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
@@ -391,6 +397,7 @@ function view(history$) {
   });
 }
 
+
 function main(sources) {
   const history$ = sources.react.select('main_nav').events('click')
     .map(e => { 
@@ -405,15 +412,14 @@ function main(sources) {
       return ev.target.value
     });
 
-  const stageNameInput$ = sources.react
-  .select('stagenameinput')
-  .events('input')
-  .map(ev => { 
-    console.log(" stagename ev=", ev);
-    return ev.target.value
-  });
-
-  const stagename$ = xs.merge(
+    const stageNameInput$ = sources.react
+    .select('stagenameinput')
+    .events('input')
+    .map(ev => { 
+      console.log(" stagename ev=", ev);
+      return ev.target.value
+    });
+    const stagename$ = xs.merge(
     sources.react.props().map(p => p.initial),
     stageNameInput$
   );
@@ -421,6 +427,11 @@ function main(sources) {
     sources.react.props().map(p => p.initial),
     input$    
   );
+
+  const props$ = xs.of({
+    label: 'Welcome!!! ', value: 'no one'
+  });
+  const childSources = {react: sources.react, props: props$};
 
   const actions$ = xs.combine(sources.history, name$, stagename$);
 

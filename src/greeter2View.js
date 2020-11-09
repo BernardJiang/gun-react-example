@@ -23,7 +23,7 @@ export function greeterComponent(sources) {
       });
 
     const state$ = props$
-        .map( props => $input$
+        .map( props => input$
             .map( val => ({
                 label: props.label,
                 value: val
