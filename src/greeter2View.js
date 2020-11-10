@@ -12,43 +12,37 @@ export function greeter2View(name) {
   }
 
 export function greeterComponent(sources) {
-    // const input$ = sources.DOM
-    //   .select('greeterComponent')
-    //   .events('input')
-    //   .map(ev => { 
-    //     console.log(" greeter input ev=", ev);
-    //     return ev.target.value
-    //   });
 
-    // const initialValue$ = sources.props$.map(props => props.initial).take(1);
-    // const newValue$ = input$.map( v => { return { value: v.target.value, label: v.target.value} }); 
-    // const state$ = xs.merge(initialValue$, newValue$).remember();
-    const domSource = sources.DOM;
-    const props$ = sources.props$;
+  const initialValue$ = sources.props$.take(1);
 
-    const input$ = domSource
+  const input$ = sources.DOM
       .select('greeterComponent')
       .events('input')
       .map(ev => { 
-        console.log(" greeter input ev=", ev);
+        console.log(" greeter input ev value=", ev.target.value);
         return ev.target.value
       });
 
-    const state$ = props$
-        .map( props => input$
-            .map( val => ({
-                label: props.label,
-                value: val
-            })) 
-            .startWith(props)
-            )
-        .flatten()
-        .remember();  
+  const newValue$ = input$.map( v => { return { value: v, label: 'lbl: ' + v} }); 
+      
+  const state$ = xs.merge(initialValue$, newValue$).remember();
+  
+    // const state$ = sources.props$
+    //     .map( props => input$
+    //         .map( val => ({
+    //             label: props.label,
+    //             value: val
+    //         })) 
+    //         .startWith(props)
+    //         )
+    //     .flatten()
+    //     .remember();  
+
     const vdom$ = state$
        .map( state => 
            div([
-            h1('Welcome, ' + state.lable ),
-            input({ sel: 'greeterComponent', type: 'text', value: state.value })
+            h1('Welcome, ' + state.label ),
+            input({ sel: 'greeterComponent', type: 'text' })
           ])
         );
     const sinks = {
