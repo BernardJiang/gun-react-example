@@ -352,24 +352,21 @@ function greeterView(name) {
 
 
 function view(history$) {
-  return history$.map( ([history, name, stageName]) => {
+  return history$.map( ([history, nameview]) => {
     // var astr = placeholderText()
     console.log("History ", history)
-    console.log("name is ", name)
-    console.log("stageName is ", stageName)
+
+    // console.log("stageName is ", stageName)
     // console.log("astr is ", astr)
     const {pathname} = history;
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
-      // const greeter = greeterComponent(childSources);
-      // const childVDom$ = greeter.react;
-      // const childValue$ = greeter.value;
 
 
-      page = greeter2View(name)
+      page = nameview
     } else if (pathname === '/Sign In') {
-      page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
+      // page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {
@@ -404,36 +401,37 @@ function main(sources) {
       return e.target.textContent})
     .compose(dropRepeats())
 
-  const input$ = sources.react
-    .select('greeter2namewwww')
-    .events('input')
-    .map(ev => { 
-      console.log(" greeter input ev=", ev);
-      return ev.target.value
-    });
-
-    const stageNameInput$ = sources.react
-    .select('stagenameinput')
-    .events('input')
-    .map(ev => { 
-      console.log(" stagename ev=", ev);
-      return ev.target.value
-    });
-    const stagename$ = xs.merge(
-    sources.react.props().map(p => p.initial),
-    stageNameInput$
-  );
-  const name$ = xs.merge(
-    sources.react.props().map(p => p.initial),
-    input$    
-  );
-
   const props$ = xs.of({
     label: 'Welcome!!! ', value: 'no one'
   });
-  const childSources = {react: sources.react, props: props$};
+  const childSources = {DOM: sources.react, props$};
+  const greetersink = greeterComponent(childSources)
+  // const input$ = sources.react
+  //   .select('greeter2namewwww')
+  //   .events('input')
+  //   .map(ev => { 
+  //     console.log(" greeter input ev=", ev);
+  //     return ev.target.value
+  //   });
 
-  const actions$ = xs.combine(sources.history, name$, stagename$);
+  //   const stageNameInput$ = sources.react
+  //   .select('stagenameinput')
+  //   .events('input')
+  //   .map(ev => { 
+  //     console.log(" stagename ev=", ev);
+  //     return ev.target.value
+  //   });
+  //   const stagename$ = xs.merge(
+  //   sources.react.props().map(p => p.initial),
+  //   stageNameInput$
+  // );
+  // const name$ = xs.merge(
+  //   sources.react.props().map(p => p.initial),
+  //   input$    
+  // );
+
+
+  const actions$ = xs.combine(sources.history, greetersink.DOM);
 
   const vdom$ = view(actions$);
 

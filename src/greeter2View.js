@@ -2,6 +2,7 @@ import React, { Component }  from 'react'
 import './style.css'
 import Entity from './Entity';
 import { div, form, ul, h1, input, button } from '@cycle/react-dom';
+import xs from 'xstream';
 
 export function greeter2View(name) {
     return div([
@@ -11,8 +12,19 @@ export function greeter2View(name) {
   }
 
 export function greeterComponent(sources) {
-    const domSource = sources.react;
-    const props$ = sources.props;
+    // const input$ = sources.DOM
+    //   .select('greeterComponent')
+    //   .events('input')
+    //   .map(ev => { 
+    //     console.log(" greeter input ev=", ev);
+    //     return ev.target.value
+    //   });
+
+    // const initialValue$ = sources.props$.map(props => props.initial).take(1);
+    // const newValue$ = input$.map( v => { return { value: v.target.value, label: v.target.value} }); 
+    // const state$ = xs.merge(initialValue$, newValue$).remember();
+    const domSource = sources.DOM;
+    const props$ = sources.props$;
 
     const input$ = domSource
       .select('greeterComponent')
@@ -32,16 +44,15 @@ export function greeterComponent(sources) {
             )
         .flatten()
         .remember();  
-
     const vdom$ = state$
        .map( state => 
            div([
             h1('Welcome, ' + state.lable ),
-            input({ sel: 'namecomp', type: 'text', value: state.value })
+            input({ sel: 'greeterComponent', type: 'text', value: state.value })
           ])
         );
     const sinks = {
-        react: vdom$,
+        DOM: vdom$,
         value: state$.map(state => state.value)
     }
     return sinks;
