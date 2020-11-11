@@ -9,7 +9,7 @@ import { makeGunDriver } from 'cycle-gun';
 run(App, {
     react: makeDOMDriver(document.getElementById("root")),
     history: makeHashHistoryDriver(),
-    gun: makeGunDriver({root: 'root', peers: ['http://localhost:8765']})
+    gun: makeGunDriver({root: 'root', peers: ['http://localhost:8765/gun']})
   });
   
 
