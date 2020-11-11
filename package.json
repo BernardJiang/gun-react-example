@@ -8,6 +8,7 @@
     "@cycle/run": "^5.5.0",
     "bootstrap": "^4.3.1",
     "circular-json": "^0.5.9",
+    "cycle-gun": "^0.2.0",
     "cycle-routing-driver": "^1.4.0",
     "cyclejs": "^0.26.0",
     "cytoscape": "^3.11.0",
