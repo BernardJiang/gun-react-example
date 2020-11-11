@@ -114,12 +114,12 @@ export function SignIn(sources) {
 
   const state$ = xs.merge(initialValue$, newValueName$, newValuePassword$).remember();
 
-  // const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
-  //   .map( ([init, name, pwd]) => 
-  //     { var astate = { ...init, ...name, ...pwd }
-  //       console.log("astate =", astate)
-  //       return { ...init, ...name, ...pwd } } )  
-  //   .remember();
+  const stateout$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
+    .map( ([init, name, pwd]) => 
+      { var astate = { ...name, ...pwd }
+        console.log("astate =", astate)
+        return { ...name, ...pwd } })
+        .remember();
 
   const vdom$ = state$
     .map( state =>
@@ -156,7 +156,7 @@ export function SignIn(sources) {
 
   const sinks = {
     DOM: vdom$,
-    value: state$
+    value: stateout$
   }
   return sinks;
 
