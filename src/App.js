@@ -26,28 +26,6 @@ import './App.css';
 import { ThemeProvider } from 'styled-components';
 import ChatBot from './lib/index';
 
-export function greeter(sources) {
-    const input$ = sources.react
-    .select('name')
-    .events('input')
-    .map(ev => ev.target.value);
-
-  const name$ = xs.merge(
-    sources.react.props().map(p => p.initial),
-    input$
-  )
-
-  const elem$ = name$.map(name =>
-    div([
-      h1(name ? 'Welcome, ' + name : 'What\'s your name?'),
-      input({ sel: 'name', type: 'text' })
-    ])
-  );
-
-  return { react: elem$ };
-}
-
-const Greeter = makeComponent(greeter);
 
 const fakeAuth = {
   isAuthenticated: false,
@@ -184,7 +162,7 @@ class App_old extends Component {
           </Route>
           </Switch>
           <AuthButton style={{display: "flex", flex: 1, flexDirection: 'row'}} entity={this.entity}/>
-          <Greeter initial={"person"} />
+          {/* <Greeter initial={"person"} /> */}
           </div>          
     </Router>
     );
@@ -375,17 +353,13 @@ function main(sources) {
   });
   const childSources = {DOM: sources.react, props$};
   const greetersink = greeterComponent(childSources)
-  
-  
-  
+    
   const propssign$ = xs.of({
     stageName: 'whoamI', password: 'pwd', authenticated: false, userlist: []
   });
   const childSourcesSignIn = {DOM: sources.react, props$: propssign$};
   const signsink = SignIn(childSourcesSignIn);
 
-
-  
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
 
   const vdom$ = view(actions$);
@@ -402,7 +376,7 @@ function main(sources) {
   return {
     react: vdom$,
     history: history$,
-    // gun: outgoingGunEvents$
+    // gun: xs.merge(sources.gun), // outgoingGunEvents$
   };
 }
 

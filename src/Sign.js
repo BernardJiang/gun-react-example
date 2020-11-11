@@ -112,9 +112,25 @@ export function SignIn(sources) {
   const newValueName$ = stageNameInput$.map( v => { return {  stageName: v }}).remember(); 
   const newValuePassword$ = passwordInput$.map( v => { return {  password: v }}).remember(); 
 
-  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
-    .map( ([init, name, pwd]) => 
-    {  const  astate = {...init, ...name, ...pwd }
+  const clickeventsignin$ = sources.DOM
+  .select('btnsignin')
+  .events('click')
+  .map( ev => { 
+    console.log(" sign in clicked ev value=", ev.target.value);
+    return { signin: true}
+  }).startWith(false);
+
+  const clickeventsignup$ = sources.DOM
+  .select('btnsignup')
+  .events('click')
+  .map( ev => { 
+    console.log(" sign up clicked ev value=", ev.target.value);
+    return { signup: true}
+  }).startWith(false);
+
+  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$, clickeventsignin$, clickeventsignup$)
+    .map( ([init, name, pwd, signin, signup]) => 
+    {  const  astate = {...init, ...name, ...pwd, ...signin, ...signup }
     // const astate = { stageName : 'abc', password: 'dfg' };
     console.log("astate =", astate)
    return  astate})
@@ -133,9 +149,10 @@ export function SignIn(sources) {
             input({sel: 'signpassword', type: 'password', placeholder: 'password'})
           ]),
           div('.mid.row.col.go',[
-             button('.huet.sap.act.symbol', state.authenticated ? 'Sign Out' : 'Sign In'),
+             button({sel: 'btnsignin'} , state.authenticated ? 'Sign Out' : 'Sign In'),
              div('.or', [ h1('or') ]),
-             button('.huet.sap.act.symbol', 'sign up')
+             button({sel: 'btnsignup'}, 'sign up'),
+             h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
           ]),
           div('.mid.row.col.go', [
              h1('number of users : {state.mencnt}')
