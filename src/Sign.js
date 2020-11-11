@@ -89,40 +89,7 @@ export default class Sign extends Component {
 
 }
 
-export function signIn(state) {
-  return div('.hue.page', [
-    form('#inup.sign.pad.center',[
-      div('.mid.row.col',[
-        h1('Enter your stageName: ' + state.stageName),
-        input({sel: 'stagenameinput',  type: 'text', placeholder: 'alias'})
-      ]),
-      div('.mid.row.col',[
-        h1('And a long private passphrase.'),
-        input('.huet.jot.sap', {sel: 'password', type: 'password', placeholder: 'password'})      
-      ]),
-      div('.mid.row.col.go',[
-         button('.huet.sap.act.symbol', state.authenticated ? 'Sign Out' : 'Sign In'),
-         div('.or', [ h1('or') ]),
-         button('.huet.sap.act.symbol', 'sign up')
-      ]),
-      div('.mid.row.col.go', [
-         h1('number of users : {state.mencnt}')
-      ])
-      // <a href="info">more info</a>
-    ]),
-
-    ul(
-    //   {
-    //     !!state.userlist.length && state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
-    //   }
-    // </ul>
-    )
-  ])
-
-}
-
-
-export function signInComponent(sources) {
+export function SignIn(sources) {
 
   const initialValue$ = sources.props$.take(1);
 
@@ -134,9 +101,25 @@ export function signInComponent(sources) {
       return ev.target.value
     });
 
-  const newValue$ = stageNameInput$.map( v => { return {  stageName: v, password: "pwd", authenticated: false, userlist: [] }}); 
+    const passwordInput$ = sources.DOM
+    .select('signpassword')
+    .events('input')
+    .map(ev => { 
+      console.log(" password ev value=", ev.target.value);
+      return ev.target.value
+    });
 
-  const state$ = xs.merge(initialValue$, newValue$).remember();
+  const newValueName$ = stageNameInput$.map( v => { return {  stageName: v }}); 
+  const newValuePassword$ = passwordInput$.map( v => { return {  password: v }}); 
+
+  const state$ = xs.merge(initialValue$, newValueName$, newValuePassword$).remember();
+
+  // const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
+  //   .map( ([init, name, pwd]) => 
+  //     { var astate = { ...init, ...name, ...pwd }
+  //       console.log("astate =", astate)
+  //       return { ...init, ...name, ...pwd } } )  
+  //   .remember();
 
   const vdom$ = state$
     .map( state =>
@@ -148,7 +131,7 @@ export function signInComponent(sources) {
           ]),
           div('.mid.row.col',[
             h1('And a long private passphrase.'),
-            input('.huet.jot.sap', {sel: 'password', type: 'password', placeholder: 'password'})      
+            input({sel: 'signpassword', type: 'password', placeholder: 'password'})
           ]),
           div('.mid.row.col.go',[
              button('.huet.sap.act.symbol', state.authenticated ? 'Sign Out' : 'Sign In'),
@@ -173,7 +156,7 @@ export function signInComponent(sources) {
 
   const sinks = {
     DOM: vdom$,
-    value: newValue$
+    value: state$
   }
   return sinks;
 

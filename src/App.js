@@ -15,7 +15,7 @@ import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
 import { greeter2View, greeterComponent } from './greeter2View'
-import Sign, { signIn, signInComponent }from './Sign'
+import Sign, { SignIn }from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
 import Talks from './Talks' 
@@ -409,10 +409,10 @@ function main(sources) {
   
   
   const propssign$ = xs.of({
-    stageName: 'whoamI', password: "pwd", authenticated: false, userlist: []
+    stageName: 'whoamI', password: 'pwd', authenticated: false, userlist: []
   });
   const childSourcesSignIn = {DOM: sources.react, props$: propssign$};
-  const signsink = signInComponent(childSourcesSignIn);
+  const signsink = SignIn(childSourcesSignIn);
 
 
   
