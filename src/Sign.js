@@ -129,7 +129,7 @@ export function SignIn(sources) {
             input({sel: 'stagenameinput',  type: 'text', placeholder: 'alias'})
           ]),
           div('.mid.row.col',[
-            h1('And a long private passphrase.'),
+            h1('A long private passphrase: ' + state.password),
             input({sel: 'signpassword', type: 'password', placeholder: 'password'})
           ]),
           div('.mid.row.col.go',[
