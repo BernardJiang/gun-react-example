@@ -114,7 +114,6 @@ class App_old extends Component {
         + window.location.hostname
         + (window.location.port ? ':' + '8765' : '');
     }
-
     this.entity = new Entity(newloc + '/gun');
 
   }
@@ -343,6 +342,24 @@ function view(history$) {
 
 
 function main(sources) {
+  const { react, gun } = sources;
+
+  console.log('sources.gun', gun)
+
+  var newloc = window.location.origin;
+  if (window.location.port !== '8765') {
+    newloc = window.location.protocol + "//"
+      + window.location.hostname
+      + (window.location.port ? ':' + '8765' : '');
+  }
+  console.log(newloc + '/gun')
+
+  const signlist$ = gun
+    .select('signlist')
+    .shallow();
+
+    console.log('gun signlist$', signlist$)
+
   const history$ = sources.react.select('main_nav').events('click')
     .map(e => { 
       return e.target.textContent})
@@ -364,19 +381,24 @@ function main(sources) {
 
   const vdom$ = view(actions$);
 
+
    // sink map filtered stream of payloads into function and emit function
-  //  const outgoingGunEvents$ = event$
-  //  .filter(event => event.typeKey === 'putTodo')
-  //  .map((event) => {
-  //    return (gunInstance) => {
-  //      return gunInstance.get('example/todo/data').path(uuid()).put(event.payload);
-  //    }
-  //  })
+   const outgoingGunEvents$ = signsink.value
+   .map( state => {
+    console.log("about to send a command to gun! state=")
+    console.log(state)
+    if (state.signin) {
+      return (gunInstance) => {
+          return gunInstance.get(state.stageName).put({stageName: state.stageName, password: state.password} );
+        }
+    }
+    
+   })
 
   return {
     react: vdom$,
     history: history$,
-    // gun: xs.merge(sources.gun), // outgoingGunEvents$
+    gun: outgoingGunEvents$
   };
 }
 
