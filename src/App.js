@@ -15,7 +15,7 @@ import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
 import { greeter2View, greeterComponent } from './greeter2View'
-import Sign, { signIn }from './Sign'
+import Sign, { signIn, signInComponent }from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
 import Talks from './Talks' 
@@ -352,7 +352,7 @@ function greeterView(name) {
 
 
 function view(history$) {
-  return history$.map( ([history, nameview]) => {
+  return history$.map( ([history, nameview, signview]) => {
     // var astr = placeholderText()
     console.log("History ", history)
 
@@ -367,6 +367,7 @@ function view(history$) {
       page = nameview
     } else if (pathname === '/Sign In') {
       // page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
+      // page = signview
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {
@@ -406,32 +407,18 @@ function main(sources) {
   });
   const childSources = {DOM: sources.react, props$};
   const greetersink = greeterComponent(childSources)
-  // const input$ = sources.react
-  //   .select('greeter2namewwww')
-  //   .events('input')
-  //   .map(ev => { 
-  //     console.log(" greeter input ev=", ev);
-  //     return ev.target.value
-  //   });
-
-  //   const stageNameInput$ = sources.react
-  //   .select('stagenameinput')
-  //   .events('input')
-  //   .map(ev => { 
-  //     console.log(" stagename ev=", ev);
-  //     return ev.target.value
-  //   });
-  //   const stagename$ = xs.merge(
-  //   sources.react.props().map(p => p.initial),
-  //   stageNameInput$
-  // );
-  // const name$ = xs.merge(
-  //   sources.react.props().map(p => p.initial),
-  //   input$    
-  // );
+  
+  
+  
+  const propssign$ = xs.of({
+    stageName: 'whoamI', password: "pwd", authenticated: false, userlist: []
+  });
+  const childSourcesSignIn = {DOM: sources.react, props$: propssign$};
+  const signsink = signInComponent(childSourcesSignIn);
 
 
-  const actions$ = xs.combine(sources.history, greetersink.DOM);
+  
+  const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
 
   const vdom$ = view(actions$);
 

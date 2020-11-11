@@ -26,17 +26,6 @@ export function greeterComponent(sources) {
   const newValue$ = input$.map( v => { return { value: v, label: 'lbl: ' + v} }); 
       
   const state$ = xs.merge(initialValue$, newValue$).remember();
-  
-    // const state$ = sources.props$
-    //     .map( props => input$
-    //         .map( val => ({
-    //             label: props.label,
-    //             value: val
-    //         })) 
-    //         .startWith(props)
-    //         )
-    //     .flatten()
-    //     .remember();  
 
     const vdom$ = state$
        .map( state => 

@@ -1,3 +1,4 @@
+import xs from 'xstream';
 import React, { Component }  from 'react'
 import './style.css'
 import Entity from './Entity';
@@ -93,7 +94,7 @@ export function signIn(state) {
     form('#inup.sign.pad.center',[
       div('.mid.row.col',[
         h1('Enter your stageName: ' + state.stageName),
-        input({sel: 'stagenameinput',  type: '"text', placeholder: 'alias'})
+        input({sel: 'stagenameinput',  type: 'text', placeholder: 'alias'})
       ]),
       div('.mid.row.col',[
         h1('And a long private passphrase.'),
@@ -121,3 +122,39 @@ export function signIn(state) {
 }
 
 
+export function signInComponent(sources) {
+
+  const initialValue$ = sources.props$.take(1);
+
+  const stageNameInput$ = sources.DOM
+    .select('stagenameinput')
+    .events('input')
+    .map(ev => { 
+      console.log(" stagename ev value=", ev.target.value);
+      return ev.target.value
+    });
+
+  const newValue$ = stageNameInput$.map( v => { return {  stageName: v, password: "pwd", authenticated: false, userlist: [] }}); 
+
+  const state$ = xs.merge(initialValue$, newValue$).remember();
+
+  const vdom$ = state$
+    .map( state =>  
+      div('.hue.page', [
+        form('#inup.sign.pad.center',[
+          div('.mid.row.col',[
+            h1('Enter your stageName: ' + state.stageName),
+            input({sel: 'stagenameinput',  type: 'text', placeholder: 'alias'})
+          ])
+        ])
+
+      ])
+    );
+
+  const sinks = {
+    DOM: vdom$,
+    value: newValue$
+  }
+  return sinks;
+
+}
