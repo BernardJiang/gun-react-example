@@ -362,12 +362,10 @@ function view(history$) {
     console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
-
-
       page = nameview
     } else if (pathname === '/Sign In') {
       // page = signIn({stageName: stageName, password: "pwd", authenticated: false, userlist: []})
-      // page = signview
+      page = signview
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {

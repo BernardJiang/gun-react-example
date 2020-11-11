@@ -139,16 +139,36 @@ export function signInComponent(sources) {
   const state$ = xs.merge(initialValue$, newValue$).remember();
 
   const vdom$ = state$
-    .map( state =>  
+    .map( state =>
       div('.hue.page', [
         form('#inup.sign.pad.center',[
           div('.mid.row.col',[
             h1('Enter your stageName: ' + state.stageName),
             input({sel: 'stagenameinput',  type: 'text', placeholder: 'alias'})
+          ]),
+          div('.mid.row.col',[
+            h1('And a long private passphrase.'),
+            input('.huet.jot.sap', {sel: 'password', type: 'password', placeholder: 'password'})      
+          ]),
+          div('.mid.row.col.go',[
+             button('.huet.sap.act.symbol', state.authenticated ? 'Sign Out' : 'Sign In'),
+             div('.or', [ h1('or') ]),
+             button('.huet.sap.act.symbol', 'sign up')
+          ]),
+          div('.mid.row.col.go', [
+             h1('number of users : {state.mencnt}')
           ])
-        ])
-
+          // <a href="info">more info</a>
+        ]),
+    
+        ul(
+        //   {
+        //     !!state.userlist.length && state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
+        //   }
+        // </ul>
+        )
       ])
+     
     );
 
   const sinks = {
