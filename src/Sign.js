@@ -99,7 +99,7 @@ export function SignIn(sources) {
     .map(ev => { 
       console.log(" stagename ev value=", ev.target.value);
       return ev.target.value
-    });
+    }).startWith("namewho");
 
     const passwordInput$ = sources.DOM
     .select('signpassword')
@@ -107,19 +107,18 @@ export function SignIn(sources) {
     .map(ev => { 
       console.log(" password ev value=", ev.target.value);
       return ev.target.value
-    });
+    }).startWith("passwordwild");
 
-  const newValueName$ = stageNameInput$.map( v => { return {  stageName: v }}); 
-  const newValuePassword$ = passwordInput$.map( v => { return {  password: v }}); 
+  const newValueName$ = stageNameInput$.map( v => { return {  stageName: v }}).remember(); 
+  const newValuePassword$ = passwordInput$.map( v => { return {  password: v }}).remember(); 
 
-  const state$ = xs.merge(initialValue$, newValueName$, newValuePassword$).remember();
-
-  const stateout$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
+  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$)
     .map( ([init, name, pwd]) => 
-      { var astate = { ...name, ...pwd }
-        console.log("astate =", astate)
-        return { ...name, ...pwd } })
-        .remember();
+    {  const  astate = {...init, ...name, ...pwd }
+    // const astate = { stageName : 'abc', password: 'dfg' };
+    console.log("astate =", astate)
+   return  astate})
+     .remember();
 
   const vdom$ = state$
     .map( state =>
@@ -156,7 +155,7 @@ export function SignIn(sources) {
 
   const sinks = {
     DOM: vdom$,
-    value: stateout$
+    value: state$
   }
   return sinks;
 
