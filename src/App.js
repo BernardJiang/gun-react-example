@@ -320,36 +320,6 @@ function chatbotView() {
   ])
 }
 
-// function homePageView() {
-//   return div([
-//     h1('Welcome to History Examples!'),
-//     p('a paragram'),
-//     h1('placeholderTssssext()')
-//   ])
-// }
-
-// function aboutPageView() {
-//   // var astring = placeholderText();
-//   return div([
-//     h1('About me'),
-//     h1('astring')
-//   ])
-// }
-
-// function contactsPageView() {
-//   return div([
-//     h1('Contact me'),
-//     h1('placeholderText()')
-//   ])
-// }
-
-function greeterView(name) {
-  return div([
-    h1(name ? 'Welcome, ' + name : 'What\'s your name?'),
-    input({ sel: 'nameqqq', type: 'text' })
-  ])
-}
-
 
 function view(history$) {
   return history$.map( ([history, nameview, signview]) => {
@@ -420,9 +390,19 @@ function main(sources) {
 
   const vdom$ = view(actions$);
 
+   // sink map filtered stream of payloads into function and emit function
+  //  const outgoingGunEvents$ = event$
+  //  .filter(event => event.typeKey === 'putTodo')
+  //  .map((event) => {
+  //    return (gunInstance) => {
+  //      return gunInstance.get('example/todo/data').path(uuid()).put(event.payload);
+  //    }
+  //  })
+
   return {
     react: vdom$,
     history: history$,
+    // gun: outgoingGunEvents$
   };
 }
 

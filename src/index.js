@@ -4,11 +4,12 @@ import * as serviceWorker from './serviceWorker';
 import { run } from "@cycle/run";
 import { makeDOMDriver } from "@cycle/react-dom";
 import {makeHashHistoryDriver} from '@cycle/history';
+import { makeGunDriver } from 'cycle-gun';
 
 run(App, {
     react: makeDOMDriver(document.getElementById("root")),
-    history: makeHashHistoryDriver()
-
+    history: makeHashHistoryDriver(),
+    gun: makeGunDriver({root: 'root', peers: ['http://localhost:3500']})
   });
   
 
