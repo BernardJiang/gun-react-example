@@ -390,7 +390,14 @@ function main(sources) {
     console.log(state)
     if (state.signin) {
       return (gunInstance) => {
-          return gunInstance.get(state.stageName).put({stageName: state.stageName, password: state.password} );
+          return gunInstance.user().auth(state.stageName, state.password, ack => {
+            if (ack.err) {
+                console.log('auth err', ack.err);
+                return;
+            }else{
+              console.log('auth OK', ack.err);
+            }
+          })
         }
     }
     

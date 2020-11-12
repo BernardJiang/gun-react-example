@@ -1,5 +1,12 @@
 import xs, {Listener, Stream} from 'xstream'
-import * as Gun from 'gun'
+// import * as Gun from 'gun'
+import Gun from 'gun/gun'
+import Sea from 'gun/sea'
+import path from 'gun/lib/path'
+import {promOnce, promPut, promSet, promOn} from 'gun/lib/path'
+import open from 'gun/lib/open'
+import 'gun/lib/open'
+import 'gun/lib/unset'
 
 export class GunSource {
 //   private gun: any
@@ -54,9 +61,10 @@ export function makeGunDriver(opts) {
   return function gunDriver(sink) {
     sink.addListener({
       next: (command) => {
-          if( typeof command === "function")
+          if( typeof command === "function"){
+            console.log("command is ", command)
             command(gun)
-          else
+          } else
             console.log('command is not a function!!!')
         },
     })
