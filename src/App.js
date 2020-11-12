@@ -346,13 +346,11 @@ function main(sources) {
 
   console.log('sources.gun', gun)
 
-  var newloc = window.location.origin;
-  if (window.location.port !== '8765') {
-    newloc = window.location.protocol + "//"
-      + window.location.hostname
-      + (window.location.port ? ':' + '8765' : '');
-  }
-  console.log(newloc + '/gun')
+  const userAuth$ = gun.select('userlist').shallow()
+    .map( v => {
+      console.log("v = ", v);
+      return v})
+    .mapTo({authenticated: true});
 
   const signlist$ = gun
     .select('signlist')
@@ -374,7 +372,10 @@ function main(sources) {
   const propssign$ = xs.of({
     stageName: 'whoamI', password: 'pwd', authenticated: false, userlist: []
   });
-  const childSourcesSignIn = {DOM: sources.react, props$: propssign$};
+
+  const propssign2$ = xs.merge(propssign$, userAuth$)
+
+  const childSourcesSignIn = {DOM: sources.react, props$: propssign2$};
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
@@ -395,7 +396,9 @@ function main(sources) {
                 console.log('auth err', ack.err);
                 return;
             }else{
-              console.log('auth OK', ack.err);
+              console.log('auth OK, set userlist', ack.err);
+              const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
+              gunInstance.get('userlist').set(myself)
             }
           })
         }

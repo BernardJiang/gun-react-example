@@ -91,7 +91,7 @@ export default class Sign extends Component {
 
 export function SignIn(sources) {
 
-  const initialValue$ = sources.props$.take(1);
+  const initialValue$ = sources.props$;
 
   const stageNameInput$ = sources.DOM
     .select('stagenameinput')

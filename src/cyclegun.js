@@ -20,12 +20,32 @@ export class GunSource {
   select(key) {
     return new GunSource(this.gun, this.path.concat(key))
   }
+  
+  selectUser() {
+    return new GunSource(this.gun.user(), '')
+  }
+
+  isOnline() {
+    const self = this
+    return xs.create({
+      start(listener) {
+        console.log('isOnline: ')
+        self.gun.user().on((x) => {
+          listener.next(x)
+        })
+      },
+      stop() {
+      },
+    })
+
+  }
 
   shallow() {
     const self = this
 
     return xs.create({
       start(listener) {
+        // console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((x) => {
           listener.next(x)
         })
