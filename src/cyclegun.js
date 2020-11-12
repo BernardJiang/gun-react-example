@@ -1,0 +1,66 @@
+import xs, {Listener, Stream} from 'xstream'
+import * as Gun from 'gun'
+
+export class GunSource {
+//   private gun: any
+//   private path: Array<string>
+
+  constructor(gun, path) {
+    this.gun = gun
+    this.path = path
+  }
+
+  select(key) {
+    return new GunSource(this.gun, this.path.concat(key))
+  }
+
+  shallow() {
+    const self = this
+
+    return xs.create({
+      start(listener) {
+        self.gun.get(...self.path).on((x) => {
+          listener.next(x)
+        })
+      },
+      stop() {
+      },
+    })
+  }
+
+  each() {
+    const self = this
+    return xs.create({
+      start(listener) {
+        self.gun.get(...self.path).map().on((value, key) => {
+          listener.next({key, value})
+        })
+      },
+      stop() {
+      },
+    })
+  }
+}
+
+export type Command = (gun) => void
+
+export function makeGunDriver(opts) {
+  // console.log('gun opts.root--------------------------------------')
+  // console.log(opts)
+  // console.log('-----------------------------------------------------')
+
+  const gun = Gun(opts)
+
+  return function gunDriver(sink) {
+    sink.addListener({
+      next: (command) => {
+          if( typeof command === "function")
+            command(gun)
+          else
+            console.log('command is not a function!!!')
+        },
+    })
+
+    return new GunSource(gun, [])
+  }
+}
