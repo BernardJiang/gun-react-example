@@ -384,6 +384,7 @@ function main(sources) {
 
    // sink map filtered stream of payloads into function and emit function
    const outgoingGunEvents$ = signsink.value
+   .filter((state) => "signin" in state && state.signin)
    .map( state => {
     console.log("about to send a command to gun! state=")
     console.log(state)
