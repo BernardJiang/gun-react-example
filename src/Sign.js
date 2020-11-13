@@ -90,8 +90,22 @@ export default class Sign extends Component {
 }
 
 export function SignIn(sources) {
+  const { gun } = sources;
+  console.log('sources.gun', gun)
 
-  const initialValue$ = sources.props$;
+  const userAuth$ = gun.select('userlist').shallow()
+    .map( v => {
+      console.log("v = ", v);
+      return v})
+    .mapTo({authenticated: true, signin: false});
+
+  const signlist$ = gun
+    .select('signlist')
+    .shallow();
+
+    console.log('gun signlist$', signlist$)
+
+  const initialValue$ = userAuth$;
 
   const stageNameInput$ = sources.DOM
     .select('stagenameinput')
@@ -169,10 +183,34 @@ export function SignIn(sources) {
       ])
      
     );
+// sink map filtered stream of payloads into function and emit function
+const outgoingGunEvents$ = state$
+.filter((state) => "signin" in state && state.signin)
+.map( state => {
+ console.log("about to send a command to gun! state=")
+ console.log(state)
+ if (state.signin) {
+   return (gunInstance) => {
+       return gunInstance.user().auth(state.stageName, state.password, ack => {
+         if (ack.err) {
+             console.log('auth err', ack.err);
+             return;
+         }else{
+           console.log('auth OK, set userlist', ack.err);
+           const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
+           gunInstance.get('userlist').set(myself)
+           state.signin = false
+         }
+       })
+     }
+ }
+ 
+})
 
   const sinks = {
     DOM: vdom$,
-    value: state$
+    value: state$,
+    gun: outgoingGunEvents$
   }
   return sinks;
 

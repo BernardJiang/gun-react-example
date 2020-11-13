@@ -344,20 +344,6 @@ function view(history$) {
 function main(sources) {
   const { react, gun } = sources;
 
-  console.log('sources.gun', gun)
-
-  const userAuth$ = gun.select('userlist').shallow()
-    .map( v => {
-      console.log("v = ", v);
-      return v})
-    .mapTo({authenticated: true, signin: false});
-
-  const signlist$ = gun
-    .select('signlist')
-    .shallow();
-
-    console.log('gun signlist$', signlist$)
-
   const history$ = sources.react.select('main_nav').events('click')
     .map(e => { 
       return e.target.textContent})
@@ -366,16 +352,13 @@ function main(sources) {
   const props$ = xs.of({
     label: 'Welcome!!! ', value: 'no one'
   });
-  const childSources = {DOM: sources.react, props$};
+  const childSources = {DOM: react, props$};
   const greetersink = greeterComponent(childSources)
     
   const propssign$ = xs.of({
     stageName: 'whoamI', authenticated: false, userlist: []
   });
-
-  const propssign2$ = xs.merge(propssign$, userAuth$)
-
-  const childSourcesSignIn = {DOM: sources.react, props$: userAuth$};
+  const childSourcesSignIn = {DOM: react, gun: gun};
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
@@ -383,34 +366,11 @@ function main(sources) {
   const vdom$ = view(actions$);
 
 
-   // sink map filtered stream of payloads into function and emit function
-   const outgoingGunEvents$ = signsink.value
-   .filter((state) => "signin" in state && state.signin)
-   .map( state => {
-    console.log("about to send a command to gun! state=")
-    console.log(state)
-    if (state.signin) {
-      return (gunInstance) => {
-          return gunInstance.user().auth(state.stageName, state.password, ack => {
-            if (ack.err) {
-                console.log('auth err', ack.err);
-                return;
-            }else{
-              console.log('auth OK, set userlist', ack.err);
-              const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
-              gunInstance.get('userlist').set(myself)
-              state.signin = false
-            }
-          })
-        }
-    }
-    
-   })
-
+   
   return {
     react: vdom$,
     history: history$,
-    gun: outgoingGunEvents$
+    gun: signsink.gun
   };
 }
 
