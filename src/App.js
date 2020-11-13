@@ -350,7 +350,7 @@ function main(sources) {
     .map( v => {
       console.log("v = ", v);
       return v})
-    .mapTo({authenticated: true});
+    .mapTo({authenticated: true, signin: false});
 
   const signlist$ = gun
     .select('signlist')
@@ -370,12 +370,12 @@ function main(sources) {
   const greetersink = greeterComponent(childSources)
     
   const propssign$ = xs.of({
-    stageName: 'whoamI', password: 'pwd', authenticated: false, userlist: []
+    stageName: 'whoamI', authenticated: false, userlist: []
   });
 
   const propssign2$ = xs.merge(propssign$, userAuth$)
 
-  const childSourcesSignIn = {DOM: sources.react, props$: propssign2$};
+  const childSourcesSignIn = {DOM: sources.react, props$: userAuth$};
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
@@ -399,6 +399,7 @@ function main(sources) {
               console.log('auth OK, set userlist', ack.err);
               const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
               gunInstance.get('userlist').set(myself)
+              state.signin = false
             }
           })
         }

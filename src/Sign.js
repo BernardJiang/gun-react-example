@@ -134,7 +134,7 @@ export function SignIn(sources) {
     // const astate = { stageName : 'abc', password: 'dfg' };
     console.log("astate =", astate)
    return  astate})
-     .remember();
+     
 
   const vdom$ = state$
     .map( state =>
