@@ -1,4 +1,5 @@
 import xs from 'xstream';
+import dropRepeats from 'xstream/extra/dropRepeats';
 import React, { Component }  from 'react'
 import './style.css'
 import Entity from './Entity';
@@ -97,7 +98,8 @@ export function SignIn(sources) {
     .map( v => {
       console.log("v = ", v);
       return v})
-    .mapTo({authenticated: true, signin: false});
+    .mapTo({authenticated: false, signin: false}).compose(dropRepeats())
+    ;
 
   const signlist$ = gun
     .select('signlist')
@@ -191,6 +193,7 @@ const outgoingGunEvents$ = state$
  console.log(state)
  if (state.signin) {
    return (gunInstance) => {
+     if(state.authenticated){
        return gunInstance.user().auth(state.stageName, state.password, ack => {
          if (ack.err) {
              console.log('auth err', ack.err);
@@ -202,7 +205,12 @@ const outgoingGunEvents$ = state$
            state.signin = false
          }
        })
+     }else{
+        const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
+        gunInstance.get('userlist').unset(myself)
+        return gunInstance.user().leave()
      }
+    }
  }
  
 })
