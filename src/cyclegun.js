@@ -86,6 +86,7 @@ export function makeGunDriver(opts) {
             command(gun)
           } else
             console.log('command is not a function!!!')
+            console.log(command)
         },
     })
 
