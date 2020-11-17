@@ -97,15 +97,19 @@ export function SignIn(sources) {
   console.log('sources.gun', gun)
 
   const userAuth$ = gun.select('userlist').shallow()
-    .map( state => {
+    .map( (state) => {
       console.log("userlist state = ", state);
+      let newlist = []
       for( let key in state){
         let row = state[key];
-        console.log( "key=", key, ". row=", row)
-        if(!state[key] || typeof tow === 'object' || key === '_' ) 
+        if(row !== null || key === '_' ) 
           continue;
+        // console.log( "key=", key, ". row=", row)
+        newlist.push(key)
       }
-      return state
+      console.log("newlist = ", newlist);
+
+      return newlist
     })
     .mapTo({authenticated: false, signin: false}).compose(dropRepeats());
 
