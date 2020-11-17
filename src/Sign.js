@@ -111,7 +111,7 @@ export function SignIn(sources) {
 
       return newlist
     })
-    .mapTo({authenticated: false, signin: false}).compose(dropRepeats());
+    .compose(dropRepeats());
 
   const useris$ = gun.selectUser().isOnline()
     .map( state => { 
@@ -167,7 +167,8 @@ export function SignIn(sources) {
   
   const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$, useris$)
     .map( ([init, name, pwd, useris]) => 
-    {  const  astate = {...init, ...name, ...pwd, ...useris }
+    {  const  astate = {userlist: init, ...name, ...pwd, ...useris }
+    console.log('init = ', init)
     console.log("useris =", useris)
     // const astate = { stageName : 'abc', password: 'dfg' };
     console.log("astate =", astate)
@@ -193,18 +194,16 @@ export function SignIn(sources) {
              h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
           ]),
           div('.mid.row.col.go', [
-             h1('number of users : {state.mencnt}')
+             h1('number of users :' + state.userlist.length)
           ])
           // <a href="info">more info</a>
         ]),
     
-        ul([
+        ul(
           
-            // !!state.userlist.length && state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
-            li('name1'),
-            li('name2')
+          !!state.userlist.length && state.userlist.map((item) => li(item))
           
-        ])
+        )
       ])
      
     );
