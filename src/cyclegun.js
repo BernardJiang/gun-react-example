@@ -29,10 +29,10 @@ export class GunSource {
     const self = this
     return xs.create({
       start(listener) {
-        console.log('isOnline: ')
-        self.gun.user().on((x) => {
-          listener.next(x)
-        })
+        console.log('isOnline: ', self.is)
+        // self.gun.user().on((x) => {
+          listener.next(self.is)
+        // })
       },
       stop() {
       },
