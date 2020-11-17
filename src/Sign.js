@@ -1,9 +1,11 @@
 import xs from 'xstream';
 import dropRepeats from 'xstream/extra/dropRepeats';
+import sampleCombine from 'xstream/extra/sampleCombine';
+
 import React, { Component }  from 'react'
 import './style.css'
 import Entity from './Entity';
-import { div, form, ul, h1, input, button } from '@cycle/react-dom';
+import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
 
 export default class Sign extends Component {
   constructor({entity}) {
@@ -95,11 +97,23 @@ export function SignIn(sources) {
   console.log('sources.gun', gun)
 
   const userAuth$ = gun.select('userlist').shallow()
-    .map( v => {
-      console.log("v = ", v);
-      return v})
-    .mapTo({authenticated: false, signin: false}).compose(dropRepeats())
-    ;
+    .map( state => {
+      console.log("state = ", state);
+      for( let key in state){
+        let row = state[key];
+        if(!state[key] || typeof tow === 'object' || key === '_' ) continue;
+        console.log( "key=", key, ". row=", row)
+      }
+      return state
+    })
+    .mapTo({authenticated: false, signin: false}).compose(dropRepeats());
+
+  const useris$ = gun.selectUser().isOnline()
+    .map( state => { 
+      console.log ('is online =', state)
+      return { authenticated: state}
+    });
+    
 
   const signlist$ = gun
     .select('signlist')
@@ -133,7 +147,7 @@ export function SignIn(sources) {
   .events('click')
   .map( ev => { 
     console.log(" sign in clicked ev value=", ev.target.value);
-    return { signin: true}
+    return { typeKey: 'signin' }
   }).startWith(false);
 
   const clickeventsignup$ = sources.DOM
@@ -141,12 +155,15 @@ export function SignIn(sources) {
   .events('click')
   .map( ev => { 
     console.log(" sign up clicked ev value=", ev.target.value);
-    return { signup: true}
+    return { typeKey: 'signup'}
   }).startWith(false);
 
-  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$, clickeventsignin$, clickeventsignup$)
-    .map( ([init, name, pwd, signin, signup]) => 
-    {  const  astate = {...init, ...name, ...pwd, ...signin, ...signup }
+  const clickevents$ = xs.merge(clickeventsignin$, clickeventsignup$)
+  
+  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$, useris$)
+    .map( ([init, name, pwd, useris]) => 
+    {  const  astate = {...init, ...name, ...pwd, ...useris }
+    console.log("useris =", useris)
     // const astate = { stageName : 'abc', password: 'dfg' };
     console.log("astate =", astate)
    return  astate})
@@ -176,22 +193,23 @@ export function SignIn(sources) {
           // <a href="info">more info</a>
         ]),
     
-        ul(
-        //   {
-        //     !!state.userlist.length && state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
-        //   }
-        // </ul>
-        )
+        ul([
+          
+            // !!state.userlist.length && state.userlist.map((item) => <li key={item.key}>* {item.text}</li>)          
+            li('name1'),
+            li('name2')
+          
+        ])
       ])
      
     );
 // sink map filtered stream of payloads into function and emit function
-const outgoingGunEvents$ = state$
-.filter((state) => "signin" in state && state.signin)
-.map( state => {
- console.log("about to send a command to gun! state=")
- console.log(state)
- if (state.signin) {
+const outgoingGunEvents$ = clickevents$
+.compose(sampleCombine(state$))
+.map( ([click, state]) => {
+ console.log("click = ", click)
+ console.log("state = ", state)
+ if (click.typeKey === 'signin') {
    return (gunInstance) => {
      if(state.authenticated){
        return gunInstance.user().auth(state.stageName, state.password, ack => {
@@ -201,7 +219,7 @@ const outgoingGunEvents$ = state$
          }else{
            console.log('auth OK, set userlist', ack.err);
            const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
-           gunInstance.get('userlist').set(myself)
+           gunInstance.get('userlist').set({id: myself, stageName: state.stageName})
            state.signin = false
          }
        })
@@ -212,10 +230,23 @@ const outgoingGunEvents$ = state$
      }
     }
  }
- 
-})
 
-  const sinks = {
+ if (click.typeKey === 'signup') {
+  return (gunInstance) => {
+    return gunInstance.user().create(state.stageName, state.password, ack => {
+      if (ack.err) {
+        console.log('create user failed', ack.err);
+        return;
+      }else{
+        console.log('create user OK, set userlist', ack.err);
+      }
+    })
+  };
+}
+
+});
+
+const sinks = {
     DOM: vdom$,
     value: state$,
     gun: outgoingGunEvents$
