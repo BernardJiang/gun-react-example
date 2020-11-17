@@ -45,7 +45,7 @@ export class GunSource {
 
     return xs.create({
       start(listener) {
-        // console.log('shallow: ' + self.path)
+        console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((x) => {
           listener.next(x)
         })
@@ -59,6 +59,7 @@ export class GunSource {
     const self = this
     return xs.create({
       start(listener) {
+        console.log('each: ' + self.path)
         self.gun.get(...self.path).map().on((value, key) => {
           listener.next({key, value})
         })

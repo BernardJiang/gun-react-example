@@ -98,11 +98,12 @@ export function SignIn(sources) {
 
   const userAuth$ = gun.select('userlist').shallow()
     .map( state => {
-      console.log("state = ", state);
+      console.log("userlist state = ", state);
       for( let key in state){
         let row = state[key];
-        if(!state[key] || typeof tow === 'object' || key === '_' ) continue;
         console.log( "key=", key, ". row=", row)
+        if(!state[key] || typeof tow === 'object' || key === '_' ) 
+          continue;
       }
       return state
     })
@@ -219,7 +220,7 @@ const outgoingGunEvents$ = clickevents$
          }else{
            console.log('auth OK, set userlist', ack.err);
            const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
-           gunInstance.get('userlist').set({id: myself, stageName: state.stageName})
+           gunInstance.get('userlist').set({realid: myself._, stageName: state.stageName})
            state.signin = false
          }
        })
