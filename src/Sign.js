@@ -232,7 +232,7 @@ function gunTodo(clickevents$, state$){
       console.log("state = ", state)
       if (click.typeKey === 'signin') {
         return (gunInstance) => {
-          if (!state.authenticated) {
+          if (state.authenticated) {
             return gunInstance.user().auth(state.stageName, state.password, ack => {
               if (ack.err) {
                 console.log('auth err', ack.err);
