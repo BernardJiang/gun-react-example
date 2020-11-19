@@ -176,7 +176,7 @@ function Intent( DOM) {
 function model(gunEvents, events){
   const state$ = xs.combine(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
   .map(([init, useris, name, pwd]) => {
-    const astate = { userlist: init, ...name, ...pwd, ...useris }
+    const astate = { userlist: init, ...useris, ...name, ...pwd  }
     console.log('init = ', init)
     console.log("useris =", useris)
     // const astate = { stageName : 'abc', password: 'dfg' };
@@ -233,6 +233,7 @@ function gunTodo(clickevents$, state$){
       if (click.typeKey === 'signin') {
         return (gunInstance) => {
           if (state.authenticated) {
+            console.log("authenticed = ", false)
             return gunInstance.user().auth(state.stageName, state.password, ack => {
               if (ack.err) {
                 console.log('auth err', ack.err);
@@ -246,6 +247,7 @@ function gunTodo(clickevents$, state$){
               }
             })
           } else {
+            console.log("authenticed = ", true)
             const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
             gunInstance.get('userlist').unset(myself)
             gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
