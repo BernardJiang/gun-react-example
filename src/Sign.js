@@ -92,10 +92,8 @@ export default class Sign extends Component {
 
 }
 
-export function SignIn(sources) {
-  const { gun } = sources;
-  console.log('sources.gun', gun)
 
+function gunIntent( gun ) {
   const userAuth$ = gun.select('userlist').shallow()
     .map((state) => {
       console.log("userlist state = ", state);
@@ -113,13 +111,7 @@ export function SignIn(sources) {
     })
     .compose(dropRepeats());
 
-  // const useris$ = gun.selectUser().isOnline()
-  // .map( state => { 
-  //   console.log ('is online =', state)
-  //   return { authenticated: state}
-  // });
-
-  const useris$ = gun.select('signstatus').shallow()
+    const useris$ = gun.select('signstatus').shallow()
     .map(state => {
       console.log('is online =', state)
       let auth = false
@@ -135,15 +127,13 @@ export function SignIn(sources) {
       return { authenticated: auth, stageName: name }
     });
 
-  // const signlist$ = gun
-  //   .select('signlist')
-  //   .shallow();
+    
 
-  //   console.log('gun signlist$', signlist$)
+    return {userAuth$: userAuth$, useris$:useris$ }
+}
 
-  const initialValue$ = userAuth$;
-
-  const stageNameInput$ = sources.DOM
+function Intent( DOM) {
+  const stageNameInput$ = DOM
     .select('stagenameinput')
     .events('input')
     .map(ev => {
@@ -151,7 +141,7 @@ export function SignIn(sources) {
       return ev.target.value
     }).startWith("namewho");
 
-  const passwordInput$ = sources.DOM
+  const passwordInput$ = DOM
     .select('signpassword')
     .events('input')
     .map(ev => {
@@ -162,7 +152,7 @@ export function SignIn(sources) {
   const newValueName$ = stageNameInput$.map(v => { return { stageName: v } }).remember();
   const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
 
-  const clickeventsignin$ = sources.DOM
+  const clickeventsignin$ = DOM
     .select('btnsignin')
     .events('click')
     .map(ev => {
@@ -170,7 +160,7 @@ export function SignIn(sources) {
       return { typeKey: 'signin' }
     }).startWith(false);
 
-  const clickeventsignup$ = sources.DOM
+  const clickeventsignup$ = DOM
     .select('btnsignup')
     .events('click')
     .map(ev => {
@@ -180,16 +170,23 @@ export function SignIn(sources) {
 
   const clickevents$ = xs.merge(clickeventsignin$, clickeventsignup$)
 
-  const state$ = xs.combine(initialValue$, newValueName$, newValuePassword$, useris$)
-    .map(([init, name, pwd, useris]) => {
-      const astate = { userlist: init, ...name, ...pwd, ...useris }
-      console.log('init = ', init)
-      console.log("useris =", useris)
-      // const astate = { stageName : 'abc', password: 'dfg' };
-      console.log("astate =", astate)
-      return astate
-    })
+    return { clickevents$, newValueName$, newValuePassword$ }
+}
 
+function model(gunEvents, events){
+  const state$ = xs.combine(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
+  .map(([init, useris, name, pwd]) => {
+    const astate = { userlist: init, ...name, ...pwd, ...useris }
+    console.log('init = ', init)
+    console.log("useris =", useris)
+    // const astate = { stageName : 'abc', password: 'dfg' };
+    console.log("astate =", astate)
+    return astate
+  })
+  return state$
+}
+
+function view(state$){
 
   const vdom$ = state$
     .map(state =>
@@ -223,6 +220,10 @@ export function SignIn(sources) {
       ])
 
     );
+    return vdom$
+}
+
+function gunTodo(clickevents$, state$){
   // sink map filtered stream of payloads into function and emit function
   const outgoingGunEvents$ = clickevents$
     .compose(sampleCombine(state$))
@@ -267,6 +268,20 @@ export function SignIn(sources) {
       }
 
     });
+  return outgoingGunEvents$
+}
+
+export function SignIn(sources) {
+  const { DOM, gun } = sources;
+  console.log('sources.gun', gun)
+
+  const gunEvents = gunIntent(gun);
+  const events = Intent(DOM);
+
+  const state$ = model(gunEvents, events)
+
+  const vdom$ = view(state$)
+  const outgoingGunEvents$ = gunTodo(events.clickevents$, state$)
 
   const sinks = {
     DOM: vdom$,
