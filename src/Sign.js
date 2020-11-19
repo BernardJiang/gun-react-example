@@ -113,18 +113,33 @@ export function SignIn(sources) {
     })
     .compose(dropRepeats());
 
-  const useris$ = gun.selectUser().isOnline()
+    // const useris$ = gun.selectUser().isOnline()
+    // .map( state => { 
+    //   console.log ('is online =', state)
+    //   return { authenticated: state}
+    // });
+  
+    const useris$ = gun.select('signstatus').shallow()
     .map( state => { 
       console.log ('is online =', state)
-      return { authenticated: state}
+      let auth = false
+      let name = 'noone'
+      for( let key in state){
+        let row = state[key];
+        if(key === 'stageName' ) 
+          name = row
+        if(key === 'signin')
+          auth = row
+        console.log( "key=", key, ". row=", row)
+      }
+      return { authenticated: auth, stageName: name}
     });
-    
 
-  const signlist$ = gun
-    .select('signlist')
-    .shallow();
+  // const signlist$ = gun
+  //   .select('signlist')
+  //   .shallow();
 
-    console.log('gun signlist$', signlist$)
+  //   console.log('gun signlist$', signlist$)
 
   const initialValue$ = userAuth$;
 
@@ -215,21 +230,23 @@ const outgoingGunEvents$ = clickevents$
  console.log("state = ", state)
  if (click.typeKey === 'signin') {
    return (gunInstance) => {
-     if(state.authenticated){
+     if(!state.authenticated){
        return gunInstance.user().auth(state.stageName, state.password, ack => {
-         if (ack.err) {
+        if (ack.err) {
              console.log('auth err', ack.err);
              return;
          }else{
-           console.log('auth OK, set userlist', ack.err);
+           console.log('auth OK, set userlist');
            const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
            gunInstance.get('userlist').set({realid: myself._, stageName: state.stageName})
-           state.signin = false
+           gunInstance.get('signstatus').put({stageName: state.stageName, signin: true})
+                      
          }
        })
      }else{
         const myself = gunInstance.get(state.stageName).put({stageName: state.stageName})
         gunInstance.get('userlist').unset(myself)
+        gunInstance.get('signstatus').put({stageName: state.stageName, signin: false})
         return gunInstance.user().leave()
      }
     }
