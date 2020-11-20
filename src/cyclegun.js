@@ -27,16 +27,20 @@ export class GunSource {
 
   isOnline() {
     const self = this
-    return xs.create({
-      start(listener) {
-        console.log('isOnline: ', self.is)
-        // self.gun.user().on((x) => {
-          listener.next(self.is)
-        // })
-      },
-      stop() {
-      },
-    })
+    return xs.periodic(1000);
+    
+    // xs.create({
+    //   id:0,
+    //   start(listener) {
+    //     console.log('isOnline: ', id)
+    //     // self.gun.user().on((x) => {
+    //       setInterval(() => {listener.next(id); id=id+1}, 1000)
+    //       // listener.next()
+    //     // })
+    //   },
+    //   stop() {
+    //   },
+    // })
 
   }
 

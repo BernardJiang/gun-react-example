@@ -127,6 +127,13 @@ function gunIntent( gun ) {
       return { authenticated: auth, stageName: name }
     });
 
+    // const useris$ = gun.isOnline()
+    // .map(state => {
+    //   console.log('is online =', state)
+    //   let auth = (state % 2 == 0)
+    //   let name = 'noone'
+    //   return { authenticated: auth, stageName: name }
+    // });
     
 
     return {userAuth$: userAuth$, useris$:useris$ }
@@ -232,17 +239,21 @@ function gunTodo(clickevents$, state$){
       console.log("state = ", state)
       if (click.typeKey === 'signin') {
         return (gunInstance) => {
-          if (state.authenticated) {
+          if (state.authenticated == false) {
             console.log("authenticed = ", false)
             return gunInstance.user().auth(state.stageName, state.password, ack => {
               if (ack.err) {
                 console.log('auth err', ack.err);
                 return;
               } else {
+                console.log('auth OK, 0');
+                gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
                 console.log('auth OK, set userlist');
                 const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
-                gunInstance.get('userlist').set({ realid: myself._, stageName: state.stageName })
-                gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
+                console.log('auth OK, 2');
+                gunInstance.get('userlist').set({ realid: myself, stageName: state.stageName })
+                console.log('auth OK, over');
+                return;
 
               }
             })
