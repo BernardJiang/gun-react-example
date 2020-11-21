@@ -149,7 +149,7 @@ function Intent( DOM) {
     .map(ev => {
       console.log(" stagename ev value=", ev.target.value);
       return ev.target.value
-    }).startWith("namewho");
+    }).startWith("");
 
   const passwordInput$ = DOM
     .select('signpassword')
@@ -157,7 +157,7 @@ function Intent( DOM) {
     .map(ev => {
       console.log(" password ev value=", ev.target.value);
       return ev.target.value
-    }).startWith("passwordwild");
+    }).startWith("");
 
   const newValueName$ = stageNameInput$.map(v => { return { stageName: v } }).remember();
   const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
@@ -166,21 +166,21 @@ function Intent( DOM) {
     .select('btnsignin')
     .events('click')
     .map(ev => {
-      console.log(" sign in clicked ev value=", ev.target.value);
+      console.log(" sign in clicked");
       return { typeKey: 'signin' }
-    }).startWith(false);
+    }).startWith({ typeKey: 'noclick' });
 
   const clickeventsignup$ = DOM
     .select('btnsignup')
     .events('click')
     .map(ev => {
-      console.log(" sign up clicked ev value=", ev.target.value);
+      console.log(" sign up clicked");
       return { typeKey: 'signup' }
-    }).startWith(false);
+    }).startWith({ typeKey: 'noclick' });
 
   const clickevents$ = xs.merge(clickeventsignin$, clickeventsignup$)
 
-    return { clickevents$, newValueName$, newValuePassword$ }
+  return { clickevents$, newValueName$, newValuePassword$ }
 }
 
 function model(gunEvents, events){
@@ -192,7 +192,7 @@ function model(gunEvents, events){
     // const astate = { stageName : 'abc', password: 'dfg' };
     console.log("astate =", astate)
     return astate
-  })
+  }).startWith({ userlist: [], authenticated: false, stageName : '', password: '' })
   return state$
 }
 
@@ -204,7 +204,7 @@ function view(state$){
         form('#inup.sign.pad.center', [
           div('.mid.row.col', [
             h1('Enter your stageName: ' + state.stageName),
-            input({ sel: 'stagenameinput', type: 'text', placeholder: 'alias' })
+            input({ sel: 'stagenameinput', type: 'text', placeholder: 'stagename' })
           ]),
           div('.mid.row.col', [
             h1('A long private passphrase: ' + state.password),
@@ -217,16 +217,11 @@ function view(state$){
             h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
           ]),
           div('.mid.row.col.go', [
-            h1('number of users :' + state.userlist.length)
+            h1('number of users :' + (state.userlist.length == 0 ? 0 : state.userlist.length) )
           ])
           // <a href="info">more info</a>
         ]),
-
-        ul(
-
-          !!state.userlist.length && state.userlist.map((item) => li(item))
-
-        )
+        !!state.userlist.length && ul(state.userlist.map((item) => li(item)))
       ])
 
     );
@@ -238,6 +233,7 @@ function gunTodo(clickevents$, state$){
   const outgoingGunEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
+      if(state.stageName && state.password){
       console.log("click = ", click)
       console.log("state = ", state)
       if (click.typeKey === 'signin') {
@@ -279,6 +275,9 @@ function gunTodo(clickevents$, state$){
           })
         };
       }
+    } else {
+      console.log("stagename or password is invalid", state.stageName, state.password);
+    }
 
     });
   return outgoingGunEvents$
