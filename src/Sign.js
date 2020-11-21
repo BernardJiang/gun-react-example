@@ -7,6 +7,7 @@ import './style.css'
 import Entity from './Entity';
 import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
 
+const KUserList = "userlist"
 export default class Sign extends Component {
   constructor({ entity }) {
     super()
@@ -94,7 +95,7 @@ export default class Sign extends Component {
 
 
 function gunIntent( gun ) {
-  const userAuth$ = gun.select('userlist').shallow()
+  const userAuth$ = gun.select(KUserList).shallow()
     .map((state) => {
       console.log("userlist state = ", state);
       // state.map().once(function(user, id){
@@ -233,9 +234,9 @@ function gunTodo(clickevents$, state$){
   const outgoingGunEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
-      if(state.stageName && state.password){
       console.log("click = ", click)
       console.log("state = ", state)
+      if(state.stageName && state.password){
       if (click.typeKey === 'signin') {
         return (gunInstance) => {
           if (state.authenticated == false) {
@@ -248,7 +249,7 @@ function gunTodo(clickevents$, state$){
                 gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
                 const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
                 console.log('auth OK, set userlist myself=', myself);
-                gunInstance.get('userlist').set(myself)
+                gunInstance.get(KUserList).set(myself)
                 return;
 
               }
@@ -256,7 +257,7 @@ function gunTodo(clickevents$, state$){
           } else {
             const myself = gunInstance.get(state.stageName)
             console.log("sign out !!! myself= ", myself )
-            gunInstance.get('userlist').unset(myself)
+            gunInstance.get(KUserList).unset(myself)
             gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
             return gunInstance.user().leave()
           }
