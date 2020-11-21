@@ -97,12 +97,15 @@ function gunIntent( gun ) {
   const userAuth$ = gun.select('userlist').shallow()
     .map((state) => {
       console.log("userlist state = ", state);
+      // state.map().once(function(user, id){
+      //   console.log("user=", user, ". id=", id);
+      // })
       let newlist = []
       for (let key in state) {
         let row = state[key];
-        if (row !== null || key === '_')
+        if (row === null || key === '_')
           continue;
-        // console.log( "key=", key, ". row=", row)
+       console.log( "key=", key, ". row=", row)
         newlist.push(key)
       }
       console.log("newlist = ", newlist);
@@ -246,20 +249,17 @@ function gunTodo(clickevents$, state$){
                 console.log('auth err', ack.err);
                 return;
               } else {
-                console.log('auth OK, 0');
                 gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
-                console.log('auth OK, set userlist');
                 const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
-                console.log('auth OK, 2');
-                gunInstance.get('userlist').set({ realid: myself, stageName: state.stageName })
-                console.log('auth OK, over');
+                console.log('auth OK, set userlist myself=', myself);
+                gunInstance.get('userlist').set(myself)
                 return;
 
               }
             })
           } else {
-            console.log("authenticed = ", true)
-            const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
+            const myself = gunInstance.get(state.stageName)
+            console.log("sign out !!! myself= ", myself )
             gunInstance.get('userlist').unset(myself)
             gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
             return gunInstance.user().leave()
@@ -274,7 +274,7 @@ function gunTodo(clickevents$, state$){
               console.log('create user failed', ack.err);
               return;
             } else {
-              console.log('create user OK, set userlist', ack.err);
+              console.log('create user OK');
             }
           })
         };
