@@ -7,7 +7,7 @@ import './style.css'
 import Entity from './Entity';
 import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
 
-const KUserList = "userlist"
+const KUserList = "userlist2"
 export default class Sign extends Component {
   constructor({ entity }) {
     super()
@@ -111,8 +111,8 @@ function gunIntent( gun ) {
       }
       console.log("newlist = ", newlist);
 
-      return newlist
-    })
+      return {userlist: newlist}
+    }).startWith({userlist: []})
     .compose(dropRepeats());
 
     const useris$ = gun.select('signstatus').shallow()
@@ -129,7 +129,7 @@ function gunIntent( gun ) {
         console.log("key=", key, ". row=", row)
       }
       return { authenticated: auth, stageName: name }
-    });
+    }).startWith({authenticated: false});
 
     // const useris$ = gun.isOnline()
     // .map(state => {
@@ -160,7 +160,9 @@ function Intent( DOM) {
       return ev.target.value
     }).startWith("");
 
-  const newValueName$ = stageNameInput$.map(v => { return { stageName: v } }).remember();
+  const newValueName$ = stageNameInput$.map(v => { 
+    console.log("New stagename = ", v);
+    return { stageName: v } }).remember();
   const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
 
   const clickeventsignin$ = DOM
@@ -185,12 +187,11 @@ function Intent( DOM) {
 }
 
 function model(gunEvents, events){
-  const state$ = xs.combine(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
-  .map(([init, useris, name, pwd]) => {
-    const astate = { userlist: init, ...useris, ...name, ...pwd  }
-    console.log('init = ', init)
-    console.log("useris =", useris)
-    // const astate = { stageName : 'abc', password: 'dfg' };
+  const state$ = xs.merge(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
+  .fold((acc, x) => {
+    console.log("fold acc", acc, ". and x=", x)
+    return { ...acc, ...x,}}, {})
+  .map((astate) => {
     console.log("astate =", astate)
     return astate
   }).startWith({ userlist: [], authenticated: false, stageName : '', password: '' })
@@ -218,11 +219,11 @@ function view(state$){
             h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
           ]),
           div('.mid.row.col.go', [
-            h1('number of users :' + (state.userlist.length == 0 ? 0 : state.userlist.length) )
+            h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0) )
           ])
           // <a href="info">more info</a>
         ]),
-        !!state.userlist.length && ul(state.userlist.map((item) => li(item)))
+        !!state.userlist && ul(state.userlist.map((item) => li(item)))
       ])
 
     );
@@ -277,7 +278,7 @@ function gunTodo(clickevents$, state$){
         };
       }
     } else {
-      console.log("stagename or password is invalid", state.stageName, state.password);
+      console.log("stagename or password is invalid", state.stageName, state.password);      
     }
 
     });
