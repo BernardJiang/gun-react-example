@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, Redirect, withRouter } from "react-router-dom";
-import {h,  makeComponent} from '@cycle/react';
-import { div, h1, h3, br, span, input, p, nav, button} from "@cycle/react-dom";
+import { h, makeComponent } from '@cycle/react';
+import { div, h1, h3, br, span, input, p, nav, button } from "@cycle/react-dom";
 import xs from 'xstream';
-import {run} from '@cycle/run'
-import makeRoutingDriver, {routes} from 'cycle-routing-driver'
-import {render} from 'react-dom';
+import { run } from '@cycle/run'
+import makeRoutingDriver, { routes } from 'cycle-routing-driver'
+import { render } from 'react-dom';
 // import {Router, Route, Link, useRoute} from 'cycle-routing-driver/dist/react/router'
 import placeholderText from 'lorem-ipsum';
 import dropRepeats from 'xstream/extra/dropRepeats';
- 
+
 
 import Entity from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
 import { greeter2View, greeterComponent } from './greeter2View'
-import Sign, { SignIn }from './Sign'
+import Sign, { SignIn } from './Sign'
 import Chat from './Chat'
 import Attributes from './Attributes'
-import Talks from './Talks' 
+import Talks from './Talks'
 import Settings from './Settings'
 // import Json from './Json'
 // import logo from './logo.svg';
@@ -47,8 +47,8 @@ const AuthButton = withRouter(({ history, ...rest }) => {
       Welcome!{" "}
     </p>
   ) : (
-    <p>You are not logged in.</p>
-  )
+      <p>You are not logged in.</p>
+    )
 }
 )
 
@@ -67,13 +67,13 @@ function PrivateRoute({ children, ...rest }) {
         (obj1.entity.stageName !== "") ? (
           children
         ) : (
-          <Redirect
-            to={{
-              pathname: "/SignIn",
-              state: { from: location }
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: "/SignIn",
+                state: { from: location }
+              }}
+            />
+          )
       }
     />
   );
@@ -117,56 +117,56 @@ class App_old extends Component {
     this.entity = new Entity(newloc + '/gun');
 
   }
-  
- render() {
+
+  render() {
     return (
       <Router>
-        <div style={{display: "flex", flexDirection: 'column'}}>
-          <ul style={{display: "flex", flex: 1, flexDirection: 'row'}}>
+        <div style={{ display: "flex", flexDirection: 'column' }}>
+          <ul style={{ display: "flex", flex: 1, flexDirection: 'row' }}>
             <li style={styles.navItem} >
-              <Link to="/SignIn">{ this.entity.isUserOnline() ? 'Sign Out' : 'Sign In' }</Link>
+              <Link to="/SignIn">{this.entity.isUserOnline() ? 'Sign Out' : 'Sign In'}</Link>
             </li>
-            <li  style={styles.navItem} >
+            <li style={styles.navItem} >
               <Link to="/Settings">Settings</Link>
             </li>
-            <li  style={styles.navItem} >
+            <li style={styles.navItem} >
               <Link to="/Attributes">Attributes</Link>
             </li>
-            <li  style={styles.navItem} >
+            <li style={styles.navItem} >
               <Link to="/Talks">Talks</Link>
             </li>
-            <li  style={styles.navItem} >
+            <li style={styles.navItem} >
               <Link to="/Chatbot">Chatbot</Link>
             </li>
           </ul>
 
-          <Switch style={{display: "flex", flex: 16, flexDirection: 'row'}}>
-          <Route path="/Chatbot">
-            <ChatBot entity={this.entity}/>
-          </Route>
-          <PrivateRoute path="/Attributes" entity={this.entity} >
-            <Attributes entity={this.entity}/>
-          </PrivateRoute>
-          <Route path="/Talks">
-            <Talks entity={this.entity}/>
-          </Route>
-          <Route path="/Settings">
-            <Settings entity={this.entity}/>
-          </Route>
-          <Route path="/SignIn">
-            <Sign entity={this.entity}/>
-          </Route>
-          <Route path="/">
-            <Sign entity={this.entity}/>
-          </Route>
+          <Switch style={{ display: "flex", flex: 16, flexDirection: 'row' }}>
+            <Route path="/Chatbot">
+              <ChatBot entity={this.entity} />
+            </Route>
+            <PrivateRoute path="/Attributes" entity={this.entity} >
+              <Attributes entity={this.entity} />
+            </PrivateRoute>
+            <Route path="/Talks">
+              <Talks entity={this.entity} />
+            </Route>
+            <Route path="/Settings">
+              <Settings entity={this.entity} />
+            </Route>
+            <Route path="/SignIn">
+              <Sign entity={this.entity} />
+            </Route>
+            <Route path="/">
+              <Sign entity={this.entity} />
+            </Route>
           </Switch>
-          <AuthButton style={{display: "flex", flex: 1, flexDirection: 'row'}} entity={this.entity}/>
+          <AuthButton style={{ display: "flex", flex: 1, flexDirection: 'row' }} entity={this.entity} />
           {/* <Greeter initial={"person"} /> */}
-          </div>          
-    </Router>
+        </div>
+      </Router>
     );
   }
-  
+
 }
 
 function NavLink(props) {
@@ -228,28 +228,28 @@ styles.rgb = {
 function navigation(pathname) {
   return nav('main_nav', [
     span({
-      dataset: {page: 'signin'},
-      className: {'active': pathname === '/signin'}
+      dataset: { page: 'signin' },
+      className: { 'active': pathname === '/signin' }
     }, 'Sign In'),
     span({
-      dataset: {page: 'settings'},
-      className: {'active': pathname === '/settings'}
+      dataset: { page: 'settings' },
+      className: { 'active': pathname === '/settings' }
     }, 'Settings'),
     span({
-      dataset: {page: 'attributes'},
-      className: {'active': pathname === '/attributes'}
+      dataset: { page: 'attributes' },
+      className: { 'active': pathname === '/attributes' }
     }, 'Attributes'),
     span({
-      dataset: {page: 'talks'},
-      className: {'active': pathname === '/talks'}
+      dataset: { page: 'talks' },
+      className: { 'active': pathname === '/talks' }
     }, 'Talks'),
     span({
-      dataset: {page: 'chatbot'},
-      className: {'active': pathname === '/chatbot'}
+      dataset: { page: 'chatbot' },
+      className: { 'active': pathname === '/chatbot' }
     }, 'Chatbot'),
     span({
-      dataset: {page: 'greeter'},
-      className: {'active': pathname === '/greeter'}
+      dataset: { page: 'greeter' },
+      className: { 'active': pathname === '/greeter' }
     }, 'Greeter')
   ])
 }
@@ -287,13 +287,13 @@ function chatbotView() {
 
 
 function view(history$) {
-  return history$.map( ([history, nameview, signview]) => {
+  return history$.map(([history, nameview, signview]) => {
     // var astr = placeholderText()
     // console.log("History ", history)
 
     // console.log("stageName is ", stageName)
     // console.log("astr is ", astr)
-    const {pathname} = history;
+    const { pathname } = history;
     // console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
@@ -309,7 +309,7 @@ function view(history$) {
       page = talksView()
     } else if (pathname === '/Chatbot') {
       page = chatbotView()
-    } 
+    }
     // else if (pathname === '/Home') {
     //   page = homePageView()
     // } else if (pathname === '/About') {
@@ -333,20 +333,21 @@ function main(sources) {
   const { react, gun } = sources;
 
   const history$ = sources.react.select('main_nav').events('click')
-    .map(e => { 
-      return e.target.textContent})
+    .map(e => {
+      return e.target.textContent
+    })
     .compose(dropRepeats())
 
   const props$ = xs.of({
     label: 'Welcome!!! ', value: 'no one'
   });
-  const childSources = {DOM: react, props$};
+  const childSources = { DOM: react, props$ };
   const greetersink = greeterComponent(childSources)
-    
+
   const propssign$ = xs.of({
     stageName: 'whoamI', authenticated: false, userlist: []
   });
-  const childSourcesSignIn = {DOM: react, gun: gun};
+  const childSourcesSignIn = { DOM: react, gun: gun };
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
@@ -354,7 +355,7 @@ function main(sources) {
   const vdom$ = view(actions$);
 
 
-   
+
   return {
     react: vdom$,
     history: history$,

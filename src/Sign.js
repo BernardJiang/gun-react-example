@@ -94,26 +94,26 @@ export default class Sign extends Component {
 }
 
 
-function gunIntent( gun ) {
+function gunIntent(gun) {
   const userAuth$ = gun.select(KUserList).getUserList()
     // .map((state) => {
     //   // console.log("state in sign = ", state);
     //   return {userlist: state}
     // })
-    .startWith({userlist: []})
+    .startWith({ userlist: [] })
     .compose(dropRepeats());
 
-    const useris$ = gun.select('signstatus').getSignStatus()
+  const useris$ = gun.select('signstatus').getSignStatus()
     // .map(state => {
     //   // console.log('new status in sign =', state)
     //   return state
     // })
-    .startWith({authenticated: false});
+    .startWith({ authenticated: false });
 
-    return {userAuth$, useris$}
+  return { userAuth$, useris$ }
 }
 
-function Intent( DOM) {
+function Intent(DOM) {
   const stageNameInput$ = DOM
     .select('stagenameinput')
     .events('input')
@@ -130,9 +130,10 @@ function Intent( DOM) {
       return ev.target.value
     }).startWith("");
 
-  const newValueName$ = stageNameInput$.map(v => { 
+  const newValueName$ = stageNameInput$.map(v => {
     // console.log("New stagename = ", v);
-    return { stageName: v } }).remember();
+    return { stageName: v }
+  }).remember();
   const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
 
   const clickeventsignin$ = DOM
@@ -156,19 +157,18 @@ function Intent( DOM) {
   return { clickevents$, newValueName$, newValuePassword$ }
 }
 
-function model(gunEvents, events){
+function model(gunEvents, events) {
   const state$ = xs.merge(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
-  .fold((acc, x) => 
-    {return {...acc, ...x}}, {})
-  // .map((astate) => {
-  //   // console.log("astate =", astate)
-  //   return astate
-  // })
-  .startWith({ userlist: [], authenticated: false, stageName : '', password: '' })
+    .fold((acc, x) => { return { ...acc, ...x } }, {})
+    // .map((astate) => {
+    //   // console.log("astate =", astate)
+    //   return astate
+    // })
+    .startWith({ userlist: [], authenticated: false, stageName: '', password: '' })
   return state$
 }
 
-function view(state$){
+function view(state$) {
 
   const vdom$ = state$
     .map(state =>
@@ -189,7 +189,7 @@ function view(state$){
             h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
           ]),
           div('.mid.row.col.go', [
-            h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0) )
+            h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
           ])
           // <a href="info">more info</a>
         ]),
@@ -197,59 +197,59 @@ function view(state$){
       ])
 
     );
-    return vdom$
+  return vdom$
 }
 
-function gunTodo(clickevents$, state$){
+function gunTodo(clickevents$, state$) {
   // sink map filtered stream of payloads into function and emit function
   const outgoingGunEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
       // console.log("click = ", click)
       // console.log("state = ", state)
-      if(state.stageName && state.password){
-      if (click.typeKey === 'signin') {
-        return (gunInstance) => {
-          if (state.authenticated == false) {
-            // console.log("authenticed = ", false)
-            return gunInstance.user().auth(state.stageName, state.password, ack => {
-              if (ack.err) {
-                // console.log('auth err', ack.err);
-                return;
-              } else {
-                gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
-                const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
-                // console.log('auth OK, set userlist myself=', myself);
-                gunInstance.get(KUserList).set(myself)
-                return;
+      if (state.stageName && state.password) {
+        if (click.typeKey === 'signin') {
+          return (gunInstance) => {
+            if (state.authenticated == false) {
+              // console.log("authenticed = ", false)
+              return gunInstance.user().auth(state.stageName, state.password, ack => {
+                if (ack.err) {
+                  // console.log('auth err', ack.err);
+                  return;
+                } else {
+                  gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
+                  const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
+                  // console.log('auth OK, set userlist myself=', myself);
+                  gunInstance.get(KUserList).set(myself)
+                  return;
 
-              }
-            })
-          } else {
-            const myself = gunInstance.get(state.stageName)
-            // console.log("sign out !!! myself= ", myself )
-            gunInstance.get(KUserList).unset(myself)
-            gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
-            return gunInstance.user().leave()
+                }
+              })
+            } else {
+              const myself = gunInstance.get(state.stageName)
+              // console.log("sign out !!! myself= ", myself )
+              gunInstance.get(KUserList).unset(myself)
+              gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
+              return gunInstance.user().leave()
+            }
           }
         }
-      }
 
-      if (click.typeKey === 'signup') {
-        return (gunInstance) => {
-          return gunInstance.user().create(state.stageName, state.password, ack => {
-            if (ack.err) {
-              // console.log('create user failed', ack.err);
-              return;
-            } else {
-              // console.log('create user OK');
-            }
-          })
-        };
+        if (click.typeKey === 'signup') {
+          return (gunInstance) => {
+            return gunInstance.user().create(state.stageName, state.password, ack => {
+              if (ack.err) {
+                // console.log('create user failed', ack.err);
+                return;
+              } else {
+                // console.log('create user OK');
+              }
+            })
+          };
+        }
+      } else {
+        // console.log("stagename or password is invalid", state.stageName, state.password);      
       }
-    } else {
-      // console.log("stagename or password is invalid", state.stageName, state.password);      
-    }
 
     });
   return outgoingGunEvents$

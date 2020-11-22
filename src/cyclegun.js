@@ -1,16 +1,16 @@
-import xs, {Listener, Stream} from 'xstream'
+import xs, { Listener, Stream } from 'xstream'
 // import * as Gun from 'gun'
 import Gun from 'gun/gun'
 import Sea from 'gun/sea'
 import path from 'gun/lib/path'
-import {promOnce, promPut, promSet, promOn} from 'gun/lib/path'
+import { promOnce, promPut, promSet, promOn } from 'gun/lib/path'
 import open from 'gun/lib/open'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 
 export class GunSource {
-//   private gun: any
-//   private path: Array<string>
+  //   private gun: any
+  //   private path: Array<string>
 
   constructor(gun, path) {
     this.gun = gun
@@ -20,7 +20,7 @@ export class GunSource {
   select(key) {
     return new GunSource(this.gun, this.path.concat(key))
   }
-  
+
   selectUser() {
     return new GunSource(this.gun.user(), '')
   }
@@ -28,7 +28,7 @@ export class GunSource {
   isOnline() {
     const self = this
     return xs.periodic(1000);
-    
+
     // xs.create({
     //   id:0,
     //   start(listener) {
@@ -61,7 +61,7 @@ export class GunSource {
             newlist.push(key)
           }
           // console.log("newlist = ", newlist);
-          listener.next({userlist: newlist})
+          listener.next({ userlist: newlist })
         })
       },
       stop() {
@@ -121,7 +121,7 @@ export class GunSource {
       start(listener) {
         // console.log('each: ' + self.path)
         self.gun.get(...self.path).map().on((value, key) => {
-          listener.next({key, value})
+          listener.next({ key, value })
         })
       },
       stop() {
@@ -142,14 +142,14 @@ export function makeGunDriver(opts) {
   return function gunDriver(sink) {
     sink.addListener({
       next: (command) => {
-          if( typeof command === "function"){
-            // console.log("command is ", command)
-            command(gun)
-          } 
-          // else
-          //   console.log('command is not a function!!!')
-          //   console.log(command)
-        },
+        if (typeof command === "function") {
+          // console.log("command is ", command)
+          command(gun)
+        }
+        // else
+        //   console.log('command is not a function!!!')
+        //   console.log(command)
+      },
     })
 
     return new GunSource(gun, [])
