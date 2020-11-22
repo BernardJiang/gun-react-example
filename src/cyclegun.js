@@ -44,6 +44,60 @@ export class GunSource {
 
   }
 
+  getUserList() {
+    const self = this
+    return xs.create({
+      start(listener) {
+        console.log('shallow: ' + self.path)
+        self.gun.get(...self.path).on((state) => {
+          console.log('shallow: ' + self.path + ". state= ")
+          console.log(state)
+          let newlist = []
+          for (let key in state) {
+            let row = state[key];
+            if (row === null || key === '_')
+              continue;
+            console.log( "key=", key, ". row=", row)
+            newlist.push(key)
+          }
+          console.log("newlist = ", newlist);
+          listener.next(newlist)
+        })
+      },
+      stop() {
+      },
+    })
+  }
+  getSignStatus() {
+    const self = this
+    return xs.create({
+      start(listener) {
+        console.log('shallow: ' + self.path)
+        self.gun.get(...self.path).on((state) => {
+          console.log('shallow: ' + self.path + ". state= ")
+          console.log(state)
+          let auth = false
+          let name = 'noone'
+          for (let key in state) {
+            let row = state[key];
+            if (key === 'stageName')
+              name = row
+            if (key === 'signin')
+              auth = row
+            console.log("key=", key, ". row=", row)
+          }
+          let newstatus = { authenticated: auth, stageName: name }
+          console.log("newstatus = ", newstatus);
+          listener.next(newstatus)
+        })
+      },
+      stop() {
+      },
+    })
+  }
+
+
+
   shallow() {
     const self = this
 
@@ -51,6 +105,8 @@ export class GunSource {
       start(listener) {
         console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((x) => {
+          console.log('shallow: ' + self.path + ". x= ")
+          console.log(x)
           listener.next(x)
         })
       },

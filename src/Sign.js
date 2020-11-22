@@ -95,50 +95,18 @@ export default class Sign extends Component {
 
 
 function gunIntent( gun ) {
-  const userAuth$ = gun.select(KUserList).shallow()
+  const userAuth$ = gun.select(KUserList).getUserList()
     .map((state) => {
-      console.log("userlist state = ", state);
-      // state.map().once(function(user, id){
-      //   console.log("user=", user, ". id=", id);
-      // })
-      let newlist = []
-      for (let key in state) {
-        let row = state[key];
-        if (row === null || key === '_')
-          continue;
-       console.log( "key=", key, ". row=", row)
-        newlist.push(key)
-      }
-      console.log("newlist = ", newlist);
-
-      return {userlist: newlist}
+      console.log("state in sign = ", state);
+      return {userlist: state}
     }).startWith({userlist: []})
     .compose(dropRepeats());
 
-    const useris$ = gun.select('signstatus').shallow()
+    const useris$ = gun.select('signstatus').getSignStatus()
     .map(state => {
-      console.log('is online =', state)
-      let auth = false
-      let name = 'noone'
-      for (let key in state) {
-        let row = state[key];
-        if (key === 'stageName')
-          name = row
-        if (key === 'signin')
-          auth = row
-        console.log("key=", key, ". row=", row)
-      }
-      return { authenticated: auth, stageName: name }
+      console.log('new status in sign =', state)
+      return state
     }).startWith({authenticated: false});
-
-    // const useris$ = gun.isOnline()
-    // .map(state => {
-    //   console.log('is online =', state)
-    //   let auth = (state % 2 == 0)
-    //   let name = 'noone'
-    //   return { authenticated: auth, stageName: name }
-    // });
-    
 
     return {userAuth$: userAuth$, useris$:useris$ }
 }

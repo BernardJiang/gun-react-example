@@ -251,18 +251,6 @@ function navigation(pathname) {
       dataset: {page: 'greeter'},
       className: {'active': pathname === '/greeter'}
     }, 'Greeter')
-    // span({
-    //   dataset: {page: 'home'},
-    //   class: {'active': pathname === '/home'}
-    // }, 'Home'),
-    // span({
-    //   dataset: {page: 'about'},
-    //   class: {'active': pathname === '/about'}
-    // }, 'About'),
-    // span({
-    //   dataset: {page: 'contacts'},
-    //   class: {'active': pathname === '/contacts'}
-    // }, 'Contacts')
   ])
 }
 
