@@ -48,20 +48,20 @@ export class GunSource {
     const self = this
     return xs.create({
       start(listener) {
-        console.log('shallow: ' + self.path)
+        // console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((state) => {
-          console.log('shallow: ' + self.path + ". state= ")
-          console.log(state)
+          // console.log('shallow: ' + self.path + ". state= ")
+          // console.log(state)
           let newlist = []
           for (let key in state) {
             let row = state[key];
             if (row === null || key === '_')
               continue;
-            console.log( "key=", key, ". row=", row)
+            // console.log( "key=", key, ". row=", row)
             newlist.push(key)
           }
-          console.log("newlist = ", newlist);
-          listener.next(newlist)
+          // console.log("newlist = ", newlist);
+          listener.next({userlist: newlist})
         })
       },
       stop() {
@@ -72,22 +72,22 @@ export class GunSource {
     const self = this
     return xs.create({
       start(listener) {
-        console.log('shallow: ' + self.path)
+        // console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((state) => {
-          console.log('shallow: ' + self.path + ". state= ")
-          console.log(state)
+          // console.log('shallow: ' + self.path + ". state= ")
+          // console.log(state)
           let auth = false
-          let name = 'noone'
+          let name = ''
           for (let key in state) {
             let row = state[key];
             if (key === 'stageName')
               name = row
             if (key === 'signin')
               auth = row
-            console.log("key=", key, ". row=", row)
+            // console.log("key=", key, ". row=", row)
           }
           let newstatus = { authenticated: auth, stageName: name }
-          console.log("newstatus = ", newstatus);
+          // console.log("newstatus = ", newstatus);
           listener.next(newstatus)
         })
       },
@@ -103,10 +103,10 @@ export class GunSource {
 
     return xs.create({
       start(listener) {
-        console.log('shallow: ' + self.path)
+        // console.log('shallow: ' + self.path)
         self.gun.get(...self.path).on((x) => {
-          console.log('shallow: ' + self.path + ". x= ")
-          console.log(x)
+          // console.log('shallow: ' + self.path + ". x= ")
+          // console.log(x)
           listener.next(x)
         })
       },
@@ -119,7 +119,7 @@ export class GunSource {
     const self = this
     return xs.create({
       start(listener) {
-        console.log('each: ' + self.path)
+        // console.log('each: ' + self.path)
         self.gun.get(...self.path).map().on((value, key) => {
           listener.next({key, value})
         })
@@ -143,11 +143,12 @@ export function makeGunDriver(opts) {
     sink.addListener({
       next: (command) => {
           if( typeof command === "function"){
-            console.log("command is ", command)
+            // console.log("command is ", command)
             command(gun)
-          } else
-            console.log('command is not a function!!!')
-            console.log(command)
+          } 
+          // else
+          //   console.log('command is not a function!!!')
+          //   console.log(command)
         },
     })
 

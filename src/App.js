@@ -289,12 +289,12 @@ function chatbotView() {
 function view(history$) {
   return history$.map( ([history, nameview, signview]) => {
     // var astr = placeholderText()
-    console.log("History ", history)
+    // console.log("History ", history)
 
     // console.log("stageName is ", stageName)
     // console.log("astr is ", astr)
     const {pathname} = history;
-    console.log("pathname is ", pathname)
+    // console.log("pathname is ", pathname)
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
       page = nameview

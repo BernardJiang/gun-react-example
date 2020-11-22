@@ -96,19 +96,21 @@ export default class Sign extends Component {
 
 function gunIntent( gun ) {
   const userAuth$ = gun.select(KUserList).getUserList()
-    .map((state) => {
-      console.log("state in sign = ", state);
-      return {userlist: state}
-    }).startWith({userlist: []})
+    // .map((state) => {
+    //   // console.log("state in sign = ", state);
+    //   return {userlist: state}
+    // })
+    .startWith({userlist: []})
     .compose(dropRepeats());
 
     const useris$ = gun.select('signstatus').getSignStatus()
-    .map(state => {
-      console.log('new status in sign =', state)
-      return state
-    }).startWith({authenticated: false});
+    // .map(state => {
+    //   // console.log('new status in sign =', state)
+    //   return state
+    // })
+    .startWith({authenticated: false});
 
-    return {userAuth$: userAuth$, useris$:useris$ }
+    return {userAuth$, useris$}
 }
 
 function Intent( DOM) {
@@ -116,7 +118,7 @@ function Intent( DOM) {
     .select('stagenameinput')
     .events('input')
     .map(ev => {
-      console.log(" stagename ev value=", ev.target.value);
+      // console.log(" stagename ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
@@ -124,12 +126,12 @@ function Intent( DOM) {
     .select('signpassword')
     .events('input')
     .map(ev => {
-      console.log(" password ev value=", ev.target.value);
+      // console.log(" password ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
   const newValueName$ = stageNameInput$.map(v => { 
-    console.log("New stagename = ", v);
+    // console.log("New stagename = ", v);
     return { stageName: v } }).remember();
   const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
 
@@ -137,7 +139,7 @@ function Intent( DOM) {
     .select('btnsignin')
     .events('click')
     .map(ev => {
-      console.log(" sign in clicked");
+      // console.log(" sign in clicked");
       return { typeKey: 'signin' }
     }).startWith({ typeKey: 'noclick' });
 
@@ -145,7 +147,7 @@ function Intent( DOM) {
     .select('btnsignup')
     .events('click')
     .map(ev => {
-      console.log(" sign up clicked");
+      // console.log(" sign up clicked");
       return { typeKey: 'signup' }
     }).startWith({ typeKey: 'noclick' });
 
@@ -156,13 +158,13 @@ function Intent( DOM) {
 
 function model(gunEvents, events){
   const state$ = xs.merge(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
-  .fold((acc, x) => {
-    console.log("fold acc", acc, ". and x=", x)
-    return { ...acc, ...x,}}, {})
-  .map((astate) => {
-    console.log("astate =", astate)
-    return astate
-  }).startWith({ userlist: [], authenticated: false, stageName : '', password: '' })
+  .fold((acc, x) => 
+    {return {...acc, ...x}}, {})
+  // .map((astate) => {
+  //   // console.log("astate =", astate)
+  //   return astate
+  // })
+  .startWith({ userlist: [], authenticated: false, stageName : '', password: '' })
   return state$
 }
 
@@ -203,21 +205,21 @@ function gunTodo(clickevents$, state$){
   const outgoingGunEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
-      console.log("click = ", click)
-      console.log("state = ", state)
+      // console.log("click = ", click)
+      // console.log("state = ", state)
       if(state.stageName && state.password){
       if (click.typeKey === 'signin') {
         return (gunInstance) => {
           if (state.authenticated == false) {
-            console.log("authenticed = ", false)
+            // console.log("authenticed = ", false)
             return gunInstance.user().auth(state.stageName, state.password, ack => {
               if (ack.err) {
-                console.log('auth err', ack.err);
+                // console.log('auth err', ack.err);
                 return;
               } else {
                 gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
                 const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
-                console.log('auth OK, set userlist myself=', myself);
+                // console.log('auth OK, set userlist myself=', myself);
                 gunInstance.get(KUserList).set(myself)
                 return;
 
@@ -225,7 +227,7 @@ function gunTodo(clickevents$, state$){
             })
           } else {
             const myself = gunInstance.get(state.stageName)
-            console.log("sign out !!! myself= ", myself )
+            // console.log("sign out !!! myself= ", myself )
             gunInstance.get(KUserList).unset(myself)
             gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
             return gunInstance.user().leave()
@@ -237,16 +239,16 @@ function gunTodo(clickevents$, state$){
         return (gunInstance) => {
           return gunInstance.user().create(state.stageName, state.password, ack => {
             if (ack.err) {
-              console.log('create user failed', ack.err);
+              // console.log('create user failed', ack.err);
               return;
             } else {
-              console.log('create user OK');
+              // console.log('create user OK');
             }
           })
         };
       }
     } else {
-      console.log("stagename or password is invalid", state.stageName, state.password);      
+      // console.log("stagename or password is invalid", state.stageName, state.password);      
     }
 
     });
@@ -255,7 +257,7 @@ function gunTodo(clickevents$, state$){
 
 export function SignIn(sources) {
   const { DOM, gun } = sources;
-  console.log('sources.gun', gun)
+  // console.log('sources.gun', gun)
 
   const gunEvents = gunIntent(gun);
   const events = Intent(DOM);
