@@ -229,27 +229,27 @@ function navigation(pathname) {
   return nav('main_nav', [
     span({
       dataset: {page: 'signin'},
-      class: {'active': pathname === '/signin'}
+      className: {'active': pathname === '/signin'}
     }, 'Sign In'),
     span({
       dataset: {page: 'settings'},
-      class: {'active': pathname === '/settings'}
+      className: {'active': pathname === '/settings'}
     }, 'Settings'),
     span({
       dataset: {page: 'attributes'},
-      class: {'active': pathname === '/attributes'}
+      className: {'active': pathname === '/attributes'}
     }, 'Attributes'),
     span({
       dataset: {page: 'talks'},
-      class: {'active': pathname === '/talks'}
+      className: {'active': pathname === '/talks'}
     }, 'Talks'),
     span({
       dataset: {page: 'chatbot'},
-      class: {'active': pathname === '/chatbot'}
+      className: {'active': pathname === '/chatbot'}
     }, 'Chatbot'),
     span({
       dataset: {page: 'greeter'},
-      class: {'active': pathname === '/greeter'}
+      className: {'active': pathname === '/greeter'}
     }, 'Greeter')
     // span({
     //   dataset: {page: 'home'},
