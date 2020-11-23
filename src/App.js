@@ -227,27 +227,27 @@ styles.rgb = {
 
 function navigation(pathname) {
   return nav('main_nav', [
-    span({
+    span('.signin', {
       dataset: { page: 'signin' },
       className: { 'active': pathname === '/signin' }
     }, 'Sign In'),
-    span({
+    span('.Settings', {
       dataset: { page: 'settings' },
       className: { 'active': pathname === '/settings' }
     }, 'Settings'),
-    span({
+    span('.Attributes', {
       dataset: { page: 'attributes' },
       className: { 'active': pathname === '/attributes' }
     }, 'Attributes'),
-    span({
+    span('.Talks', {
       dataset: { page: 'talks' },
       className: { 'active': pathname === '/talks' }
     }, 'Talks'),
-    span({
+    span('.Chatbot', {
       dataset: { page: 'chatbot' },
       className: { 'active': pathname === '/chatbot' }
     }, 'Chatbot'),
-    span({
+    span('.Greeter', {
       dataset: { page: 'greeter' },
       className: { 'active': pathname === '/greeter' }
     }, 'Greeter')
