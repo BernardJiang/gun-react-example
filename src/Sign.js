@@ -172,7 +172,7 @@ function view(state$) {
 
   const vdom$ = state$
     .map(state =>
-      div('.hue.page', [
+      div('#divSign.hue.page', [
         form('#inup.sign.pad.center', [
           div('.mid.row.col', [
             h1('Enter your stageName: ' + state.stageName),

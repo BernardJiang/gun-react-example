@@ -227,59 +227,53 @@ styles.rgb = {
 
 function navigation(pathname) {
   return nav('main_nav', [
-    span('.signin', {
+    span('#signin', {
       dataset: { page: 'signin' },
       className: { 'active': pathname === '/signin' }
     }, 'Sign In'),
-    span('.Settings', {
+    span('#Settings', {
       dataset: { page: 'settings' },
       className: { 'active': pathname === '/settings' }
     }, 'Settings'),
-    span('.Attributes', {
+    span('#Attributes', {
       dataset: { page: 'attributes' },
       className: { 'active': pathname === '/attributes' }
     }, 'Attributes'),
-    span('.Talks', {
+    span('#Talks', {
       dataset: { page: 'talks' },
       className: { 'active': pathname === '/talks' }
     }, 'Talks'),
-    span('.Chatbot', {
+    span('#Chatbot', {
       dataset: { page: 'chatbot' },
       className: { 'active': pathname === '/chatbot' }
     }, 'Chatbot'),
-    span('.Greeter', {
+    span('#Greeter', {
       dataset: { page: 'greeter' },
       className: { 'active': pathname === '/greeter' }
     }, 'Greeter')
   ])
 }
 
-function signInView() {
-  return div([
-    h1('Sign In !'),
-    p('Here to sign in/ up '),
-  ])
-}
 function settingsView() {
-  return div([
+  return div("#divSettings", [
     h1('Settings!'),
     p('Here to edit settings '),
   ])
 }
 function attributesView() {
-  return div([
+  return div('#divAttributes',[
     h1('Attributes !'),
     p('Here to attributes '),
   ])
 }
 function talksView() {
-  return div([
+  return div('#divTalks', [
     h1('Talks !'),
     p('Here to talks'),
   ])
 }
 function chatbotView() {
-  return div([
+  return div('#divChatbot', [
     h1('Chat bot !'),
     p('Here to chat bot in/ up '),
   ])
@@ -310,13 +304,6 @@ function view(history$) {
     } else if (pathname === '/Chatbot') {
       page = chatbotView()
     }
-    // else if (pathname === '/Home') {
-    //   page = homePageView()
-    // } else if (pathname === '/About') {
-    //   page = aboutPageView()
-    // } else if (pathname === '/Contacts') {
-    //   page = contactsPageView()
-    // }
 
     return div([
       navigation(pathname),

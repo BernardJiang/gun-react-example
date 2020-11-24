@@ -64,19 +64,23 @@ describe('Sign up then sign in', function() {
     }
 
     it('Visits local host', function() {
+      let waittime = 2000
       cy.visit('http://localhost:3000')
-      .get('.signin')
-      .click().wait(2000)
-      .get('.Settings')
-      .click().wait(2000)
-      .get('.Attributes')
-      .click().wait(2000)
-      .get('.Talks')
-      .click().wait(2000)
-      .get('.Chatbot')
-      .click().wait(2000)
-      .get('.Greeter')
-      .click().wait(2000)
+      
+      .get('#signin').click().wait(waittime)
+      .get('#divSign').should('be.visible')
+      
+      .get('#Settings').click().wait(waittime)
+      .get('#divSettings').should('be.visible')
+      
+      .get('#Attributes').click().wait(waittime)
+      .get('#divAttributes').should('be.visible')
+      .get('#Talks').click().wait(waittime)
+      .get('#divTalks').should('be.visible')
+      .get('#Chatbot').click().wait(waittime)
+      .get('#divChatbot').should('be.visible')
+      .get('#Greeter').click().wait(waittime)
+      .get('#divGreeter').should('be.visible')
     //   addUser('a', 'a')
     //   addUser('b', 'b')
     //   addUser('c', 'c')

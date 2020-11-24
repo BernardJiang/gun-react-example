@@ -29,7 +29,7 @@ export function greeterComponent(sources) {
 
     const vdom$ = state$
        .map( state => 
-           div([
+           div('#divGreeter', [
             h1('Welcome, ' + state.label ),
             input({ sel: 'greeterComponent', type: 'text' })
           ])
