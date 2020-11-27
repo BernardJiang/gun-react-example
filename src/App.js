@@ -331,17 +331,12 @@ function main(sources) {
   const childSources = { DOM: react, props$ };
   const greetersink = greeterComponent(childSources)
 
-  const propssign$ = xs.of({
-    stageName: 'whoamI', authenticated: false, userlist: []
-  });
   const childSourcesSignIn = { DOM: react, gun: gun };
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
 
   const vdom$ = view(actions$);
-
-
 
   return {
     react: vdom$,
