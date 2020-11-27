@@ -16,24 +16,37 @@ describe('Sign up then sign in', function() {
     //   })
 
     function addUser(username, userpassword) {
-      cy.get('#sign > #inup > :nth-child(1) > .huet')
+      cy.get('.stageNameInput')
         .clear()
-        .type(username)
+        .type(username).wait(2000)
         .should('have.value', username)
 
-      cy.get('#sign > #inup > :nth-child(2) > .huet')
+      cy.get('.passwordInput')
         .clear()
-        .type(userpassword)
+        .type(userpassword).wait(2000)
+        .should('have.value', userpassword)
+
+      cy.get('#inup > :nth-child(3) > :nth-child(1)')
+        .click()
+      
+      cy.wait(1000)
+
+      cy.get('.stageNameInput')
+        .clear()
+        .type(username).wait(2000)
+        .should('have.value', username)
+
+      cy.get('.passwordInput')
+        .clear()
+        .type(userpassword).wait(2000)
         .should('have.value', userpassword)
 
       cy.get('#inup > :nth-child(3) > :nth-child(3)')
         .click()
-      
-        cy.wait(1000)
 
       cy.get('#inup > :nth-child(3) > :nth-child(1)')
         .should('contain','Sign In')
-        .click()
+        .click().wait(4000)
         .should('contain','Sign Out')
         cy.wait(500)
 
@@ -45,13 +58,29 @@ describe('Sign up then sign in', function() {
 
     }
 
-    function signInUser(username, userpassword) {
-      cy.get('#sign > #inup > :nth-child(1) > .huet')
+    function buggyreboot(username, userpassword) {
+      cy.get('#inup > :nth-child(1) > :nth-child(2)')
         .clear()
         .type(username)
         .should('have.value', username)
 
-      cy.get('#sign > #inup > :nth-child(2) > .huet')
+      cy.get('#inup > :nth-child(2) > :nth-child(2)')
+        .clear()
+        .type(userpassword)
+        .should('have.value', userpassword)
+
+      cy.get('#inup > :nth-child(3) > :nth-child(1)')
+        .should('contain','Sign In')
+        .click().wait(5000)
+    }
+
+    function signInUser(username, userpassword) {
+      cy.get('#inup > :nth-child(1) > :nth-child(2)')
+        .clear()
+        .type(username)
+        .should('have.value', username)
+
+      cy.get('#inup > :nth-child(2) > :nth-child(2)')
         .clear()
         .type(userpassword)
         .should('have.value', userpassword)
@@ -63,12 +92,18 @@ describe('Sign up then sign in', function() {
 
     }
 
+    function signOutUser(username, userpassword) {
+      cy.get('#inup > :nth-child(3) > :nth-child(1)')
+        .should('contain','Sign Out')
+        .click()
+        .should('contain','Sign In')
+
+    }
+
     it('Visits local host', function() {
-      let waittime = 2000
+      let waittime = 1000
       cy.visit('http://localhost:3000')
       
-      .get('#signin').click().wait(waittime)
-      .get('#divSign').should('be.visible')
       
       .get('#Settings').click().wait(waittime)
       .get('#divSettings').should('be.visible')
@@ -81,11 +116,15 @@ describe('Sign up then sign in', function() {
       .get('#divChatbot').should('be.visible')
       .get('#Greeter').click().wait(waittime)
       .get('#divGreeter').should('be.visible')
-    //   addUser('a', 'a')
-    //   addUser('b', 'b')
-    //   addUser('c', 'c')
-    //   addUser('d', 'd')
-    //   signInUser('a', 'a')
+
+      .get('#signin').click().wait(waittime)
+      .get('#divSign').should('be.visible')
+
+      buggyreboot('a', 'a')
+      signInUser('a', 'a')
+      signOutUser('a', 'a')
+      signInUser('b', 'b')
+      signOutUser('b', 'b')
     //   cy.get('.rsc-input').clear().type('Q1?').should('have.value', 'Q1?')
 
     })
