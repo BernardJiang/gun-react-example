@@ -8,6 +8,8 @@ import open from 'gun/lib/open'
 import 'gun/lib/open'
 import 'gun/lib/unset'
 
+const KUserList = "userlist2"
+const KSignStatus = 'signstatus'
 export class GunSource {
   //   private gun: any
   //   private path: Array<string>
@@ -49,7 +51,7 @@ export class GunSource {
     return xs.create({
       start(listener) {
         // console.log('shallow: ' + self.path)
-        self.gun.get(...self.path).on((state) => {
+        self.gun.get(KUserList).on((state) => {
           // console.log('shallow: ' + self.path + ". state= ")
           // console.log(state)
           let newlist = []
@@ -73,7 +75,7 @@ export class GunSource {
     return xs.create({
       start(listener) {
         // console.log('shallow: ' + self.path)
-        self.gun.get(...self.path).on((state) => {
+        self.gun.get(KSignStatus).on((state) => {
           // console.log('shallow: ' + self.path + ". state= ")
           // console.log(state)
           let auth = false
@@ -138,7 +140,6 @@ export function makeGunDriver(opts) {
   // console.log('-----------------------------------------------------')
 
   const gun = Gun(opts)
-  const KUserList = "userlist2"
 
   return function gunDriver(sink) {
     sink.addListener({

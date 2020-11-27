@@ -95,19 +95,11 @@ export default class Sign extends Component {
 
 
 function gunIntent(gun) {
-  const userAuth$ = gun.select(KUserList).getUserList()
-    // .map((state) => {
-    //   // console.log("state in sign = ", state);
-    //   return {userlist: state}
-    // })
+  const userAuth$ = gun.getUserList()
     .startWith({ userlist: [] })
     .compose(dropRepeats());
 
-  const useris$ = gun.select('signstatus').getSignStatus()
-    // .map(state => {
-    //   // console.log('new status in sign =', state)
-    //   return state
-    // })
+  const useris$ = gun.getSignStatus()
     .startWith({ authenticated: false });
 
   return { userAuth$, useris$ }
