@@ -190,10 +190,12 @@ function view(state$) {
           ]),
           div('.mid.row.col.go', [
             h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
-          ])
+          ]),
           // <a href="info">more info</a>
-        ]),
-        !!state.userlist && ul(state.userlist.map((item) => li(item)))
+          div('.mid.row.col.go', [
+            !!state.userlist && ul(state.userlist.map((item) => li(item)))
+          ])
+          ])
       ])
 
     );
