@@ -138,6 +138,7 @@ export function makeGunDriver(opts) {
   // console.log('-----------------------------------------------------')
 
   const gun = Gun(opts)
+  const KUserList = "userlist2"
 
   return function gunDriver(sink) {
     sink.addListener({
@@ -155,7 +156,7 @@ export function makeGunDriver(opts) {
           switch(command.action){
             case 'signup':
               console.log('command is sign up!!!')
-              gun.user().create(command.name, command.password, ack => {
+              gun.user().create(command.stageName, command.password, ack => {
                 if (ack.err) {
                   console.log('create user failed', ack.err);
                   // return;
@@ -165,6 +166,30 @@ export function makeGunDriver(opts) {
               });
               break;
             case 'signin':
+                  console.log("gun = ", gun)
+                  if (command.authenticated == false) {
+                  console.log("authenticed = ", false)
+                  gun.user().auth(command.stageName, command.password, ack => {
+                    console.log('auth err', ack.err);
+                    if (ack.err) {
+                      console.log('auth err', ack.err);
+                      // return;
+                    } else {
+                      gun.get('signstatus').put({ stageName: command.stageName, signin: true })
+                      const myself = gun.get(command.stageName).put({ stageName: command.stageName })
+                      console.log('auth OK, set userlist myself=', myself);
+                      gun.get(KUserList).set(myself)
+                      // return;
+                    }
+                  })
+                } else {
+                  const myself = gun.get(command.stageName)
+                  console.log("sign out !!! myself= ", myself )
+                  gun.get(KUserList).unset(myself)
+                  gun.get('signstatus').put({ stageName: command.stageName, signin: false })
+                  gun.user().leave()
+                }
+    
               break;
             default:
               console.log('command is not defined!!!', command)

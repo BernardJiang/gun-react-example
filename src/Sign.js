@@ -211,34 +211,11 @@ function gunTodo(clickevents$, state$) {
       // console.log("state = ", state)
       if (state.stageName && state.password) {
         if (click.typeKey === 'signin') {
-          return (gunInstance) => {
-            if (state.authenticated == false) {
-              // console.log("authenticed = ", false)
-              return gunInstance.user().auth(state.stageName, state.password, ack => {
-                if (ack.err) {
-                  // console.log('auth err', ack.err);
-                  return;
-                } else {
-                  gunInstance.get('signstatus').put({ stageName: state.stageName, signin: true })
-                  const myself = gunInstance.get(state.stageName).put({ stageName: state.stageName })
-                  // console.log('auth OK, set userlist myself=', myself);
-                  gunInstance.get(KUserList).set(myself)
-                  return;
-
-                }
-              })
-            } else {
-              const myself = gunInstance.get(state.stageName)
-              // console.log("sign out !!! myself= ", myself )
-              gunInstance.get(KUserList).unset(myself)
-              gunInstance.get('signstatus').put({ stageName: state.stageName, signin: false })
-              return gunInstance.user().leave()
-            }
-          }
+          return {action: 'signin', authenticated: state.authenticated, stageName: state.stageName, password: state.password}
         }
 
         if (click.typeKey === 'signup') {
-          return {action: 'signup', name: state.stageName, password: state.password}
+          return {action: 'signup', stageName: state.stageName, password: state.password}
         }
       } else {
         // console.log("stagename or password is invalid", state.stageName, state.password);      
