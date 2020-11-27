@@ -238,16 +238,7 @@ function gunTodo(clickevents$, state$) {
         }
 
         if (click.typeKey === 'signup') {
-          return (gunInstance) => {
-            return gunInstance.user().create(state.stageName, state.password, ack => {
-              if (ack.err) {
-                // console.log('create user failed', ack.err);
-                return;
-              } else {
-                // console.log('create user OK');
-              }
-            })
-          };
+          return {action: 'signup', name: state.stageName, password: state.password}
         }
       } else {
         // console.log("stagename or password is invalid", state.stageName, state.password);      

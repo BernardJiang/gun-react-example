@@ -146,10 +146,33 @@ export function makeGunDriver(opts) {
           // console.log("command is ", command)
           command(gun)
         }
-        // else
-        //   console.log('command is not a function!!!')
-        //   console.log(command)
-      },
+        else{
+          console.log('command is not a function!!!')
+          console.log(command)
+          if( command === undefined || !('action' in command))
+            return
+
+          switch(command.action){
+            case 'signup':
+              console.log('command is sign up!!!')
+              gun.user().create(command.name, command.password, ack => {
+                if (ack.err) {
+                  console.log('create user failed', ack.err);
+                  // return;
+                } else {
+                  // console.log('create user OK');
+                }
+              });
+              break;
+            case 'signin':
+              break;
+            default:
+              console.log('command is not defined!!!', command)
+              break;
+
+          }
+        }
+      }
     })
 
     return new GunSource(gun, [])
