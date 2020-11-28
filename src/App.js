@@ -11,7 +11,7 @@ import placeholderText from 'lorem-ipsum';
 import dropRepeats from 'xstream/extra/dropRepeats';
 
 
-import Entity from './Entity';
+import { Entity } from './Entity';
 // import Gun from 'gun/gun'
 // import Todos from './Todos'
 import { greeter2View, greeterComponent } from './greeter2View'
@@ -317,7 +317,7 @@ function view(history$) {
 
 
 function main(sources) {
-  const { react, gun } = sources;
+  const { react, entity } = sources;
 
   const history$ = sources.react.select('main_nav').events('click')
     .map(e => {
@@ -331,7 +331,7 @@ function main(sources) {
   const childSources = { DOM: react, props$ };
   const greetersink = greeterComponent(childSources)
 
-  const childSourcesSignIn = { DOM: react, gun: gun };
+  const childSourcesSignIn = { DOM: react, entity: entity };
   const signsink = SignIn(childSourcesSignIn);
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
@@ -341,7 +341,7 @@ function main(sources) {
   return {
     react: vdom$,
     history: history$,
-    gun: signsink.gun
+    entity: signsink.entity
   };
 }
 

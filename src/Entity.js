@@ -1,3 +1,4 @@
+import xs, { Listener, Stream } from 'xstream'
 import Gun from 'gun/gun'
 import Sea from 'gun/sea'
 import path from 'gun/lib/path'
@@ -11,6 +12,9 @@ import 'gun/lib/unset'
 
 import chatAI from './ChatAI'
 // import chatAI from './lib/chatAI'
+
+const KUserList = "userlist2"
+const KSignStatus = 'signstatus'
 
 /*
    class Entity {
@@ -67,31 +71,25 @@ Console.log((await bob).data)
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
 const PatternQuestionWithOptions2 = /((.*?)(\x3F)+)((.*)(\x3B)+)*((.*?)(\x2E)+$)/
 
-export default class Entity {
-    constructor(url) {
+export class Entity {
+    constructor(gun) {
 
-        localStorage.clear();
+        // localStorage.clear();
 
-        this.gun = new Gun(url)
-        // this.sign = this.gun.get('sign')
+        this.gun = gun
+        this.sign = this.gun.get('sign')
         this.user = this.gun.user()
         this.userAttributes = null; // it's null before sign in. this.user.get('attributes')
         this.userTalks = null;
         this.userSettings = null; // it's null before sign in. this.user.get('settings')
         this.chat = this.gun.get('chat')
         this.userlist = this.gun.get('userlist')
-        // this.userlist.on(this.cbNewUser);
+        // // this.userlist.on(this.cbNewUser);
         this.msgs = {}
         this.attrs = {}
         this.stageName = ''
         this.userNameList = []
-        // this.cbUpdateUIChat = ''
-        this.cbUpdateUIChatBot = ''
-        this.cbUpdateUIAttributes = ''
-        this.cbUpdateUITalks = ''
-        this.cbUpdateUISettings = ''
-        this.cbUpdateUISign = ''
-        this.chatAI = new chatAI(this.gun);
+        // this.chatAI = new chatAI(this.gun);
     }
 
     // cbNewUser(newuser) {
@@ -123,14 +121,73 @@ export default class Entity {
     }
 
     create(stageName, password) {
-        return this.user.create(stageName, password);
+        return this.user.create(stageName, password, ack => {
+            if (ack.err) {
+              console.log('create user failed', ack.err);
+              // return;
+            } else {
+              // console.log('create user OK');
+            }
+          });
     }
     // listentouser(cb) {
     //     this.userlist.on(data => {
     //         this.usercount(cb)
     //     });
     // }
-
+    getUserList() {
+        const self = this
+        return xs.create({
+          start(listener) {
+            // console.log('shallow: ' + self.path)
+            self.gun.get(KUserList).on((state) => {
+              // console.log('shallow: ' + self.path + ". state= ")
+              // console.log(state)
+              let newlist = []
+              for (let key in state) {
+                let row = state[key];
+                if (row === null || key === '_')
+                  continue;
+                // console.log( "key=", key, ". row=", row)
+                newlist.push(key)
+              }
+              // console.log("newlist = ", newlist);
+              listener.next({ userlist: newlist })
+            })
+          },
+          stop() {
+          },
+        })
+      }
+      getSignStatus() {
+        const self = this
+        return xs.create({
+          start(listener) {
+            // console.log('shallow: ' + self.path)
+            self.gun.get(KSignStatus).on((state) => {
+              // console.log('shallow: ' + self.path + ". state= ")
+              // console.log(state)
+              let auth = false
+              let name = ''
+              for (let key in state) {
+                let row = state[key];
+                if (key === 'stageName')
+                  name = row
+                if (key === 'signin')
+                  auth = row
+                // console.log("key=", key, ". row=", row)
+              }
+              let newstatus = { authenticated: auth, stageName: name }
+              // console.log("newstatus = ", newstatus);
+              listener.next(newstatus)
+            })
+          },
+          stop() {
+          },
+        })
+      }
+    
+    
     onSignChange = UpdateUISign => {
         this.cbUpdateUISign = UpdateUISign
         console.log("Registered cbUpdateUISign ", UpdateUISign)
@@ -148,63 +205,84 @@ export default class Entity {
         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
     }
 
-    auth(stageName, password) {
+    auth(stageName, password, authenticated) {
         this.stageName = stageName;
         this.myself = "";
-        this.user.auth(stageName, password, ack => {
-            if (ack.err) {
-                console.log('err', ack.err);
-                this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
-                return;
-            }
-            this.myself = this.user.get(stageName).put({
-                stageName: stageName
-            })
-            this.userlist.set(this.myself)
-            this.userAttributes = this.user.get('Attributes')
-            this.userSettings = this.user.get('Settings')
-            this.stageName = stageName;
-            this.chatAI.setSelf(this.myself)
+        console.log("authenticed = ", false)
+        if (authenticated == false) {
+            const self = this.gun
+            this.user.auth(stageName, password, ack => {
+              console.log('auth err', ack.err);
+              if (ack.err) {
+                console.log('auth err', ack.err);
+            } else {
+                self.get('signstatus').put({ stageName: stageName, signin: true })
+                const myself = self.get(stageName).put({ stageName: stageName })
+                console.log('auth OK, set userlist myself=', myself);
+                self.get(KUserList).set(myself)
+          }
+        })
+      } else {
+        const myself = this.gun.get(stageName)
+        console.log("sign out !!! myself= ", myself )
+        this.gun.get(KUserList).unset(myself)
+        this.gun.get('signstatus').put({ stageName: stageName, signin: false })
+        this.user.leave()
+      }
 
-            if(this.cbUpdateUISign){
-                console.log("calling userlist open");
-                this.userlist.open((list) => {
-                    console.log("Begin of userlist callback list =", list);
-                    const reducer = (newList, key) => {
-                        if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
-                            return [...newList, {
-                                text: list[key].stageName,
-                                key
-                            }];
-                        } else {
-                            return newList;
-                        };
-                    }
-                    const keylist = Object.keys(list);
-                    if (keylist === undefined) {
-                        return;
-                    }
-                    this.userNameList = keylist.reduce(reducer, []);
-                    console.log("Will call setState from userlist callback this.userNameList =", this.userNameList);
-                    this.cbUpdateUISign && this.cbUpdateUISign({
-                        userlist: this.userNameList || [],
-                        mencnt :  this.userNameList.length,
-                        authenticated: true
-                    });
-                    console.log("End of userlist callback");
-                });
-                console.log("end of calling userlist open");
+        // this.user.auth(stageName, password, ack => {
+        //     if (ack.err) {
+        //         console.log('err', ack.err);
+        //         this.cbUpdateUISign && this.cbUpdateUISign({authenticated: false})
+        //         return;
+        //     }
+        //     this.myself = this.user.get(stageName).put({
+        //         stageName: stageName
+        //     })
+        //     this.userlist.set(this.myself)
+        //     this.userAttributes = this.user.get('Attributes')
+        //     this.userSettings = this.user.get('Settings')
+        //     this.stageName = stageName;
+        //     this.chatAI.setSelf(this.myself)
+
+        //     if(this.cbUpdateUISign){
+        //         console.log("calling userlist open");
+        //         this.userlist.open((list) => {
+        //             console.log("Begin of userlist callback list =", list);
+        //             const reducer = (newList, key) => {
+        //                 if (list[key] && !!Object.keys(list[key]).length && list[key].stageName) {
+        //                     return [...newList, {
+        //                         text: list[key].stageName,
+        //                         key
+        //                     }];
+        //                 } else {
+        //                     return newList;
+        //                 };
+        //             }
+        //             const keylist = Object.keys(list);
+        //             if (keylist === undefined) {
+        //                 return;
+        //             }
+        //             this.userNameList = keylist.reduce(reducer, []);
+        //             console.log("Will call setState from userlist callback this.userNameList =", this.userNameList);
+        //             this.cbUpdateUISign && this.cbUpdateUISign({
+        //                 userlist: this.userNameList || [],
+        //                 mencnt :  this.userNameList.length,
+        //                 authenticated: true
+        //             });
+        //             console.log("End of userlist callback");
+        //         });
+        //         console.log("end of calling userlist open");
         
-            } else{
-                    //should unregister callback here.
-            }
-            //If these callbacks are available, then call to notify them.
-            this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
-            this.cbUpdateUIAttributes && this.cbUpdateUIAttributes({})
-            this.cbUpdateUITalks && this.cbUpdateUITalks({})
-            this.cbUpdateUISettings  &&  this.cbUpdateUISettings({stageName})
-    
-        });
+        //     } else{
+        //             //should unregister callback here.
+        //     }
+        //     //If these callbacks are available, then call to notify them.
+        //     this.cbUpdateUIChatBot && this.cbUpdateUIChatBot({stageName});
+        //     this.cbUpdateUIAttributes && this.cbUpdateUIAttributes({})
+        //     this.cbUpdateUITalks && this.cbUpdateUITalks({})
+        //     this.cbUpdateUISettings  &&  this.cbUpdateUISettings({stageName})
+        // });
     }
 
     // usercount(cb) {
@@ -518,6 +596,41 @@ export default class Entity {
         this.userAttributes && this.userAttributes.get(msg.message).put(msg, function (ack) {
             // console.log("save attribute", ack)
         });
-
     }
 }
+
+export function makeEntityDriver(opts) {
+    // console.log('gun opts.root--------------------------------------')
+    // console.log(opts)
+    // console.log('-----------------------------------------------------')
+  
+    const entity = new Entity(new Gun(opts.peers))
+  
+    return function entityDriver(sink) {
+      sink.addListener({
+        next: (command) => {
+            console.log('command is not a function!!!')
+            console.log(command)
+            if( command === undefined || !('action' in command))
+              return
+  
+            switch(command.action){
+              case 'signup':
+                console.log('command is sign up!!!')
+                entity.create(command.stageName, command.password);
+                break;
+              case 'signin':
+                entity.auth(command.stageName, command.password, command.authenticated);
+                break;
+              default:
+                console.log('command is not defined!!!', command)
+                break;
+  
+            }
+        }
+      })
+  
+      return new Entity(entity.gun)
+    }
+  }
+  

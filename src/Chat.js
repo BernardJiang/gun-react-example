@@ -1,7 +1,7 @@
 import React, {
   Component
 } from 'react'
-import Entity from './Entity'
+import { Entity } from './Entity'
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({key, ...msgs[key]}))

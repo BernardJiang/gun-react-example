@@ -5,11 +5,12 @@ import { run } from "@cycle/run";
 import { makeDOMDriver } from "@cycle/react-dom";
 import {makeHashHistoryDriver} from '@cycle/history';
 import { makeGunDriver } from './cyclegun';
+import { makeEntityDriver } from './Entity';
 
 run(App, {
     react: makeDOMDriver(document.getElementById("root")),
     history: makeHashHistoryDriver(),
-    gun: makeGunDriver({root: 'root', peers: ['http://localhost:8765/gun']})
+    entity: makeEntityDriver({root: 'root', peers: ['http://localhost:8765/gun']})
   });
   
 

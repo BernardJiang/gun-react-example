@@ -94,12 +94,12 @@ export default class Sign extends Component {
 }
 
 
-function gunIntent(gun) {
-  const userAuth$ = gun.getUserList()
-    .startWith({ userlist: [] })
+function entityIntent(entity) {
+  const userAuth$ = entity.getUserList()
+    .startWith({ userlist: ["noone"] })
     .compose(dropRepeats());
 
-  const useris$ = gun.getSignStatus()
+  const useris$ = entity.getSignStatus()
     .startWith({ authenticated: false });
 
   return { userAuth$, useris$ }
@@ -149,8 +149,8 @@ function Intent(DOM) {
   return { clickevents$, newValueName$, newValuePassword$ }
 }
 
-function model(gunEvents, events) {
-  const state$ = xs.merge(gunEvents.userAuth$, gunEvents.useris$, events.newValueName$, events.newValuePassword$)
+function model(entityEvents, events) {
+  const state$ = xs.merge(entityEvents.userAuth$, entityEvents.useris$, events.newValueName$, events.newValuePassword$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
     // .map((astate) => {
     //   // console.log("astate =", astate)
@@ -194,9 +194,9 @@ function view(state$) {
   return vdom$
 }
 
-function gunTodo(clickevents$, state$) {
+function entityTodo(clickevents$, state$) {
   // sink map filtered stream of payloads into function and emit function
-  const outgoingGunEvents$ = clickevents$
+  const outgoingEntityEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
       // console.log("click = ", click)
@@ -214,25 +214,25 @@ function gunTodo(clickevents$, state$) {
       }
 
     });
-  return outgoingGunEvents$
+  return outgoingEntityEvents$
 }
 
 export function SignIn(sources) {
-  const { DOM, gun } = sources;
-  // console.log('sources.gun', gun)
+  const { DOM, entity } = sources;
+  // console.log('sources.entity', entity)
 
-  const gunEvents = gunIntent(gun);
+  const entityEvents = entityIntent(entity);
   const events = Intent(DOM);
 
-  const state$ = model(gunEvents, events)
+  const state$ = model(entityEvents, events)
 
   const vdom$ = view(state$)
-  const outgoingGunEvents$ = gunTodo(events.clickevents$, state$)
+  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
 
   const sinks = {
     DOM: vdom$,
     value: state$,
-    gun: outgoingGunEvents$
+    entity: outgoingEntityEvents$
   }
   return sinks;
 

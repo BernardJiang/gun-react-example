@@ -21,7 +21,7 @@ import { ChatIcon, CloseIcon, SubmitIcon, MicIcon } from './icons';
 import { isMobile } from './utils';
 import { speakFn } from './speechSynthesis';
 
-import Entity from '../Entity'
+import { Entity } from '../Entity'
 import { set } from 'lodash';
 
 const formatMsgs = msgs => Object.keys(msgs)
