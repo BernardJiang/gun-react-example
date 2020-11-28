@@ -208,23 +208,22 @@ export class Entity {
     auth(stageName, password, authenticated) {
         this.stageName = stageName;
         this.myself = "";
-        console.log("authenticed = ", false)
         if (authenticated == false) {
             const self = this.gun
             this.user.auth(stageName, password, ack => {
-              console.log('auth err', ack.err);
+              // console.log('auth err', ack.err);
               if (ack.err) {
-                console.log('auth err', ack.err);
-            } else {
+                // console.log('auth err', ack.err);
+              } else {
                 self.get('signstatus').put({ stageName: stageName, signin: true })
                 const myself = self.get(stageName).put({ stageName: stageName })
-                console.log('auth OK, set userlist myself=', myself);
+                // console.log('auth OK, set userlist myself=', myself);
                 self.get(KUserList).set(myself)
           }
         })
       } else {
         const myself = this.gun.get(stageName)
-        console.log("sign out !!! myself= ", myself )
+        // console.log("sign out !!! myself= ", myself )
         this.gun.get(KUserList).unset(myself)
         this.gun.get('signstatus').put({ stageName: stageName, signin: false })
         this.user.leave()
@@ -609,14 +608,14 @@ export function makeEntityDriver(opts) {
     return function entityDriver(sink) {
       sink.addListener({
         next: (command) => {
-            console.log('command is not a function!!!')
-            console.log(command)
+            // console.log('command is not a function!!!')
+            // console.log(command)
             if( command === undefined || !('action' in command))
               return
   
             switch(command.action){
               case 'signup':
-                console.log('command is sign up!!!')
+                // console.log('command is sign up!!!')
                 entity.create(command.stageName, command.password);
                 break;
               case 'signin':
