@@ -124,7 +124,7 @@ function chatbotView() {
 
 
 function view(history$) {
-  return history$.map(([history, nameview, signview]) => {
+  return history$.map(([history, nameview, signview, chatbotview]) => {
     const { pathname } = history;
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
@@ -138,7 +138,7 @@ function view(history$) {
     } else if (pathname === '/Talks') {
       page = talksView()
     } else if (pathname === '/Chatbot') {
-      page = chatbotView()
+      page = chatbotview
     }
 
     return div([
@@ -170,7 +170,10 @@ function main(sources) {
   const childSourcesSignIn = { DOM: react, entity: entity };
   const signsink = SignIn(childSourcesSignIn);
 
-  const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM);
+  const childSourcesChatbot = { DOM: react, entity: entity };
+  const chatbotsink = ChatBot(childSourcesSignIn);
+
+  const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM);
 
   const vdom$ = view(actions$);
 
