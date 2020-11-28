@@ -4,7 +4,6 @@ import * as serviceWorker from './serviceWorker';
 import { run } from "@cycle/run";
 import { makeDOMDriver } from "@cycle/react-dom";
 import {makeHashHistoryDriver} from '@cycle/history';
-import { makeGunDriver } from './cyclegun';
 import { makeEntityDriver } from './Entity';
 
 run(App, {
