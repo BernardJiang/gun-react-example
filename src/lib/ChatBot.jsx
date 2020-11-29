@@ -962,32 +962,32 @@ function model(entityEvents, events) {
   return state$
 }
 
+const BotStyles = {
+  divstyle: '#divSign.hue.page',
+  div2style: '.mid.row.col.go'
+  
+};
+
 function view(state$) {
   const vdom$ = state$
     .map(state =>
-      div('#divSign.hue.page', [
-        form('#inup.sign.pad.center', [
-          div('.mid.row.col', [
-            h1('Enter your stageName: ' + state.stageName),
-            input({ sel: 'stagenameinput', type: 'text', placeholder: 'stagename' })
+      div(BotStyles.divstyle, [
+          div(BotStyles.div2style, [
+            h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            h1('A long private passphrase: ' + state.password),
-            input({ sel: 'signpassword', type: 'password', placeholder: 'password' })
+            // !!state.userlist && ul(state.userlist.map((item) => li(item)))
+            ul([
+              li("message1"),
+              li("message2"),
+              li("message3")
+
+              ])
           ]),
-          div('.mid.row.col.go', [
-            button({ sel: 'btnsignin' }, state.authenticated ? 'Sign Out' : 'Sign In'),
-            div('.or', [h1('or')]),
-            button({ sel: 'btnsignup' }, 'sign up'),
-            h1('button signin is clicked : ' + state.signin + " and sign up : " + state.signup)
-          ]),
-          div('.mid.row.col.go', [
-            h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
-          ]),
-          // <a href="info">more info</a>
-          div('.mid.row.col.go', [
-            !!state.userlist && ul(state.userlist.map((item) => li(item)))
-          ])
+          div('.mid.col.rowC', [
+            // h1('footer'),
+            input('.w8', { sel: 'QAinput', type: 'text', placeholder: 'anything' }),
+            button('.mr', { sel: 'btnsend' }, 'send')
           ])
       ])
 

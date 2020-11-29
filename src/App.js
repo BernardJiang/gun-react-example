@@ -115,12 +115,12 @@ function talksView() {
     p('Here to talks'),
   ])
 }
-function chatbotView() {
-  return div('#divChatbot', [
-    h1('Chat bot !'),
-    p('Here to chat bot in/ up '),
-  ])
-}
+// function chatbotView() {
+//   return div('#divChatbot', [
+//     h1('Chat bot !'),
+//     p('Here to chat bot in/ up '),
+//   ])
+// }
 
 
 function view(history$) {

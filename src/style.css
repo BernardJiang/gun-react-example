@@ -54,7 +54,9 @@ a {
 input, textarea {
 	width: 100%;
 }
-
+.w8 {
+  width: 80%
+}
 ul, li {
   list-style: none;
 }
@@ -93,6 +95,9 @@ ul, li {
 }
 .flush {
   line-height: 0em;
+}
+.mr{
+  margin-right: 0
 }
 
 .rim {
