@@ -155,7 +155,7 @@ function view(history$) {
 function main(sources) {
   const { react, entity } = sources;
 
-  const history$ = sources.react.select('main_nav').events('click')
+  const history$ = react.select('main_nav').events('click')
     .map(e => {
       return e.target.textContent
     })
@@ -164,14 +164,12 @@ function main(sources) {
   const props$ = xs.of({
     label: 'Welcome!!! ', value: 'no one'
   });
-  const childSources = { DOM: react, props$ };
-  const greetersink = greeterComponent(childSources)
-
-  const childSourcesSignIn = { DOM: react, entity: entity };
-  const signsink = SignIn(childSourcesSignIn);
-
-  const childSourcesChatbot = { DOM: react, entity: entity };
-  const chatbotsink = ChatBot(childSourcesSignIn);
+  
+  const greetersink = greeterComponent({ DOM: react, props$ })
+  
+  const signsink = SignIn({ DOM: react, entity: entity });
+  
+  const chatbotsink = ChatBot({ DOM: react, entity: entity });
 
   const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM);
 
