@@ -907,7 +907,7 @@ function entityIntent(entity) {
     // console.log("Chatbot got : ", msg)
     return {msglist: msg}
   })
-    .startWith([{bot: false, message: "init", when: 123}])
+    .startWith([{msglist: {bot: false, message: "init", when: 123}}])
     .compose(dropRepeats());
 
   return { chat$ }
@@ -936,11 +936,11 @@ function Intent(DOM) {
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.chat$, events.clickevents$, events.QAInput$)
+  const state$ = xs.combine(entityEvents.chat$, events.clickevents$, events.QAInput$)
     .map((x) => { 
       console.log("x=", x)
       return x})
-    .startWith({ msglist: [], userinput: '' })
+    .startWith({ msglist: [], typeKey: 'noclick', userinput: '' })
   return state$
 }
 
@@ -952,15 +952,16 @@ const BotStyles = {
 
 function view(state$) {
   const vdom$ = state$
-    .map(state =>
-      div(BotStyles.divstyle, [
+    .map( state => {
+      console.log("state=", state)
+      return div(BotStyles.divstyle, [
           div(BotStyles.div2style, [
             h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            !!state.msglist && ul(state.msglist.map((item) => {
-              console.log("item=", item.message)
+            !!state[0] && !!state[0].msglist && ul(state[0].msglist.map((item) => { console.log("item=", item.message) 
               return li(item.message)}))
+            // ["l1","l2","l3"].map(item => li(item))
             ]),
           div('.mid.col.rowC', [
             // h1('footer'),
@@ -968,6 +969,7 @@ function view(state$) {
             button('.mr', { sel: 'btnsend' }, 'send')
           ])
       ])
+    }
 
     );
   return vdom$
