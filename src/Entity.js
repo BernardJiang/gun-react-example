@@ -630,7 +630,7 @@ export function makeEntityDriver(opts) {
       sink.addListener({
         next: (command) => {
             // console.log('command is not a function!!!')
-            // console.log(command)
+            console.log(command)
             if( command === undefined || !('action' in command))
               return
   
@@ -642,7 +642,8 @@ export function makeEntityDriver(opts) {
               case 'signin':
                 entity.auth(command.stageName, command.password, command.authenticated);
                 break;
-              case 'signin':
+              case 'btnsend':
+                console.log('command is msgsend ', command)
           
                 entity.sendMessage({
                   // who: this.state.stageName,

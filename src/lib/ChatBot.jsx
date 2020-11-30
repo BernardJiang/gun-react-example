@@ -915,10 +915,10 @@ function entityIntent(entity) {
 
 function Intent(DOM) {
   const QAInput$ = DOM
-    .select('QAinput')
+    .select('qainput')
     .events('input')
     .map(ev => {
-      // console.log(" stagename ev value=", ev.target.value);
+      console.log(" message= ", ev.target.value);
       return { userinput: ev.target.value }
     }).startWith({ userinput: "nothing" })
     .remember();
@@ -927,6 +927,7 @@ function Intent(DOM) {
     .select('btnsend')
     .events('click')
     .map(ev => {
+      console.log("Clicked send!")
       return { typeKey: 'btnsend' }
     }).startWith({ typeKey: 'noclick' });
 
@@ -959,14 +960,15 @@ function view(state$) {
             h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            !!state[0] && !!state[0].msglist && ul(state[0].msglist.map((item) => { console.log("item=", item.message) 
+            !!state[0] && !!state[0].msglist && ul(state[0].msglist.map((item) => { 
+              // console.log("item=", item.message) 
               return li(item.message)}))
             // ["l1","l2","l3"].map(item => li(item))
             ]),
           div('.mid.col.rowC', [
-            // h1('footer'),
-            input('.w8', { sel: 'QAinput', type: 'text', placeholder: 'anything' }),
-            button('.mr', { sel: 'btnsend' }, 'send')
+            input({ sel: 'qainput', type: 'text', placeholder: 'anything' }),
+            button({ sel: 'btnsend' }, 'send'),
+            // h1('footer' + state.sent)
           ])
       ])
     }
@@ -976,18 +978,20 @@ function view(state$) {
 }
 
 
-function entityTodo(clickevents$, state$) {
+function entityTodo(state$) {
   // sink map filtered stream of payloads into function and emit function
-  const outgoingEntityEvents$ = clickevents$
-    .compose(sampleCombine(state$))
-    .map(([click, state]) => {
-      if (state.userinput ) {
-        if (click.typeKey === 'btnsend') {
-          return {action: 'userinput', userinput: state.userinput}
+  const outgoingEntityEvents$ = state$
+    .map( state => {
+      console.log("ENTITY todo state=", state)
+      // console.log("ENTITY input=",input)
+      if (!!state[2] && state[2].userinput) {
+        if (state[1].typeKey === 'btnsend') {
+
+          return {action: 'btnsend', userinput: state[2].userinput}
         }
 
       } else {
-        // console.log("stagename or password is invalid", state.stageName, state.password);      
+        console.log("SOMETHING IS invalid");      
       }
 
     });
@@ -1003,8 +1007,8 @@ export function ChatBot(sources) {
 
   const state$ = model(entityEvents, events)
 
+  const outgoingEntityEvents$ = entityTodo(state$)
   const vdom$ = view(state$)
-  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
 
   const sinks = {
     DOM: vdom$,

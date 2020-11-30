@@ -178,7 +178,7 @@ function main(sources) {
   return {
     react: vdom$,
     history: history$,
-    entity: signsink.entity
+    entity: xs.merge(signsink.entity, chatbotsink.entity)
   };
 }
 
