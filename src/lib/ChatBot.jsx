@@ -903,62 +903,44 @@ ChatBot.defaultProps = {
 };
 
 function entityIntent(entity) {
-  const userAuth$ = entity.getUserList()
-    .startWith({ userlist: ["noone"] })
+  const chat$ = entity.getChat().map(msg => {
+    // console.log("Chatbot got : ", msg)
+    return {msglist: msg}
+  })
+    .startWith([{bot: false, message: "init", when: 123}])
     .compose(dropRepeats());
 
-  const useris$ = entity.getSignStatus()
-    .startWith({ authenticated: false });
-
-  return { userAuth$, useris$ }
+  return { chat$ }
 }
 
 function Intent(DOM) {
-  const stageNameInput$ = DOM
-    .select('stagenameinput')
+  const QAInput$ = DOM
+    .select('QAinput')
     .events('input')
     .map(ev => {
       // console.log(" stagename ev value=", ev.target.value);
-      return ev.target.value
-    }).startWith("");
-
-  const passwordInput$ = DOM
-    .select('signpassword')
-    .events('input')
-    .map(ev => {
-      // console.log(" password ev value=", ev.target.value);
-      return ev.target.value
-    }).startWith("");
-
-  const newValueName$ = stageNameInput$.map(v => {
-    // console.log("New stagename = ", v);
-    return { stageName: v }
-  }).remember();
-  const newValuePassword$ = passwordInput$.map(v => { return { password: v } }).remember();
-
-  const clickeventsignin$ = DOM
-    .select('btnsignin')
+      return { userinput: ev.target.value }
+    }).startWith({ userinput: "nothing" })
+    .remember();
+  
+  const clickeventsend$ = DOM
+    .select('btnsend')
     .events('click')
     .map(ev => {
-      return { typeKey: 'signin' }
+      return { typeKey: 'btnsend' }
     }).startWith({ typeKey: 'noclick' });
 
-  const clickeventsignup$ = DOM
-    .select('btnsignup')
-    .events('click')
-    .map(ev => {
-      return { typeKey: 'signup' }
-    }).startWith({ typeKey: 'noclick' });
+  const clickevents$ = clickeventsend$
 
-  const clickevents$ = xs.merge(clickeventsignin$, clickeventsignup$)
-
-  return { clickevents$, newValueName$, newValuePassword$ }
+  return { clickevents$, QAInput$ }
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.userAuth$, entityEvents.useris$, events.newValueName$, events.newValuePassword$)
-    .fold((acc, x) => { return { ...acc, ...x } }, {})
-    .startWith({ userlist: [], authenticated: false, stageName: '', password: '' })
+  const state$ = xs.merge(entityEvents.chat$, events.clickevents$, events.QAInput$)
+    .map((x) => { 
+      console.log("x=", x)
+      return x})
+    .startWith({ msglist: [], userinput: '' })
   return state$
 }
 
@@ -976,14 +958,10 @@ function view(state$) {
             h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            // !!state.userlist && ul(state.userlist.map((item) => li(item)))
-            ul([
-              li("message1"),
-              li("message2"),
-              li("message3")
-
-              ])
-          ]),
+            !!state.msglist && ul(state.msglist.map((item) => {
+              console.log("item=", item.message)
+              return li(item.message)}))
+            ]),
           div('.mid.col.rowC', [
             // h1('footer'),
             input('.w8', { sel: 'QAinput', type: 'text', placeholder: 'anything' }),
@@ -1001,14 +979,11 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
-      if (state.stageName && state.password) {
-        if (click.typeKey === 'signin') {
-          return {action: 'signin', authenticated: state.authenticated, stageName: state.stageName, password: state.password}
+      if (state.userinput ) {
+        if (click.typeKey === 'btnsend') {
+          return {action: 'userinput', userinput: state.userinput}
         }
 
-        if (click.typeKey === 'signup') {
-          return {action: 'signup', stageName: state.stageName, password: state.password}
-        }
       } else {
         // console.log("stagename or password is invalid", state.stageName, state.password);      
       }
@@ -1016,6 +991,7 @@ function entityTodo(clickevents$, state$) {
     });
   return outgoingEntityEvents$
 }
+
 export function ChatBot(sources) {
   const { DOM, entity } = sources;
   // console.log('sources.entity', entity)

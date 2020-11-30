@@ -15,7 +15,7 @@ import chatAI from './ChatAI'
 
 const KUserList = "userlist2"
 const KSignStatus = 'signstatus'
-
+const KChat = "chat"
 /*
    class Entity {
        identity,
@@ -186,7 +186,28 @@ export class Entity {
           },
         })
       }
-    
+      getChat() {
+        const self = this
+        return xs.create({
+          start(listener) {
+            // console.log('shallow: ' + self.path)
+            self.gun.get(KChat).map().on((newlist => (state, id) => {
+              // console.log('id', id)
+              // console.log('. state= ', state)
+              // let newlist = []
+              // newlist.push(state)
+              // console.log("newlist = ", newlist);
+              let msg= {bot: state.bot, message: state.message, when: state.when}
+              newlist.push(msg)
+              // console.log('msg', msg)
+              listener.next(newlist)
+            })([]))
+          },
+          stop() {
+          },
+        })
+      }
+
     
     onSignChange = UpdateUISign => {
         this.cbUpdateUISign = UpdateUISign
@@ -620,6 +641,19 @@ export function makeEntityDriver(opts) {
                 break;
               case 'signin':
                 entity.auth(command.stageName, command.password, command.authenticated);
+                break;
+              case 'signin':
+          
+                entity.sendMessage({
+                  // who: this.state.stageName,
+                  // stageName: this.state.stageName,
+                  when: Entity.time(),
+                  where: "empty",
+                  message: command.userinput,
+                  bot: false,
+                  // uplink: "empty",
+                  // downlink: "empty"
+                });
                 break;
               default:
                 console.log('command is not defined!!!', command)
