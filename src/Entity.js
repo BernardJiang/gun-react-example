@@ -196,11 +196,13 @@ export class Entity {
               // console.log('. state= ', state)
               // let newlist = []
               // newlist.push(state)
-              // console.log("newlist = ", newlist);
-              let msg= {bot: state.bot, message: state.message, when: state.when}
-              newlist.push(msg)
-              // console.log('msg', msg)
-              listener.next(newlist)
+              // console.log("state.when = ", state.when, Entity.time());
+              if(state.when + 10000000 > Entity.time()){
+                let msg= {bot: state.bot, message: state.message, when: state.when}
+                newlist.push(msg)
+                // console.log('msg', msg)
+                listener.next(newlist)
+              }
             })([]))
           },
           stop() {
