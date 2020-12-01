@@ -237,9 +237,9 @@ export class Entity {
                 // console.log('auth err', ack.err);
               } else {
                 self.get('signstatus').put({ stageName: stageName, signin: true })
-                const myself = self.get(stageName).put({ stageName: stageName })
+                this.myself = self.get(stageName).put({ stageName: stageName })
                 // console.log('auth OK, set userlist myself=', myself);
-                self.get(KUserList).set(myself)
+                self.get(KUserList).set(this.myself)
           }
         })
       } else {
@@ -368,7 +368,7 @@ export class Entity {
 
         // }
 
-        this.chatAI.process(gmsg);
+        // this.chatAI.process(gmsg);
     }
 
     // //prepare data for UI.
@@ -664,7 +664,7 @@ export function makeEntityDriver(opts) {
         }
       })
   
-      return new Entity(entity.gun)
+      return entity
     }
   }
   
