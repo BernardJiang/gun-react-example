@@ -955,7 +955,7 @@ const BotStyles = {
 function view(state$) {
   const vdom$ = state$
     .map( state => {
-      console.log("state=", state)
+      // console.log("state=", state)
       return div(BotStyles.divstyle, [
           div(BotStyles.div2style, [
             h1('chatroom one')
@@ -984,14 +984,14 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
   .compose(sampleCombine(state$))
     .map( ([click, state]) => {
-      console.log("ENTITY todo state=", state)
-      console.log("ENTITY click=", click)
+      // console.log("ENTITY todo state=", state)
+      // console.log("ENTITY click=", click)
       if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnsend') {
           return {action: 'btnsend', userinput: state.userinput}
         }
       } else {
-        console.log("SOMETHING IS invalid");      
+        console.log("either no content or not signed in");      
       }
 
     });
