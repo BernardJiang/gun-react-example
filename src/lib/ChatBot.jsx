@@ -937,11 +937,9 @@ function Intent(DOM) {
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.combine(entityEvents.chat$, events.clickevents$, events.QAInput$)
-    .map((x) => { 
-      console.log("x=", x)
-      return x})
-    .startWith({ msglist: [], typeKey: 'noclick', userinput: '' })
+  const state$ = xs.merge(entityEvents.chat$, events.QAInput$)
+    .fold((acc, x) => { return { ...acc, ...x } }, {})
+    .startWith({ msglist: [], userinput: '' })
   return state$
 }
 
@@ -960,7 +958,7 @@ function view(state$) {
             h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            !!state[0] && !!state[0].msglist && ul(state[0].msglist.map((item) => { 
+            !!state.msglist && ul(state.msglist.map((item) => { 
               // console.log("item=", item.message) 
               return li(item.message)}))
             // ["l1","l2","l3"].map(item => li(item))
@@ -978,18 +976,17 @@ function view(state$) {
 }
 
 
-function entityTodo(state$) {
+function entityTodo(clickevents$, state$) {
   // sink map filtered stream of payloads into function and emit function
-  const outgoingEntityEvents$ = state$
-    .map( state => {
+  const outgoingEntityEvents$ = clickevents$
+  .compose(sampleCombine(state$))
+    .map( ([click, state]) => {
       console.log("ENTITY todo state=", state)
-      // console.log("ENTITY input=",input)
-      if (!!state[2] && state[2].userinput) {
-        if (state[1].typeKey === 'btnsend') {
-
-          return {action: 'btnsend', userinput: state[2].userinput}
+      console.log("ENTITY click=", click)
+      if (state.userinput) {
+        if (click.typeKey === 'btnsend') {
+          return {action: 'btnsend', userinput: state.userinput}
         }
-
       } else {
         console.log("SOMETHING IS invalid");      
       }
@@ -1007,7 +1004,7 @@ export function ChatBot(sources) {
 
   const state$ = model(entityEvents, events)
 
-  const outgoingEntityEvents$ = entityTodo(state$)
+  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
   const vdom$ = view(state$)
 
   const sinks = {
