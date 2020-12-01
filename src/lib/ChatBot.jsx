@@ -910,7 +910,10 @@ function entityIntent(entity) {
     .startWith([{msglist: {bot: false, message: "init", when: 123}}])
     .compose(dropRepeats());
 
-  return { chat$ }
+  const useris$ = entity.getSignStatus()
+    .startWith({ authenticated: false });
+
+  return { chat$, useris$ }
 }
 
 function Intent(DOM) {
@@ -937,9 +940,9 @@ function Intent(DOM) {
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.chat$, events.QAInput$)
+  const state$ = xs.merge(entityEvents.chat$, entityEvents.useris$, events.QAInput$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
-    .startWith({ msglist: [], userinput: '' })
+    .startWith({ msglist: [], authenticated: false, userinput: '' })
   return state$
 }
 
@@ -983,7 +986,7 @@ function entityTodo(clickevents$, state$) {
     .map( ([click, state]) => {
       console.log("ENTITY todo state=", state)
       console.log("ENTITY click=", click)
-      if (state.userinput) {
+      if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnsend') {
           return {action: 'btnsend', userinput: state.userinput}
         }
