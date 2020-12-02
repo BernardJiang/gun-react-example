@@ -123,8 +123,8 @@ function talksView() {
 // }
 
 
-function view(history$) {
-  return history$.map(([history, nameview, signview, chatbotview]) => {
+function view(state$) {
+  return state$.map(([history, nameview, signview, chatbotview]) => {
     const { pathname } = history;
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
@@ -171,9 +171,9 @@ function main(sources) {
   
   const chatbotsink = ChatBot({ DOM: react, entity: entity });
 
-  const actions$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM);
+  const state$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM);
 
-  const vdom$ = view(actions$);
+  const vdom$ = view(state$);
 
   return {
     react: vdom$,

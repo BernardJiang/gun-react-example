@@ -917,32 +917,15 @@ function entityIntent(entity) {
 }
 
 function Intent(DOM) {
-  const QAInput$ = DOM
-    .select('qainput')
-    .events('input')
-    .map(ev => {
-      console.log(" message= ", ev.target.value);
-      return { userinput: ev.target.value }
-    }).startWith({ userinput: "nothing" })
-    .remember();
-  
-  const clickeventsend$ = DOM
-    .select('btnsend')
-    .events('click')
-    .map(ev => {
-      console.log("Clicked send!")
-      return { typeKey: 'btnsend' }
-    }).startWith({ typeKey: 'noclick' });
-
-  const clickevents$ = clickeventsend$
-
+  const QAInput$ = xs.never()
+  const clickevents$ = xs.never()
   return { clickevents$, QAInput$ }
 }
 
-function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.chat$, entityEvents.useris$, events.QAInput$)
+function model(entityEvents) {
+  const state$ = xs.merge(entityEvents.chat$, entityEvents.useris$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
-    .startWith({ msglist: [], authenticated: false, userinput: '' })
+    .startWith({ msglist: [], authenticated: false})
   return state$
 }
 
@@ -954,7 +937,7 @@ const BotStyles = {
 
 function view(state$) {
   const vdom$ = state$
-    .map( state => {
+    .map( ([state, footerview]) => {
       // console.log("state=", state)
       return div(BotStyles.divstyle, [
           div(BotStyles.div2style, [
@@ -966,35 +949,15 @@ function view(state$) {
               return li(item.message)}))
             // ["l1","l2","l3"].map(item => li(item))
             ]),
-          div('.mid.col.rowC', [
-            input({ sel: 'qainput', type: 'text', placeholder: 'anything' }),
-            button({ sel: 'btnsend' }, 'send'),
-            // h1('footer' + state.sent)
-          ])
+            footerview
       ])
-    }
-
-    );
+    });
   return vdom$
 }
 
-
 function entityTodo(clickevents$, state$) {
   // sink map filtered stream of payloads into function and emit function
-  const outgoingEntityEvents$ = clickevents$
-  .compose(sampleCombine(state$))
-    .map( ([click, state]) => {
-      // console.log("ENTITY todo state=", state)
-      // console.log("ENTITY click=", click)
-      if (state.userinput && state.authenticated) {
-        if (click.typeKey === 'btnsend') {
-          return {action: 'btnsend', userinput: state.userinput}
-        }
-      } else {
-        console.log("either no content or not signed in");      
-      }
-
-    });
+  const outgoingEntityEvents$ = xs.never()
   return outgoingEntityEvents$
 }
 
@@ -1003,17 +966,22 @@ export function ChatBot(sources) {
   // console.log('sources.entity', entity)
 
   const entityEvents = entityIntent(entity);
-  const events = Intent(DOM);
+  // const events = Intent(DOM);
 
-  const state$ = model(entityEvents, events)
+  const state1$ = model(entityEvents)
 
-  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
+  // const outgoingEntityEvents$ = entityTodo(state$)
+
+  const footer = Footer(sources);
+
+  const state$ = xs.combine(state1$, footer.DOM);
+
   const vdom$ = view(state$)
 
   const sinks = {
     DOM: vdom$,
     value: state$,
-    entity: outgoingEntityEvents$
+    entity: xs.merge(footer.entity)
   }
   return sinks;
 
