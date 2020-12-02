@@ -6,7 +6,7 @@ import {promOnce, promPut, promSet, promOn} from 'gun/lib/path'
 import open from 'gun/lib/open'
 import 'gun/lib/open'
 import 'gun/lib/unset'
-// import _ from 'lodash'
+import _ from 'lodash'
 // import as from 'gun/as'
 // import nts from 'gun/nts'
 
@@ -199,7 +199,13 @@ export class Entity {
               // console.log("state.when = ", state.when, Entity.time());
               if(state.when + 10000000 > Entity.time()){
                 let msg= {bot: state.bot, message: state.message, when: state.when}
-                newlist.push(msg)
+                if(newlist.length != 0){
+                  let lastone = newlist[newlist.length-1]
+                  if(!_.isEqual(lastone, msg))
+                      newlist.push(msg)
+                }else
+                  newlist.push(msg)
+                
                 // console.log('msg', msg)
                 listener.next(newlist)
               }
@@ -347,7 +353,7 @@ export class Entity {
             }
         }
         var gmsg = this.chat.set(msg);
-        console.log("Entity Send message=", msg)
+        // console.log("Entity Send message=", msg)
         // console.log("Entity myself=", this.myself)
         if(gmsg == undefined){
             console.log("err", gmsg)
@@ -632,7 +638,7 @@ export function makeEntityDriver(opts) {
       sink.addListener({
         next: (command) => {
             // console.log('command is not a function!!!')
-            console.log(command)
+            // console.log(command)
             if( command === undefined || !('action' in command))
               return
   
@@ -645,7 +651,7 @@ export function makeEntityDriver(opts) {
                 entity.auth(command.stageName, command.password, command.authenticated);
                 break;
               case 'btnsend':
-                console.log('command is msgsend ', command)
+                // console.log('command is msgsend ', command)
           
                 entity.sendMessage({
                   // who: this.state.stageName,
