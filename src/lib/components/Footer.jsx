@@ -56,6 +56,7 @@ function view(state$) {
       // console.log("state=", state)
       return div('.mid.col.rowC', [
             input({ sel: 'qainput', type: 'text', placeholder: 'anything' }),
+            h1("space"),
             button({ sel: 'btnsend' }, 'send'),
             // h1('footer' + state.sent)
           ])    
