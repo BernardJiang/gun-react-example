@@ -26,7 +26,7 @@ import { speakFn } from './speechSynthesis';
 
 import { Entity } from '../Entity'
 import { set } from 'lodash';
-import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
+import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ id: key, ...msgs[key] }))
@@ -944,10 +944,16 @@ function view(state$) {
             h1('chatroom one')
           ]),
           div('.mid.row.col', [
-            !!state.msglist && ul(state.msglist.map((item) => { 
-              // console.log("item=", item.message) 
-              return li(item.message)}))
-            // ["l1","l2","l3"].map(item => li(item))
+            !!state.msglist && state.msglist.map((item, id) => { 
+                console.log("item=", item, id) 
+                return div({key: id}, [
+                  p(item.bot ? "true" : "false"),
+                  p(item.message),
+                  // p(item.when),
+                  p( new Date(item.when).toLocaleString().toLowerCase()),
+                ])
+                // li( div(id, {key: id}, [h1(item.message)]) )
+              })
             ]),
             footerview
       ])
