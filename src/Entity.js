@@ -198,7 +198,7 @@ export class Entity {
               // newlist.push(state)
               // console.log("state.when = ", state.when, Entity.time());
               if(state.when + 10000000 > Entity.time()){
-                let msg= {bot: state.bot, message: state.message, when: state.when}
+                let msg= {bot: state.bot, message: state.message, when: state.when, stageName: state.stageName}
                 if(newlist.length != 0){
                   let lastone = newlist[newlist.length-1]
                   if(!_.isEqual(lastone, msg))
@@ -651,18 +651,18 @@ export function makeEntityDriver(opts) {
                 entity.auth(command.stageName, command.password, command.authenticated);
                 break;
               case 'btnsend':
-                // console.log('command is msgsend ', command)
-          
-                entity.sendMessage({
+                let msg = {
                   // who: this.state.stageName,
-                  // stageName: this.state.stageName,
+                  stageName: command.stageName,
                   when: Entity.time(),
                   where: "empty",
                   message: command.userinput,
                   bot: false,
                   // uplink: "empty",
                   // downlink: "empty"
-                });
+                }
+                console.log('msg sent : ', msg)
+                entity.sendMessage(msg);
                 break;
               default:
                 console.log('command is not defined!!!', command)

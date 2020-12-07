@@ -18,7 +18,7 @@ const Footer_old = styled.div`
 
 function entityIntent(entity) {
   const useris$ = entity.getSignStatus()
-    .startWith({ authenticated: false });
+    .startWith({ authenticated: false, stageName: 'unknown' });
   return { useris$ }
 }
 
@@ -69,11 +69,11 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
   .compose(sampleCombine(state$))
     .map( ([click, state]) => {
-      // console.log("ENTITY todo state=", state)
+      console.log("ENTITY todo state=", state)
       // console.log("ENTITY click=", click)
       if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnsend') {
-          return {action: 'btnsend', userinput: state.userinput}
+          return {action: 'btnsend', userinput: state.userinput, stageName: state.stageName}
         }
       } else {
         console.log("either no content or not signed in");      

@@ -948,9 +948,9 @@ function view(state$) {
                 console.log("item=", item, id) 
                 return div('.bd', {key: id}, [
                   p(item.bot ? "bot" : "human"),
-                  p(item.message),
-                  // p(item.when),
+                  p(item.stageName == undefined ? "unknown" : item.stageName),
                   p( new Date(item.when).toLocaleString().toLowerCase()),
+                  p(item.message),
                 ])
                 // li( div(id, {key: id}, [h1(item.message)]) )
               })
