@@ -69,7 +69,7 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
   .compose(sampleCombine(state$))
     .map( ([click, state]) => {
-      console.log("ENTITY todo state=", state)
+      // console.log("ENTITY todo state=", state)
       // console.log("ENTITY click=", click)
       if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnsend') {

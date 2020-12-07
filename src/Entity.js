@@ -89,7 +89,7 @@ export class Entity {
         this.attrs = {}
         this.stageName = ''
         this.userNameList = []
-        // this.chatAI = new chatAI(this.gun);
+        this.chatAI = new chatAI(this.gun);
     }
 
     // cbNewUser(newuser) {
@@ -376,7 +376,9 @@ export class Entity {
 
         // }
 
-        // this.chatAI.process(gmsg);
+        this.chatAI.process(gmsg);
+        this.chatAI.processRespond(msg)
+
     }
 
     // //prepare data for UI.

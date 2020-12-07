@@ -945,7 +945,7 @@ function view(state$) {
           ]),
           div('.mid.row.col', [
             !!state.msglist && state.msglist.map((item, id) => { 
-                console.log("item=", item, id) 
+                // console.log("item=", item, id) 
                 return div('.bd', {key: id}, [
                   p(item.bot ? "bot" : "human"),
                   p(item.stageName == undefined ? "unknown" : item.stageName),
