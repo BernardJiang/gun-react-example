@@ -43,7 +43,7 @@ div, ul, ol, li, p, span, form, button, input, textarea {
 
 button, input, textarea {
   background: white;
-  border: none;
+  border: 5px solid green;
   color: black;
 }
 
@@ -59,6 +59,7 @@ input, textarea {
 }
 ul, li {
   list-style: none;
+  border: 2px solid blue;
 }
 
 .model, .none { display: none }
@@ -123,6 +124,9 @@ ul, li {
 }
 .symbol {
   display: inline-block;
+}
+.bd {
+  border: 2px solid blue;
 }
 
 .loud {

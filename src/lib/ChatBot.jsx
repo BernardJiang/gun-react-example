@@ -946,8 +946,8 @@ function view(state$) {
           div('.mid.row.col', [
             !!state.msglist && state.msglist.map((item, id) => { 
                 console.log("item=", item, id) 
-                return div({key: id}, [
-                  p(item.bot ? "true" : "false"),
+                return div('.bd', {key: id}, [
+                  p(item.bot ? "bot" : "human"),
                   p(item.message),
                   // p(item.when),
                   p( new Date(item.when).toLocaleString().toLowerCase()),
