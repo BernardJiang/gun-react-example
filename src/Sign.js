@@ -74,11 +74,11 @@ function view(state$) {
         form('#inup.sign.pad.center', [
           div('.mid.row.col', [
             h1('Enter your stageName: ' + state.stageName),
-            input({ sel: 'stagenameinput', type: 'text', placeholder: 'stagename' })
+            input({ sel: 'stagenameinput', type: 'text', placeholder: state.stageName != undefined ? state.stageName : 'stagename' })
           ]),
           div('.mid.row.col', [
             h1('A long private passphrase: ' + state.password),
-            input({ sel: 'signpassword', type: 'password', placeholder: 'password' })
+            input({ sel: 'signpassword', type: 'password', placeholder: state.password != undefined ? state.password : 'password' })
           ]),
           div('.mid.row.col.go', [
             button({ sel: 'btnsignin' }, state.authenticated ? 'Sign Out' : 'Sign In'),
