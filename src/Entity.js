@@ -696,6 +696,7 @@ export function makeEntityDriver(opts) {
                 entity.sendMessage(msg);
                 break;
               case 'btnattributesubmit':
+                  console.log('attribute sent : ', command)
                   entity.updateAttribute({question: command.question, answer: command.answer})
                   break;
               default:

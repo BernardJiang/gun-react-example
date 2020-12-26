@@ -151,7 +151,7 @@ function Intent(DOM) {
     .select('attributequestion')
     .events('input')
     .map(ev => {
-      // console.log(" stagename ev value=", ev.target.value);
+      console.log(" question ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
@@ -159,25 +159,26 @@ function Intent(DOM) {
     .select('attributeanswer')
     .events('input')
     .map(ev => {
-      // console.log(" password ev value=", ev.target.value);
+      console.log(" answer ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
   const newQuestion$ = attributeQuestion$.map(v => {
-    // console.log("New stagename = ", v);
+    console.log("New question = ", v);
     return { question: v }
   }).remember();
+  
   const newAnswer$ = attributeAnswer$.map(v => { return { answer: v } }).remember();
 
   const clickeventsubmit$ = DOM
-    .select('attributebtnsubmit')
+    .select('btnattrsubmit')
     .events('click')
     .map(ev => {
-      console.log("New click = ");
+      console.log("New submit clicked");
       return { typeKey: 'btnattributesubmit' }
     }).startWith({ typeKey: 'noclick' });
 
-  const clickevents$ = xs.merge(clickeventsubmit$)
+  const clickevents$ = clickeventsubmit$
 
   return { clickevents$, newQuestion$, newAnswer$ }
 }
@@ -204,7 +205,7 @@ function view(state$) {
             input({ sel: 'attributeanswer', type: 'text', placeholder: '' })
           ]),
           div('.mid.row.col.go', [
-            button({ sel: 'attributebtnsubmit' }, 'Submit'),
+            button({ sel: 'btnattrsubmit' }, 'Submit')
           ]),
           // div('.mid.row.col.go', [
           //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
@@ -223,6 +224,7 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
+      console.log("click 226")
       if (state.stageName && state.question) {
         if (click.typeKey === 'btnattributesubmit') {
         console.log("submit a new attribute", state.question, state.answer);      
