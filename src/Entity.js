@@ -158,8 +158,34 @@ export class Entity {
           stop() {
           },
         })
-      }
-      getSignStatus() {
+    }
+
+    getAttributeList() {
+      const self = this
+      return xs.create({
+        start(listener) {
+          // console.log('shallow: ' + self.path)
+          self.gun.get(KUserList).on((state) => {
+            // console.log('shallow: ' + self.path + ". state= ")
+            // console.log(state)
+            let newlist = []
+            for (let key in state) {
+              let row = state[key];
+              if (row === null || key === '_')
+                continue;
+              // console.log( "key=", key, ". row=", row)
+              newlist.push(key)
+            }
+            // console.log("newlist = ", newlist);
+            listener.next({ userlist: newlist })
+          })
+        },
+        stop() {
+        },
+      })
+  }
+
+    getSignStatus() {
         const self = this
         return xs.create({
           start(listener) {
@@ -185,8 +211,9 @@ export class Entity {
           stop() {
           },
         })
-      }
-      getChat() {
+    }
+
+    getChat() {
         const self = this
         return xs.create({
           start(listener) {
@@ -570,7 +597,7 @@ export class Entity {
         // console.log('Entity changeSettings : ' +key + ". msg=" + msg)
     }
 
-    addNewAttribute(newattr){
+    updateAttribute(newattr){
         // { this.state.question, this.state.answer, this.state.options}
         console.log("Attributes", 'question: ' + newattr.question);
         console.log("Attributes", 'answer: ' + newattr.answer);
@@ -668,8 +695,11 @@ export function makeEntityDriver(opts) {
                 console.log('msg sent : ', msg)
                 entity.sendMessage(msg);
                 break;
+              case 'btnattributesubmit':
+                  entity.updateAttribute({question: command.question, answer: command.answer})
+                  break;
               default:
-                console.log('command is not defined!!!', command)
+                  console.log('command is not defined!!!', command)
                 break;
   
             }

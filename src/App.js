@@ -14,7 +14,7 @@ import { Entity } from './Entity';
 import { greeter2View, greeterComponent } from './greeter2View'
 import Sign, { SignIn } from './Sign'
 import Chat from './Chat'
-import Attributes from './Attributes'
+import AttributesComp from './Attributes'
 import Talks from './Talks'
 import Settings from './Settings'
 import './App.css';
@@ -103,12 +103,12 @@ function settingsView() {
     p('Here to edit settings '),
   ])
 }
-function attributesView() {
-  return div('#divAttributes',[
-    h1('Attributes !'),
-    p('Here to attributes '),
-  ])
-}
+// function attributesView() {
+//   return div('#divAttributes',[
+//     h1('Attributes !'),
+//     p('Here to attributes '),
+//   ])
+// }
 function talksView() {
   return div('#divTalks', [
     h1('Talks !'),
@@ -124,7 +124,7 @@ function talksView() {
 
 
 function view(state$) {
-  return state$.map(([history, nameview, signview, chatbotview]) => {
+  return state$.map(([history, nameview, signview, chatbotview, attributesview]) => {
     const { pathname } = history;
     let page = h1('404 not found')
     if (pathname === '/Greeter') {
@@ -134,7 +134,7 @@ function view(state$) {
     } else if (pathname === '/Settings') {
       page = settingsView()
     } else if (pathname === '/Attributes') {
-      page = attributesView()
+      page = attributesview
     } else if (pathname === '/Talks') {
       page = talksView()
     } else if (pathname === '/Chatbot') {
@@ -171,7 +171,9 @@ function main(sources) {
   
   const chatbotsink = ChatBot({ DOM: react, entity: entity });
 
-  const state$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM);
+  const attributessink = AttributesComp({ DOM: react, entity: entity });
+
+  const state$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM, attributessink.DOM);
 
   const vdom$ = view(state$);
 

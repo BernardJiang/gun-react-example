@@ -1,5 +1,10 @@
+import xs from 'xstream';
+import dropRepeats from 'xstream/extra/dropRepeats';
+import sampleCombine from 'xstream/extra/sampleCombine';
+
 import React, { Component }  from 'react'
 import Entity from './Entity'
+import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ ...msgs[key] }))
@@ -9,7 +14,7 @@ const formatMsgs = msgs => Object.keys(msgs)
 
 
   
-export default class Attributes extends Component {
+export class Attributes_old extends Component {
   constructor({entity}) {
     super()
     this.entity = entity;
@@ -128,4 +133,127 @@ export default class Attributes extends Component {
       </ul>
     </div>
   }
+}
+
+function entityIntent(entity) {
+  const userAttributeList$ = entity.getAttributeList()
+    .startWith({ attributelist: [] })
+    .compose(dropRepeats());
+
+  const useris$ = entity.getSignStatus()
+    .startWith({ authenticated: false });
+
+  return { userAttributeList$, useris$ }
+}
+
+function Intent(DOM) {
+  const attributeQuestion$ = DOM
+    .select('attributequestion')
+    .events('input')
+    .map(ev => {
+      // console.log(" stagename ev value=", ev.target.value);
+      return ev.target.value
+    }).startWith("");
+
+  const attributeAnswer$ = DOM
+    .select('attributeanswer')
+    .events('input')
+    .map(ev => {
+      // console.log(" password ev value=", ev.target.value);
+      return ev.target.value
+    }).startWith("");
+
+  const newQuestion$ = attributeQuestion$.map(v => {
+    // console.log("New stagename = ", v);
+    return { question: v }
+  }).remember();
+  const newAnswer$ = attributeAnswer$.map(v => { return { answer: v } }).remember();
+
+  const clickeventsubmit$ = DOM
+    .select('attributebtnsubmit')
+    .events('click')
+    .map(ev => {
+      console.log("New click = ");
+      return { typeKey: 'btnattributesubmit' }
+    }).startWith({ typeKey: 'noclick' });
+
+  const clickevents$ = xs.merge(clickeventsubmit$)
+
+  return { clickevents$, newQuestion$, newAnswer$ }
+}
+
+function model(entityEvents, events) {
+  const state$ = xs.merge(entityEvents.userAttributeList$, entityEvents.useris$, events.newQuestion$, events.newAnswer$)
+    .fold((acc, x) => { return { ...acc, ...x } }, {})
+    .startWith({ attributeList: [], authenticated: false, stageName: '', question: '', answer: '' })
+  return state$
+}
+
+function view(state$) {
+  const vdom$ = state$
+    .map(state =>
+      div('#divSign.hue.page', [
+        h1('Attributes for ' + state.stageName), 
+        !!state.stageName && form('#inup.sign.pad.center', [
+          div('.mid.row.col', [
+            h1('Type a question that ends with a ?:'),
+            input({ sel: 'attributequestion', type: 'text', placeholder: '' })
+          ]),
+          div('.mid.row.col', [
+            h1('Answer and other options in format o1; o2; o3.'),
+            input({ sel: 'attributeanswer', type: 'text', placeholder: '' })
+          ]),
+          div('.mid.row.col.go', [
+            button({ sel: 'attributebtnsubmit' }, 'Submit'),
+          ]),
+          // div('.mid.row.col.go', [
+          //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
+          // ]),
+          div('.mid.row.col.go', [
+            !!state.attributelist && ul(state.attributelist.map((item) => li(item)))
+          ])
+          ])
+      ])
+    ); 
+  return vdom$
+}
+
+function entityTodo(clickevents$, state$) {
+  // sink map filtered stream of payloads into function and emit function
+  const outgoingEntityEvents$ = clickevents$
+    .compose(sampleCombine(state$))
+    .map(([click, state]) => {
+      if (state.stageName && state.question) {
+        if (click.typeKey === 'btnattributesubmit') {
+        console.log("submit a new attribute", state.question, state.answer);      
+        return {action: 'btnattributesubmit', authenticated: state.authenticated, stageName: state.stageName, question: state.question, answer: state.answer}
+        }
+
+      } else {
+        // console.log("stagename or password is invalid", state.stageName, state.password);      
+      }
+
+    });
+  return outgoingEntityEvents$
+}
+
+export default function AttributesComp(sources) {
+  const { DOM, entity } = sources;
+  // console.log('sources.entity', entity)
+
+  const entityEvents = entityIntent(entity);
+  const events = Intent(DOM);
+
+  const state$ = model(entityEvents, events)
+
+  const vdom$ = view(state$)
+  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
+
+  const sinks = {
+    DOM: vdom$,
+    value: state$,
+    entity: outgoingEntityEvents$
+  }
+  return sinks;
+
 }
