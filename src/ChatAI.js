@@ -25,71 +25,73 @@ export default class ChatAI {
     }
 
     process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
-        console.log("In chatAI msg=", msg)
-        this.user = this.gun.user()
+        console.log("In chatAI process() msg=", msg)
+        var userself = this.gun.user()
 
-        this.userAttributes = this.user.get('Attributes')
-        if (!this.userAttributes) //validate attributes.
+        var userAttributes = userself.get('Attributes')
+        if (!userAttributes) //validate attributes.
             return
 
-        if ( msg == undefined || msg._ == undefined || msg._.put == undefined)
-            return
-        if(!("message" in msg._.put))
-            return 
-        var currMessage = msg._.put.message
-        var currAnswer = msg._.put.answer
+        msg.once(function(data){
+            console.log("data =", data)
+            if ( data == undefined || data._ == undefined)
+                return
+            var currMessage = data.message
+            var currAnswer = data.answer
 
-        if(currAnswer){
-            this.userAttributes.get(currMessage).put({
-                message: currMessage,
-                answer: currAnswer,
-                when: msg._.put.when
-            }, function (ack) {
-                // console.log("save attribute", ack)
-            });
-            return
-        }
-        // var c = msg.message.charAt(msg.message.length - 1)
-        // var resans2 = PatternAnswer.test(msg.message)
-        // console.log("new messaage." + msg.message + ". " + PatternAnswer.test(msg.message))
-        var resans = PatternAnswer.test(currMessage)
-
-        if (PatternQuestion.test(currMessage)) { //a question
-            this.user.get('lastquestion').put({
-                message: currMessage
-            });
-            // console.log("attr", "save key=" + msg.message + ". message=" + msg.when)
-            this.userAttributes.get(currMessage).put({
-                message: currMessage,
-                when: msg._.put.when
-            }, function (ack) {
-                // console.log("save attribute", ack)
-            });
-        } else if ( resans ) { // an answer
-            var userAttributes = this.userAttributes
-            var user = this.user;
-            var lq = this.user.get('lastquestion')
-            if (lq) {
-                lq.once(function (data) {
-                    // console.log("get lastquestion object", data.message)
-                    data && userAttributes.get(data.message).put({
-                        answer: currMessage,
-                        bot: true
-                    })
-                    user.get('lastquestion').put(null);
-                })
-            } else {
-                //ignore answer without a question.
-                console.log("Ignore an answer.", currMessage)
+            if(currAnswer){
+                userAttributes.get(currMessage).put({
+                    message: currMessage,
+                    answer: currAnswer,
+                    when: data.when
+                }, function (ack) {
+                    // console.log("save attribute", ack)
+                });
+                return
             }
-        } else { //ignore chats.
-            console.log("Ignore a messaage." + currMessage)
-        }
+    
+            console.log("new messaage." + data.message + ". " + PatternAnswer.test(data.message))
+            var resans = PatternAnswer.test(currMessage)
+    
+            if (PatternQuestion.test(currMessage)) { //a question
+                userself.get('lastquestion').put({
+                    message: currMessage
+                });
+                console.log("attr", "save key=" + data.message + ". message=" + data.when)
+                userAttributes.get(currMessage).put({
+                    message: currMessage,
+                    when: data.when
+                }, function (ack) {
+                    console.log("save attribute", ack)
+                });
+            } else if ( resans ) { // an answer
+                var lq = userself.get('lastquestion')
+                if (lq) {
+                    lq.once(function (data) {
+                        // console.log("get lastquestion object", data.message)
+                        data && userAttributes.get(data.message).put({
+                            answer: currMessage,
+                            bot: true
+                        })
+                        userself.get('lastquestion').put(null);
+                    })
+                } else {
+                    //ignore answer without a question.
+                    console.log("Ignore an answer.", currMessage)
+                }
+            } else { //ignore chats.
+                console.log("Ignore a messaage." + currMessage)
+            }
+    
+        })
+
     }
 
 
     
     processRespond(msg) { // respond the message from others and self.
+
+        console.log("In chatAI process() msg=", msg)
 
         var chat = this.gun.get('chat')
         this.user = this.gun.user()
@@ -117,7 +119,7 @@ export default class ChatAI {
 
         var user = this.user
         var userAttributes = this.userAttributes
-        var myself = this.myself
+        var myself = this.user
 
         ans.once(function (data) {
             if (!data) { //never hear this question. Save the question.
@@ -137,11 +139,11 @@ export default class ChatAI {
             }
             if (!("answer" in data))
                 return //means question exists without an answer.
-            
+            console.log("got the answer =", data)
             const when = Gun.time.is()
 
             var answer = {
-                // stageName,
+                stageName: msg.stageName,
                 when,
                 message: data.answer,
                 bot: true,
@@ -152,14 +154,14 @@ export default class ChatAI {
 
             var gAns = chat.set(answer);
 
-            var soul = msg._['#'];
-            var gQuestion = chat.get(soul);
+            // var soul = msg._['#'];
+            // var gQuestion = chat.get(soul);
 
             // console.log("ChatAI question soul", soul)
             // console.log("ChatAI answer soul ", gAns._.get);  //why is this undefined?
 
-            gQuestion.get('downlink').put(gAns);   //link question to answer.
-            gAns.get('uplink').put(gQuestion);    //link answer to question.
+            // gQuestion.get('downlink').put(gAns);   //link question to answer.
+            // gAns.get('uplink').put(gQuestion);    //link answer to question.
             
             // console.log("ChatAI gQuestion", gQuestion);  
             // console.log("ChatAI gAns", gAns);

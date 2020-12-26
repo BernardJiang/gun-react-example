@@ -358,9 +358,11 @@ export class Entity {
         if(gmsg == undefined){
             console.log("err", gmsg)
         }
-        
-        gmsg.path('author').put(this.myself);
-        this.myself.path('post').set(gmsg);
+
+        const myself = this.gun.get(msg.stageName)
+
+        gmsg.path('author').put(myself);
+        myself.path('post').set(gmsg);
         // if(optionsarray.length>0){
             // console.log("Entity optionobj=", optionobj)
             // var gOptions = this.chat.set(optionobj)
