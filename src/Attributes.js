@@ -4,7 +4,7 @@ import sampleCombine from 'xstream/extra/sampleCombine';
 
 import React, { Component }  from 'react'
 import Entity from './Entity'
-import { div, form, ul, li, h1, input, button } from '@cycle/react-dom';
+import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ ...msgs[key] }))
@@ -137,7 +137,7 @@ export class Attributes_old extends Component {
 
 function entityIntent(entity) {
   const userAttributeList$ = entity.getAttributeList()
-    .startWith({ attributelist: [] })
+    .startWith({ attributeList: [] })
     .compose(dropRepeats());
 
   const useris$ = entity.getSignStatus()
@@ -151,7 +151,6 @@ function Intent(DOM) {
     .select('attributequestion')
     .events('input')
     .map(ev => {
-      console.log(" question ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
@@ -159,12 +158,10 @@ function Intent(DOM) {
     .select('attributeanswer')
     .events('input')
     .map(ev => {
-      console.log(" answer ev value=", ev.target.value);
       return ev.target.value
     }).startWith("");
 
   const newQuestion$ = attributeQuestion$.map(v => {
-    console.log("New question = ", v);
     return { question: v }
   }).remember();
   
@@ -174,7 +171,6 @@ function Intent(DOM) {
     .select('btnattrsubmit')
     .events('click')
     .map(ev => {
-      console.log("New submit clicked");
       return { typeKey: 'btnattributesubmit' }
     }).startWith({ typeKey: 'noclick' });
 
@@ -211,9 +207,17 @@ function view(state$) {
           //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
           // ]),
           div('.mid.row.col.go', [
-            !!state.attributelist && ul(state.attributelist.map((item) => li(item)))
-          ])
-          ])
+            !!state.attributeList && state.attributeList.map((item, id) => {
+              var txt = item.message + ". A: "
+              console.log("txt: ", txt)
+              return div('.bd', {key: id}, [
+                p( new Date(item.when).toLocaleString().toLowerCase()),
+                p(item.message),
+                p(item.answer)
+              ])
+              })
+          ]),
+        ])
       ])
     ); 
   return vdom$
@@ -224,7 +228,6 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
     .compose(sampleCombine(state$))
     .map(([click, state]) => {
-      console.log("click 226")
       if (state.stageName && state.question) {
         if (click.typeKey === 'btnattributesubmit') {
         console.log("submit a new attribute", state.question, state.answer);      

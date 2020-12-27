@@ -13,9 +13,11 @@ import _ from 'lodash'
 import chatAI from './ChatAI'
 // import chatAI from './lib/chatAI'
 
-const KUserList = "userlist2"
+const KUserList = 'userlist2'
 const KSignStatus = 'signstatus'
-const KChat = "chat"
+const KChat = 'chat'
+const KAttributes = 'attributes'
+
 /*
    class Entity {
        identity,
@@ -162,24 +164,27 @@ export class Entity {
 
     getAttributeList() {
       const self = this
+      self.attrs = []
       return xs.create({
         start(listener) {
-          // console.log('shallow: ' + self.path)
-          self.gun.get(KUserList).on((state) => {
-            // console.log('shallow: ' + self.path + ". state= ")
-            // console.log(state)
-            let newlist = []
-            for (let key in state) {
-              let row = state[key];
-              if (row === null || key === '_')
-                continue;
-              // console.log( "key=", key, ". row=", row)
-              newlist.push(key)
+          console.log('create getAttributeList: user=' + self.gun.user())
+          self.gun.get(KAttributes).map().on((newlist => (state, id) => {
+            console.log('attribute. state= ', state)
+            if(state.when + 10000000 > Entity.time()){
+              let msg= {message: state.message, when: state.when, answer: state.answer}
+              if(newlist.length != 0){
+                let lastone = newlist[newlist.length-1]
+                if(!_.isEqual(lastone, msg))
+                    newlist.push(msg)
+              }else
+                newlist.push(msg)
+              
+              console.log('newlist', newlist)
+              listener.next({attributeList: newlist})
             }
-            // console.log("newlist = ", newlist);
-            listener.next({ userlist: newlist })
-          })
+          })([]))
         },
+        
         stop() {
         },
       })
@@ -275,6 +280,7 @@ export class Entity {
                 this.myself = self.get(stageName).put({ stageName: stageName })
                 // console.log('auth OK, set userlist myself=', myself);
                 self.get(KUserList).set(this.myself)
+           
           }
         })
       } else {
@@ -610,6 +616,8 @@ export class Entity {
 
         if(res === null)  //no match
             return
+        if(this.userAttributes === null)
+          this.userAttributes = this.gun.get(KAttributes)
         //0: whole match string.
         
         //1: question with ?
@@ -653,7 +661,7 @@ export class Entity {
         }
         console.log("After Attributes", msg)
         this.userAttributes && this.userAttributes.get(msg.message).put(msg, function (ack) {
-            // console.log("save attribute", ack)
+            console.log("save attribute", ack)
         });
     }
 }
