@@ -170,21 +170,15 @@ export class Entity {
           console.log('create getAttributeList: user=' + self.gun.user())
           self.gun.get(KAttributes).map().on((newlist => (state, id) => {
             console.log('attribute. state= ', state)
-            if(state.when + 10000000 > Entity.time()){
+            // if(state.when + 10000000 > Entity.time()){
               let msg= {message: state.message, when: state.when, answer: state.answer}
-              if(newlist.length != 0){
-                let lastone = newlist[newlist.length-1]
-                if(!_.isEqual(lastone, msg))
-                    newlist.push(msg)
-              }else
-                newlist.push(msg)
-              
+              newlist[msg.message] = msg
               console.log('newlist', newlist)
               listener.next({attributeList: newlist})
-            }
-          })([]))
+            // }
+          })({}))
         },
-        
+
         stop() {
         },
       })
@@ -646,7 +640,7 @@ export class Entity {
                 //{ value: 'op2', label: 'Option 2', trigger: '6' },
                 
                 //The first option is my own answer if more than one option.
-                msg.answer = optionsarray[0]+"."
+                msg.answer = optionsarray[0]
 
                 optionsarray.forEach((opt, idx) => {
                     // console.log("Opt opt=", opt)

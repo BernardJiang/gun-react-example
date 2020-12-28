@@ -8,7 +8,9 @@ import 'gun/lib/unset'
 const PatternQuestion = /\x3F$/
 const PatternAnswer = /\x2E$/
 const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
-    
+
+const KAttributes = 'attributes'
+
 export default class ChatAI {
     constructor(gun) {
         this.gun = gun
@@ -28,7 +30,7 @@ export default class ChatAI {
         console.log("In chatAI process() msg=", msg)
         var userself = this.gun.user()
 
-        var userAttributes = userself.get('Attributes')
+        var userAttributes = this.gun.get('KAttributes')
         if (!userAttributes) //validate attributes.
             return
 
@@ -99,7 +101,7 @@ export default class ChatAI {
         if (!this.user.is)  //if not log in.
             return
 
-        this.userAttributes = this.user.get('Attributes')
+        this.userAttributes = this.gun.get(KAttributes)
         if (!this.userAttributes)  //if no userAttributes
             return
         // var stageName = this.stageName

@@ -207,13 +207,13 @@ function view(state$) {
           //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
           // ]),
           div('.mid.row.col.go', [
-            !!state.attributeList && state.attributeList.map((item, id) => {
-              var txt = item.message + ". A: "
-              console.log("txt: ", txt)
+            !!state.attributeList && Object.values(state.attributeList).map((item, id) => {
+              // var txt = item.message + ". A: "
+              // console.log("txt: ", txt)
               return div('.bd', {key: id}, [
                 p( new Date(item.when).toLocaleString().toLowerCase()),
-                p(item.message),
-                p(item.answer)
+                p(item.message + '?'),
+                p(item.answer + '.')
               ])
               })
           ]),
