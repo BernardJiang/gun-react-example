@@ -207,12 +207,21 @@ function view(state$) {
           //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
           // ]),
           div('.mid.row.col.go', [
-            !!state.attributeList && Object.values(state.attributeList).map((item, id) => {
+            !!state.attributeList && Object.values(state.attributeList).sort((a, b) => (a.when < b.when) ? 1 : -1).map((item, id) => {
               // var txt = item.message + ". A: "
               // console.log("txt: ", txt)
+              const oparr = []
+              if (item.oplen != 0 ){
+                var i;
+                for (i=0; i<item.oplen; i++){
+                  oparr.push( p( item['op'+i] + ';'))
+                }
+              }
               return div('.bd', {key: id}, [
                 p( new Date(item.when).toLocaleString().toLowerCase()),
+                item.oplen != 0 && 
                 p(item.message + '?'),
+                ...oparr,
                 p(item.answer + '.')
               ])
               })

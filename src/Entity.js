@@ -171,8 +171,8 @@ export class Entity {
           self.gun.get(KAttributes).map().on((newlist => (state, id) => {
             console.log('attribute. state= ', state)
             // if(state.when + 10000000 > Entity.time()){
-              let msg= {message: state.message, when: state.when, answer: state.answer}
-              newlist[msg.message] = msg
+              // let msg= {message: state.message, when: state.when, answer: state.answer}
+              newlist[state.message] = state
               console.log('newlist', newlist)
               listener.next({attributeList: newlist})
             // }
@@ -630,7 +630,8 @@ export class Entity {
         if(res[4] === undefined){ 
             //just answer.
             msg.answer = res[8]
-        }else{
+            msg.oplen = 0
+          }else{
                 optionsarray = res[5].split(';')
                 optionsarray.push(res[8])
                 // var cnt = optionsarray.length;
@@ -642,10 +643,14 @@ export class Entity {
                 //The first option is my own answer if more than one option.
                 msg.answer = optionsarray[0]
 
+                msg.oplen = optionsarray.length
+
                 optionsarray.forEach((opt, idx) => {
                     // console.log("Opt opt=", opt)
                     // console.log("Opt idx=", idx)
-                    msg.options = Object.assign({}, msg.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
+                    // msg.options = Object.assign({}, msg.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
+                    msg['op' + idx] = opt
+                    msg['tr' + idx] = 6
                 })
                 // msg.options = res[2] + res[3];
                 // var msg2 = Object.assign({}, msg, {options: options})
