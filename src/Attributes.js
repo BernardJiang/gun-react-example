@@ -219,7 +219,6 @@ function view(state$) {
               }
               return div('.bd', {key: id}, [
                 p( new Date(item.when).toLocaleString().toLowerCase()),
-                item.oplen != 0 && 
                 p(item.message + '?'),
                 ...oparr,
                 p(item.answer + '.')
