@@ -971,14 +971,14 @@ export function ChatBot(sources) {
   const { DOM, entity } = sources;
   // console.log('sources.entity', entity)
 
-  const entityEvents = entityIntent(entity);
+  const entityEvents = entityIntent(entity)
   // const events = Intent(DOM);
 
   const state1$ = model(entityEvents)
 
   // const outgoingEntityEvents$ = entityTodo(state$)
 
-  const footer = Footer(sources);
+  const footer = Footer(sources)
 
   const state$ = xs.combine(state1$, footer.DOM);
 

@@ -4,6 +4,8 @@ import sampleCombine from 'xstream/extra/sampleCombine';
 
 import React, { Component }  from 'react'
 import Entity from './Entity'
+import AttributeList from './AttributeList'
+
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
 const formatMsgs = msgs => Object.keys(msgs)
@@ -136,14 +138,11 @@ export class Attributes_old extends Component {
 }
 
 function entityIntent(entity) {
-  const userAttributeList$ = entity.getAttributeList()
-    .startWith({ attributeList: [] })
-    .compose(dropRepeats());
 
   const useris$ = entity.getSignStatus()
     .startWith({ authenticated: false });
 
-  return { userAttributeList$, useris$ }
+  return { useris$ }
 }
 
 function Intent(DOM) {
@@ -180,7 +179,7 @@ function Intent(DOM) {
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.userAttributeList$, entityEvents.useris$, events.newQuestion$)
+  const state$ = xs.merge(entityEvents.useris$, events.newQuestion$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
     .startWith({ attributeList: [], authenticated: false, stageName: '', question: '', answer: '' })
   return state$
@@ -188,7 +187,7 @@ function model(entityEvents, events) {
 
 function view(state$) {
   const vdom$ = state$
-    .map(state =>
+    .map( ([state, attributeView]) =>
       div('#divSign.hue.page', [
         h1('Attributes for ' + state.stageName), 
         !!state.stageName && form('#inup.sign.pad.center', [
@@ -199,26 +198,7 @@ function view(state$) {
               button({ sel: 'btnattrsubmit' }, 'Submit')
             ])
           ]),
-          div('.mid.row.col.go', [
-            !!state.attributeList && Object.values(state.attributeList).sort((a, b) => (a.when < b.when) ? 1 : -1).map((item, id) => {
-              const oparr = []
-              if (item.oplen != 0 ){
-                var i;
-                for (i=0; i<item.oplen; i++){
-                  oparr.push( p( item['op'+i] + ';'))
-                }
-              }
-              return div('.bd.rowC', {key: id}, [
-                p( new Date(item.when).toLocaleString().toLowerCase()),
-                p(item.message + '?'),
-                ...oparr,
-                p(item.answer + '.'),
-                div('.mr', [
-                  button({ sel: 'btnattrdel' }, 'x')
-                ])
-              ])
-              })
-          ]),
+          !!attributeView && attributeView
         ])
       ])
     ); 
@@ -251,15 +231,20 @@ export default function AttributesComp(sources) {
   const entityEvents = entityIntent(entity);
   const events = Intent(DOM);
 
-  const state$ = model(entityEvents, events)
+  const state1$ = model(entityEvents, events)
+
+  const attributeList = AttributeList(sources)
+
+  const state$ = xs.combine(state1$, attributeList.DOM);
 
   const vdom$ = view(state$)
-  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
+
+  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state1$)
 
   const sinks = {
     DOM: vdom$,
     value: state$,
-    entity: outgoingEntityEvents$
+    entity: xs.merge(outgoingEntityEvents$, attributeList.entity)
   }
   return sinks;
 
