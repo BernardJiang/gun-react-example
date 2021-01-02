@@ -703,10 +703,14 @@ export function makeEntityDriver(opts) {
                 entity.sendMessage(msg);
                 break;
               case 'btnattributesubmit':
-                  console.log('attribute sent : ', command)
-                  entity.updateAttribute({question: command.question, answer: command.answer})
-                  break;
-              default:
+                console.log('attribute sent : ', command)
+                entity.updateAttribute({question: command.question, answer: command.answer})
+                break;
+              case 'btnattrdel':
+                console.log('attribute delete an attribute: ', command)
+                // entity.deleteAttribute({question: command.question, answer: command.answer})
+                break;
+             default:
                   console.log('command is not defined!!!', command)
                 break;
   

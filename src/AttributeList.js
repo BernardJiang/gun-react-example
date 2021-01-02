@@ -24,11 +24,11 @@ function entityIntent(entity) {
 function Intent(DOM) {
   
   const clickevents$ = DOM
-    .select('attrdel')
+    .select('btnattrdel')
     .events('click')
     .map(ev => {
-      // console.log("Clicked Delete 1!")
-      return { typeKey: 'btnsdel', pos: 1 }
+      console.log("Clicked Delete 1!")
+      return { typeKey: 'btnattrdel', pos: 1 }
     }).startWith({ typeKey: 'noclick' });
 
   return { clickevents$ }
@@ -60,7 +60,7 @@ function view(state$) {
             ...oparr,
             p(item.answer + '.'),
             div('.mr', [
-              button({ sel: 'btnattrdel'+id }, 'x')
+              button({ sel: 'btnattrdel' }, 'x')
             ])
           ])
         })
@@ -76,13 +76,13 @@ function entityTodo(clickevents$, state$) {
     .map( ([click, state]) => {
       // console.log("ENTITY todo state=", state)
       // console.log("ENTITY click=", click)
-      if (state.userinput && state.authenticated) {
+      // if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnattrdel') {
           return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.pos}
         }
-      } else {
-        console.log("either no content or not signed in");      
-      }
+      // } else {
+      //   console.log("either no content or not signed in");      
+      // }
     });
   return outgoingEntityEvents$
 }
