@@ -154,18 +154,18 @@ function Intent(DOM) {
       return ev.target.value
     }).startWith("");
 
-  const attributeAnswer$ = DOM
-    .select('attributeanswer')
-    .events('input')
-    .map(ev => {
-      return ev.target.value
-    }).startWith("");
+  // const attributeAnswer$ = DOM
+  //   .select('attributeanswer')
+  //   .events('input')
+  //   .map(ev => {
+  //     return ev.target.value
+  //   }).startWith("");
 
   const newQuestion$ = attributeQuestion$.map(v => {
     return { question: v }
   }).remember();
   
-  const newAnswer$ = attributeAnswer$.map(v => { return { answer: v } }).remember();
+  // const newAnswer$ = attributeAnswer$.map(v => { return { answer: v } }).remember();
 
   const clickeventsubmit$ = DOM
     .select('btnattrsubmit')
@@ -176,11 +176,11 @@ function Intent(DOM) {
 
   const clickevents$ = clickeventsubmit$
 
-  return { clickevents$, newQuestion$, newAnswer$ }
+  return { clickevents$, newQuestion$}
 }
 
 function model(entityEvents, events) {
-  const state$ = xs.merge(entityEvents.userAttributeList$, entityEvents.useris$, events.newQuestion$, events.newAnswer$)
+  const state$ = xs.merge(entityEvents.userAttributeList$, entityEvents.useris$, events.newQuestion$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
     .startWith({ attributeList: [], authenticated: false, stageName: '', question: '', answer: '' })
   return state$
@@ -193,23 +193,14 @@ function view(state$) {
         h1('Attributes for ' + state.stageName), 
         !!state.stageName && form('#inup.sign.pad.center', [
           div('.mid.row.col', [
-            h1('Type a question that ends with a ?:'),
-            input({ sel: 'attributequestion', type: 'text', placeholder: '' })
+            h1('question? my own answer/option 1; other option2; other option3; ...'),
+            div('.mid.row.col.rowC', [
+              input({ sel: 'attributequestion', type: 'text', placeholder: '' }),
+              button({ sel: 'btnattrsubmit' }, 'Submit')
+            ])
           ]),
-          div('.mid.row.col', [
-            h1('Answer and other options in format o1; o2; o3.'),
-            input({ sel: 'attributeanswer', type: 'text', placeholder: '' })
-          ]),
-          div('.mid.row.col.go', [
-            button({ sel: 'btnattrsubmit' }, 'Submit')
-          ]),
-          // div('.mid.row.col.go', [
-          //   h1('number of users :' + (!!state.userlist && "length" in state.userlist ? state.userlist.length : 0))
-          // ]),
           div('.mid.row.col.go', [
             !!state.attributeList && Object.values(state.attributeList).sort((a, b) => (a.when < b.when) ? 1 : -1).map((item, id) => {
-              // var txt = item.message + ". A: "
-              // console.log("txt: ", txt)
               const oparr = []
               if (item.oplen != 0 ){
                 var i;
@@ -217,11 +208,14 @@ function view(state$) {
                   oparr.push( p( item['op'+i] + ';'))
                 }
               }
-              return div('.bd', {key: id}, [
+              return div('.bd.rowC', {key: id}, [
                 p( new Date(item.when).toLocaleString().toLowerCase()),
                 p(item.message + '?'),
                 ...oparr,
-                p(item.answer + '.')
+                p(item.answer + '.'),
+                div('.mr', [
+                  button({ sel: 'btnattrdel' }, 'x')
+                ])
               ])
               })
           ]),
