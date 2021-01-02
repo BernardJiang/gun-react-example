@@ -88,7 +88,7 @@ export class Entity {
         this.userlist = this.gun.get('userlist')
         // // this.userlist.on(this.cbNewUser);
         this.msgs = {}
-        this.attrs = {}
+        this.attrs = []
         this.stageName = ''
         this.userNameList = []
         this.chatAI = new chatAI(this.gun);
@@ -169,12 +169,17 @@ export class Entity {
         start(listener) {
           console.log('create getAttributeList: user=' + self.gun.user())
           self.gun.get(KAttributes).map().on((newlist => (state, id) => {
-            console.log('attribute. state= ', state)
-            // if(state.when + 10000000 > Entity.time()){
+              console.log('attribute. state= ', state)
+              console.log('attribute. id= ', id)
+              // if(state.when + 10000000 > Entity.time()){
               // let msg= {message: state.message, when: state.when, answer: state.answer}
-              newlist[state.message] = state
+              if (state === null)
+                delete newlist[id]
+              else
+                newlist[state.message] = state
               console.log('newlist', newlist)
-              listener.next({attributeList: newlist})
+              self.attrs = Object.values(newlist).sort((a, b) => (a.when < b.when) ? 1 : -1)
+              listener.next({attributeList: self.attrs})
             // }
           })({}))
         },
@@ -663,6 +668,22 @@ export class Entity {
             console.log("save attribute", ack)
         });
     }
+
+    deleteAttribute( option){
+      const self = this
+      const pos = option.pos
+      const msg =  self.attrs[pos]
+      console.log("about to delete ", msg)
+      
+      if(this.userAttributes === null)
+        this.userAttributes = this.gun.get(KAttributes)
+
+      this.userAttributes && this.userAttributes.get(msg.message).put(null, function (ack) {
+        console.log("delete an attribute", ack)
+      });
+
+    }
+
 }
 
 export function makeEntityDriver(opts) {
@@ -708,7 +729,7 @@ export function makeEntityDriver(opts) {
                 break;
               case 'btnattrdel':
                 console.log('attribute delete an attribute: ', command)
-                // entity.deleteAttribute({question: command.question, answer: command.answer})
+                entity.deleteAttribute({pos: command.pos})
                 break;
              default:
                   console.log('command is not defined!!!', command)
