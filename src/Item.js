@@ -16,18 +16,25 @@ function intent(domSource) {
 
 function model(props$, action$) {
   const usePropsReducer$ = props$
+    .map(props => function usePropsReducer(oldState) {
+      return props;
+    });
 
   const changeWidthReducer$ = action$
     .filter(a => a.type === 'CHANGE_WIDTH')
-    .map(action => {width: action.payload} );
+    .map(action => function changeWidthReducer(oldState) {
+      return {color: oldState.color, width: action.payload};
+    });
 
   const changeColorReducer$ = action$
     .filter(a => a.type === 'CHANGE_COLOR')
-    .map(action => {color: action.payload} );
+    .map(action => function changeColorReducer(oldState) {
+      return {color: action.payload, width: oldState.width};
+    });
 
   return xs.merge(usePropsReducer$, changeWidthReducer$, changeColorReducer$)
-    .fold((acc, x) => { return { ...acc, ...x } }, {color: '#888', width: 200})
-  
+    .fold((state, reducer) => reducer(state), {color: '#888', width: 200});
+}
 
 function view(state$) {
   return state$.map(({color, width}) => {
