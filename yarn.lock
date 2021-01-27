@@ -1042,6 +1042,13 @@
     history "4.7.x"
     xstream "11.x"
 
+"@cycle/isolate@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-5.2.0.tgz#42150b2d6ffabf35e745acc8baee5184dda9c474"
+  dependencies:
+    "@cycle/run" "^5.2.0"
+    xstream "^11.7.0"
+
 "@cycle/react-dom@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@cycle/react-dom/-/react-dom-2.4.0.tgz#25843f10f2a0ce73c3a35a48a8a6e051aff00ada"
@@ -1068,7 +1075,7 @@
   dependencies:
     xstream "10.x || 11.x"
 
-"@cycle/run@^5.5.0":
+"@cycle/run@^5.2.0", "@cycle/run@^5.5.0":
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@cycle/run/-/run-5.5.0.tgz#9b18ec1227a8b0babfd11b1c2cab34dd8f09c2a8"
   dependencies:
@@ -10450,7 +10457,7 @@ xregexp@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
 
-"xstream@10.x || 11.x", xstream@11.x, xstream@^11.1.0, xstream@^11.13.0:
+"xstream@10.x || 11.x", xstream@11.x, xstream@^11.1.0, xstream@^11.13.0, xstream@^11.7.0:
   version "11.14.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-11.14.0.tgz#2c071d26b18310523b6877e86b4e54df068a9ae5"
   dependencies:

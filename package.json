@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/plugin-syntax-flow": "^7.12.1",
     "@babel/preset-flow": "^7.12.1",
+    "@cycle/isolate": "^5.2.0",
     "@cycle/react": "^2.7.0",
     "@cycle/react-dom": "^2.4.0",
     "@cycle/run": "^5.5.0",
