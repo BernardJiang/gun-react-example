@@ -1,5 +1,5 @@
 import xs from 'xstream';
-import {button, div} from '@cycle/dom';
+import {button, div} from '@cycle/react-dom';
 import isolate from '@cycle/isolate'
 import Item from './Item';
 

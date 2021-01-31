@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import xs from 'xstream';
+import isolate from '@cycle/isolate'
 import dropRepeats from 'xstream/extra/dropRepeats';
 import sampleCombine from 'xstream/extra/sampleCombine';
 import React, { Component } from 'react';

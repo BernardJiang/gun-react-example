@@ -5,6 +5,7 @@ import sampleCombine from 'xstream/extra/sampleCombine';
 import React, { Component }  from 'react'
 import Entity from './Entity'
 import AttributeList from './AttributeList'
+import List from './List'
 
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
@@ -187,7 +188,7 @@ function model(entityEvents, events) {
 
 function view(state$) {
   const vdom$ = state$
-    .map( ([state, attributeView]) =>
+    .map( ([state, attributeView, listview]) =>
       div('#divSign.hue.page', [
         h1('Attributes for ' + state.stageName), 
         !!state.stageName && form('#inup.sign.pad.center', [
@@ -198,7 +199,8 @@ function view(state$) {
               button({ sel: 'btnattrsubmit' }, 'Submit')
             ])
           ]),
-          !!attributeView && attributeView
+          !!attributeView && attributeView,
+          listview
         ])
       ])
     ); 
@@ -234,8 +236,9 @@ export default function AttributesComp(sources) {
   const state1$ = model(entityEvents, events)
 
   const attributeList = AttributeList(sources)
+  const list = List(sources)
 
-  const state$ = xs.combine(state1$, attributeList.DOM);
+  const state$ = xs.combine(state1$, attributeList.DOM, list.DOM);
 
   const vdom$ = view(state$)
 
