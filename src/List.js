@@ -5,11 +5,11 @@ import Item from './Item';
 
 function intent(domSource, itemRemove$) {
   return xs.merge(
-    domSource.select('.add-one-btn').events('click')
+    domSource.select('add-one-btn').events('click')
       .mapTo({type: 'ADD_ITEM', payload: 1}),
 
-    domSource.select('.add-many-btn').events('click')
-      .mapTo({type: 'ADD_ITEM', payload: 1000}),
+    domSource.select('add-many-btn').events('click')
+      .mapTo({type: 'ADD_ITEM', payload: 5}),
 
     itemRemove$.map(id => ({type: 'REMOVE_ITEM', payload: id}))
   );
@@ -53,7 +53,7 @@ function model(action$, itemFn) {
       return listItems.filter(item => item.id !== action.payload);
     });
 
-  const initialState = [createNewItem({color: 'red', width: 300})]
+  const initialState = [createNewItem({color: 'red', width: 300, text: "red"})]
 
   return xs.merge(addItemReducer$, removeItemReducer$)
     .fold((listItems, reducer) => reducer(listItems), initialState);
@@ -61,14 +61,20 @@ function model(action$, itemFn) {
 
 function view(items$) {
   const addButtons = div('.addButtons', [
-    button('.add-one-btn', 'Add New Item'),
-    button('.add-many-btn', 'Add Many Items')
+    button('add-one-btn', 'Add New Item'),
+    button('add-many-btn', 'Add Many Items')
   ]);
 
   return items$.map(items => {
     const itemVNodeStreamsByKey = items.map(item =>
       item.DOM.map(vnode => {
-        vnode.key = item.id; return vnode;
+        console.log("vnode = ", vnode)
+        console.log("item.id = ", item.id)
+        let vnode1 = { ...vnode , key: item.id};
+        console.log("vnode1 = ", vnode1)
+
+        // vnode.key = item.id; 
+        return vnode1;
       })
     );
     return xs.combine(...itemVNodeStreamsByKey)

@@ -9,7 +9,11 @@ function intent(domSource) {
     domSource.select('.width-slider').events('input')
       .map(ev => ({type: 'CHANGE_WIDTH', payload: parseInt(ev.target.value)})),
 
-    domSource.select('.remove-btn').events('click')
+    domSource.select('remove-btn').events('click')
+      .map(ev => {
+        console.log("Remove clicked!");
+        return ev;
+      })
       .mapTo({type: 'REMOVE'})
   );
 }
@@ -42,14 +46,14 @@ function view(state$) {
       border: '1px solid #000',
       background: 'none repeat scroll 0% 0% ' + color,
       width: width + 'px',
-      height: '70px',
+      height: '270px',
       display: 'block',
       padding: '20px',
       margin: '10px 0px'
     };
     return div('.item', {style}, [
       input('.color-field', {
-        attrs: {type: 'text', value: color}
+        attrs: {type: 'text', value: "color"}
       }),
       div('.slider-container', [
         input('.width-slider', {
@@ -57,7 +61,7 @@ function view(state$) {
         })
       ]),
       div('.width-content', String(width)),
-      button('.remove-btn', 'Remove')
+      button('remove-btn', 'Remove')
     ]);
   });
 }

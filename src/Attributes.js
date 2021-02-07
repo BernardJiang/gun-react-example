@@ -190,6 +190,7 @@ function view(state$) {
   const vdom$ = state$
     .map( ([state, attributeView, listview]) =>
       div('#divSign.hue.page', [
+        listview,
         h1('Attributes for ' + state.stageName), 
         !!state.stageName && form('#inup.sign.pad.center', [
           div('.mid.row.col', [
@@ -200,7 +201,6 @@ function view(state$) {
             ])
           ]),
           !!attributeView && attributeView,
-          listview
         ])
       ])
     ); 
