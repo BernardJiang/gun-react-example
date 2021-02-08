@@ -2,6 +2,17 @@ import xs from 'xstream';
 import {button, div} from '@cycle/react-dom';
 import isolate from '@cycle/isolate'
 import Item from './Item';
+import dropRepeats from 'xstream/extra/dropRepeats';
+import sampleCombine from 'xstream/extra/sampleCombine';
+
+
+function entityIntent(entity) {
+  const userAttributeList$ = entity.getAttributeList()
+    .startWith({ attributeList: [] })
+    .compose(dropRepeats());
+
+  return {userAttributeList$}
+}
 
 function intent(domSource, itemRemove$) {
   return xs.merge(
@@ -15,7 +26,19 @@ function intent(domSource, itemRemove$) {
   );
 }
 
-function model(action$, itemFn) {
+function model(entityEvents, action$, itemFn) {
+  const state$ = entityEvents.userAttributeList$
+  .map(action => {
+    const amount = action.attributeList.length;
+    let newItems = [];
+    for (let i = 0; i < amount; i++) {
+      newItems.push(createNewItem(action.attributeList[i], i));
+    }
+    return function addItemReducer(listItems) {
+      return listItems.concat(newItems);
+    };
+  });
+
   function createRandomItemProps() {
     let hexColor = Math.floor(Math.random() * 16777215).toString(16);
     while (hexColor.length < 6) {
@@ -28,8 +51,8 @@ function model(action$, itemFn) {
 
   let mutableLastId = 0;
 
-  function createNewItem(props) {
-    const id = mutableLastId++;
+  function createNewItem(props, id) {
+    // const id = mutableLastId++;
     const sinks = itemFn(props, id);
     return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
   }
@@ -37,10 +60,10 @@ function model(action$, itemFn) {
   const addItemReducer$ = action$
     .filter(a => a.type === 'ADD_ITEM')
     .map(action => {
-      const amount = action.payload;
+      const amount = action.attributeList.length;
       let newItems = [];
       for (let i = 0; i < amount; i++) {
-        newItems.push(createNewItem(createRandomItemProps()));
+        newItems.push(createNewItem(action.attributeList[i], i));
       }
       return function addItemReducer(listItems) {
         return listItems.concat(newItems);

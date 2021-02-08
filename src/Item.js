@@ -61,7 +61,7 @@ function view(state$) {
         })
       ]),
       div('.width-content', String(width)),
-      button('remove-btn', 'Remove')
+      button('remove-btn', 'X')
     ]);
   });
 }
