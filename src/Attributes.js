@@ -200,7 +200,8 @@ function view(state$) {
             ])
           ]),
           !!attributeView && attributeView,
-          listview
+          !!attributeView && listview
+
         ])
       ])
     ); 

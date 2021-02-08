@@ -2,20 +2,43 @@ import xs from 'xstream';
 import {button, div} from '@cycle/react-dom';
 import isolate from '@cycle/isolate'
 import Item from './Item';
+import dropRepeats from 'xstream/extra/dropRepeats';
+import sampleCombine from 'xstream/extra/sampleCombine';
+
+
+function entityIntent(entity) {
+  const userAttributeList$ = entity.getAttributeList()
+    .startWith({ attributeList: [] })
+    .compose(dropRepeats());
+
+  return {userAttributeList$}
+}
 
 function intent(domSource, itemRemove$) {
   return xs.merge(
-    domSource.select('.add-one-btn').events('click')
+    domSource.select('add-one-btn').events('click')
       .mapTo({type: 'ADD_ITEM', payload: 1}),
 
-    domSource.select('.add-many-btn').events('click')
-      .mapTo({type: 'ADD_ITEM', payload: 1000}),
+    domSource.select('add-many-btn').events('click')
+      .mapTo({type: 'ADD_ITEM', payload: 5}),
 
     itemRemove$.map(id => ({type: 'REMOVE_ITEM', payload: id}))
   );
 }
 
-function model(action$, itemFn) {
+function model(entityEvents, action$, itemFn) {
+  const state$ = entityEvents.userAttributeList$
+  .map(action => {
+    const amount = action.attributeList.length;
+    let newItems = [];
+    for (let i = 0; i < amount; i++) {
+      newItems.push(createNewItem(action.attributeList[i], i));
+    }
+    return function addItemReducer(listItems) {
+      return listItems.concat(newItems);
+    };
+  });
+
   function createRandomItemProps() {
     let hexColor = Math.floor(Math.random() * 16777215).toString(16);
     while (hexColor.length < 6) {
@@ -28,8 +51,8 @@ function model(action$, itemFn) {
 
   let mutableLastId = 0;
 
-  function createNewItem(props) {
-    const id = mutableLastId++;
+  function createNewItem(props, id) {
+    // const id = mutableLastId++;
     const sinks = itemFn(props, id);
     return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
   }
@@ -37,10 +60,10 @@ function model(action$, itemFn) {
   const addItemReducer$ = action$
     .filter(a => a.type === 'ADD_ITEM')
     .map(action => {
-      const amount = action.payload;
+      const amount = action.attributeList.length;
       let newItems = [];
       for (let i = 0; i < amount; i++) {
-        newItems.push(createNewItem(createRandomItemProps()));
+        newItems.push(createNewItem(action.attributeList[i], i));
       }
       return function addItemReducer(listItems) {
         return listItems.concat(newItems);
@@ -53,7 +76,7 @@ function model(action$, itemFn) {
       return listItems.filter(item => item.id !== action.payload);
     });
 
-  const initialState = [createNewItem({color: 'red', width: 300})]
+  const initialState = [createNewItem({color: 'red', width: 300, text: "red"})]
 
   return xs.merge(addItemReducer$, removeItemReducer$)
     .fold((listItems, reducer) => reducer(listItems), initialState);
@@ -61,14 +84,20 @@ function model(action$, itemFn) {
 
 function view(items$) {
   const addButtons = div('.addButtons', [
-    button('.add-one-btn', 'Add New Item'),
-    button('.add-many-btn', 'Add Many Items')
+    button('add-one-btn', 'Add New Item'),
+    button('add-many-btn', 'Add Many Items')
   ]);
 
   return items$.map(items => {
     const itemVNodeStreamsByKey = items.map(item =>
       item.DOM.map(vnode => {
-        vnode.key = item.id; return vnode;
+        console.log("vnode = ", vnode)
+        console.log("item.id = ", item.id)
+        let vnode1 = { ...vnode , key: item.id};
+        console.log("vnode1 = ", vnode1)
+
+        // vnode.key = item.id; 
+        return vnode1;
       })
     );
     return xs.combine(...itemVNodeStreamsByKey)
