@@ -27,18 +27,7 @@ function intent(domSource, itemRemove$) {
 }
 
 function model(entityEvents, action$, itemFn) {
-  const state$ = entityEvents.userAttributeList$
-  .map(action => {
-    const amount = action.attributeList.length;
-    let newItems = [];
-    for (let i = 0; i < amount; i++) {
-      newItems.push(createNewItem(action.attributeList[i], i));
-    }
-    return function addItemReducer(listItems) {
-      return listItems.concat(newItems);
-    };
-  });
-
+  
   function createRandomItemProps() {
     let hexColor = Math.floor(Math.random() * 16777215).toString(16);
     while (hexColor.length < 6) {
@@ -60,7 +49,7 @@ function model(entityEvents, action$, itemFn) {
   const addItemReducer$ = action$
     .filter(a => a.type === 'ADD_ITEM')
     .map(action => {
-      const amount = action.attributeList.length;
+      const amount = action.payload;
       let newItems = [];
       for (let i = 0; i < amount; i++) {
         newItems.push(createNewItem(action.attributeList[i], i));
@@ -78,7 +67,19 @@ function model(entityEvents, action$, itemFn) {
 
   const initialState = [createNewItem({color: 'red', width: 300, text: "red"})]
 
-  return xs.merge(addItemReducer$, removeItemReducer$)
+  const stateItemReducer$ = entityEvents.userAttributeList$
+  .map(action => {
+    const amount = action.attributeList.length;
+    let newItems = [];
+    for (let i = 0; i < amount; i++) {
+      newItems.push(createNewItem(action.attributeList[i], i));
+    }
+    return function stateItemReducer(listItems) {
+      return listItems.concat(newItems);
+    };
+  });
+
+  return xs.merge(addItemReducer$, removeItemReducer$, stateItemReducer$)
     .fold((listItems, reducer) => reducer(listItems), initialState);
 }
 
