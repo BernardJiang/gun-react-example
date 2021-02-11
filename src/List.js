@@ -117,10 +117,12 @@ function makeItemWrapper(DOM) {
 }
 
 function List(sources) {
+  const { DOM, entity } = sources;
+  const entityEvents = entityIntent(entity);
   const proxyItemRemove$ = xs.create();
   const action$ = intent(sources.DOM, proxyItemRemove$);
   const itemWrapper = makeItemWrapper(sources.DOM);
-  const items$ = model(action$, itemWrapper);
+  const items$ = model(entityEvents, action$, itemWrapper);
   const itemRemove$ = items$
     .map(items => xs.merge(...items.map(item => item.Remove)))
     .flatten();
