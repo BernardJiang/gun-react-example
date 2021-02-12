@@ -42,6 +42,8 @@ function model(entityEvents, action$, itemFn) {
 
   function createNewItem(props, id) {
     // const id = mutableLastId++;
+    console.log("Create new item: id", id)
+    console.log("Create new item: props", props)
     const sinks = itemFn(props, id);
     return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
   }

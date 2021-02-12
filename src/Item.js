@@ -1,5 +1,5 @@
 import xs from 'xstream';
-import {button, div, input} from '@cycle/react-dom';
+import {button, div, input, p} from '@cycle/react-dom';
 
 function intent(domSource) {
   return xs.merge(
@@ -41,7 +41,18 @@ function model(props$, action$) {
 }
 
 function view(state$) {
-  return state$.map(({color, width}) => {
+  return state$.map((props) => {
+    console.log("in item view: ", props)
+    const oparr = []
+    if (props.oplen != 0 ){
+      var i;
+      for (i=0; i<props.oplen; i++){
+        oparr.push( p( props['op'+i] + ';'))
+      }
+    }
+
+    let color = '#888'
+    let width = 600
     const style = {
       border: '1px solid #000',
       background: 'none repeat scroll 0% 0% ' + color,
@@ -58,7 +69,16 @@ function view(state$) {
       div('.slider-container', [
         input('.width-slider', {
           attrs: {type: 'range', min: '200', max: '1000', value: width}
-        })
+        }),
+        div('.bd.rowC', {key: props._}, [
+          p( new Date(props.when).toLocaleString().toLowerCase()),
+          p(props.message + '?'),
+          ...oparr,
+          p(props.answer + '.'),
+          div('.mr', [
+            button({ sel: 'btnattrdel' }, 'x')
+          ])
+        ])
       ]),
       div('.width-content', String(width)),
       button('remove-btn', 'X')
