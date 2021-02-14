@@ -3,12 +3,6 @@ import {button, div, input, p} from '@cycle/react-dom';
 
 function intent(domSource) {
   return xs.merge(
-    domSource.select('.color-field').events('input')
-      .map(ev => ({type: 'CHANGE_COLOR', payload: ev.target.value})),
-
-    domSource.select('.width-slider').events('input')
-      .map(ev => ({type: 'CHANGE_WIDTH', payload: parseInt(ev.target.value)})),
-
     domSource.select('remove-btn').events('click')
       .map(ev => {
         console.log("Remove clicked!");
@@ -57,31 +51,23 @@ function view(state$) {
       border: '1px solid #000',
       background: 'none repeat scroll 0% 0% ' + color,
       width: width + 'px',
-      height: '270px',
+      height: '110px',
       display: 'block',
       padding: '20px',
       margin: '10px 0px'
     };
     return div('.item', {style}, [
-      input('.color-field', {
-        attrs: {type: 'text', value: "color"}
-      }),
       div('.slider-container', [
-        input('.width-slider', {
-          attrs: {type: 'range', min: '200', max: '1000', value: width}
-        }),
         div('.bd.rowC', {key: props._}, [
           p( new Date(props.when).toLocaleString().toLowerCase()),
-          p(props.message + '?'),
+          p(" :: " + props.message + '?'),
           ...oparr,
           p(props.answer + '.'),
           div('.mr', [
-            button({ sel: 'btnattrdel' }, 'x')
+            button('remove-btn', 'x')
           ])
         ])
       ]),
-      div('.width-content', String(width)),
-      button('remove-btn', 'X')
     ]);
   });
 }
