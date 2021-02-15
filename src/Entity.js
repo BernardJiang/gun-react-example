@@ -167,17 +167,17 @@ export class Entity {
       self.attrs = []
       return xs.create({
         start(listener) {
-          console.log('create getAttributeList: user=' + self.gun.user())
+          // console.log('create getAttributeList: user=' + self.gun.user())
           self.gun.get(KAttributes).map().on((newlist => (state, id) => {
-              console.log('attribute. state= ', state)
-              console.log('attribute. id= ', id)
+              // console.log('attribute. state= ', state)
+              // console.log('attribute. id= ', id)
               // if(state.when + 10000000 > Entity.time()){
               // let msg= {message: state.message, when: state.when, answer: state.answer}
               if (state === null)
                 delete newlist[id]
               else
                 newlist[state.message] = state
-              console.log('newlist', newlist)
+              // console.log('newlist', newlist)
               self.attrs = Object.values(newlist).sort((a, b) => (a.when < b.when) ? 1 : -1)
               listener.next({attributeList: self.attrs})
             // }

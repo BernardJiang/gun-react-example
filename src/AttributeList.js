@@ -36,12 +36,12 @@ function model(entityEvents, events, itemFn) {
   .map(action => {
     const amount = action.attributeList.length;
     let newItems = [];
-    console.log("total items: " + amount)
+    // console.log("total items: " + amount)
     for (let i = 0; i < amount; i++) {
       newItems.push(createNewItem(action.attributeList[i], i));
     }
     return function stateItemReducer(listItems) {
-      console.log("original listitems has " + listItems.length + ". will add " + newItems.length)
+      // console.log("original listitems has " + listItems.length + ". will add " + newItems.length)
       return [].concat(newItems);
     };
   });

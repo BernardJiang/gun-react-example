@@ -19,7 +19,7 @@ function model(props$, action$) {
 
 function view(state$) {
   return state$.map((props) => {
-    console.log("in item view: ", props)
+    // console.log("in item view: ", props)
     const oparr = []
     if (props.oplen != 0 ){
       var i;
