@@ -6,10 +6,6 @@ import sampleCombine from 'xstream/extra/sampleCombine';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Random from 'random-id';
-// import { CustomStep, OptionsStep, TextStep } from './steps_components';
-// import schema from './schemas/schema';
-// import * as storage from './storage';
-// import { Entity } from '../../Entity'
 import { set } from 'lodash';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 import AttributeItem from './AttributeItem';
@@ -25,24 +21,13 @@ function entityIntent(entity) {
 
 function Intent(DOM, itemRemove$) {
   
-  // const clickevents$ = DOM
-  //   .select('btnattrdel')
-  //   .events('click')
-  //   .map(ev => {
-  //     console.log("Clicked Delete 1!")
-  //     return { typeKey: 'btnattrdel', pos: 1 }
-  //   }).startWith({ typeKey: 'noclick' });
   const clickevents$ = itemRemove$.map(id => ({typeKey: 'btnattrdel', payload: id}))
 
   return { clickevents$ }
 }
 
 function model(entityEvents, events, itemFn) {
-
   function createNewItem(props, id) {
-    // const id = mutableLastId++;
-    console.log("Create new item: id", id)
-    console.log("Create new item: props", props)
     const sinks = itemFn(props, id);
     return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
   }
@@ -64,9 +49,6 @@ function model(entityEvents, events, itemFn) {
   const state$ = xs.merge(stateItemReducer$)
     .fold((listItems, reducer) => reducer(listItems), []);
 
-  // const state$ = xs.merge(entityEvents.userAttributeList$)
-  //   .fold((acc, x) => { return { ...acc, ...x } }, {})
-  //   .startWith({ attributeList: [] })
   return state$
 }
 
@@ -76,11 +58,10 @@ function view(state$) {
       // console.log("state=", state)
       const itemVNodeStreamsByKey = state.map(item =>
         item.DOM.map(vnode => {
-          console.log("vnode = ", vnode)
-          console.log("item.id = ", item.id)
+          // console.log("vnode = ", vnode)
+          // console.log("item.id = ", item.id)
           let vnode1 = { ...vnode , key: item.id};
-          console.log("vnode1 = ", vnode1)
-  
+          // console.log("vnode1 = ", vnode1)
           // vnode.key = item.id; 
           return vnode1;
         })
@@ -127,8 +108,8 @@ function entityTodo(clickevents$, state$) {
   const outgoingEntityEvents$ = clickevents$
   .compose(sampleCombine(state$))
     .map( ([click, state]) => {
-      console.log("ENTITY todo state=", state)
-      console.log("ENTITY click=", click)
+      // console.log("ENTITY todo state=", state)
+      // console.log("ENTITY click=", click)
       // if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnattrdel') {
           return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.payload}

@@ -5,7 +5,6 @@ import sampleCombine from 'xstream/extra/sampleCombine';
 import React, { Component }  from 'react'
 import Entity from './Entity'
 import AttributeList from './AttributeList'
-// import List from './List'
 
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
