@@ -3,12 +3,12 @@ import {button, div, input, p} from '@cycle/react-dom';
 
 function intent(domSource) {
   return xs.merge(
-    domSource.select('remove-btn').events('click')
+    domSource.select('btnattrdel').events('click')
       .map(ev => {
         console.log("Remove clicked!");
         return ev;
       })
-      .mapTo({type: 'REMOVE'})
+      .mapTo({typeKey: 'btnattrdel'})
   );
 }
 
@@ -64,7 +64,7 @@ function view(state$) {
           ...oparr,
           p(props.answer + '.'),
           div('.mr', [
-            button('remove-btn', 'x')
+            button('btnattrdel', 'x')
           ])
         ])
       ]),
@@ -79,7 +79,7 @@ function Item(sources) {
 
   return {
     DOM: vtree$,
-    Remove: action$.filter(action => action.type === 'REMOVE'),
+    Remove: action$.filter(action => action.typeKey === 'btnattrdel'),
   };
 }
 

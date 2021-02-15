@@ -22,7 +22,7 @@ function intent(domSource, itemRemove$) {
     domSource.select('add-many-btn').events('click')
       .mapTo({type: 'ADD_ITEM', payload: 5}),
 
-    itemRemove$.map(id => ({type: 'REMOVE_ITEM', payload: id}))
+    itemRemove$.map(id => ({typeKey: 'btnattrdel', payload: id}))
   );
 }
 
@@ -62,7 +62,7 @@ function model(entityEvents, action$, itemFn) {
     });
 
   const removeItemReducer$ = action$
-    .filter(a => a.type === 'REMOVE_ITEM')
+    .filter(a => a.typeKey === 'btnattrdel')
     .map(action => function removeItemReducer(listItems) {
       return listItems.filter(item => item.id !== action.payload);
     });
@@ -106,7 +106,7 @@ function view(items$) {
       })
     );
     return xs.combine(...itemVNodeStreamsByKey)
-      .map(vnodes => div('.list', [addButtons].concat(vnodes)));
+      .map(vnodes => div('.list', [].concat(vnodes)));
   }).flatten();
 }
 
@@ -120,6 +120,25 @@ function makeItemWrapper(DOM) {
   }
 }
 
+function entityTodo(clickevents$, state$) {
+  // sink map filtered stream of payloads into function and emit function
+  const outgoingEntityEvents$ = clickevents$
+  .compose(sampleCombine(state$))
+    .map( ([click, state]) => {
+      // console.log("ENTITY todo state=", state)
+      // console.log("ENTITY click=", click)
+      // if (state.userinput && state.authenticated) {
+        if (click.typeKey === 'btnattrdel') {
+          return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.pos}
+        }
+      // } else {
+      //   console.log("either no content or not signed in");      
+      // }
+    });
+  return outgoingEntityEvents$
+}
+
+
 function List(sources) {
   const { DOM, entity } = sources;
   const entityEvents = entityIntent(entity);
@@ -127,6 +146,8 @@ function List(sources) {
   const action$ = intent(sources.DOM, proxyItemRemove$);
   const itemWrapper = makeItemWrapper(sources.DOM);
   const items$ = model(entityEvents, action$, itemWrapper);
+  const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
+  
   const itemRemove$ = items$
     .map(items => xs.merge(...items.map(item => item.Remove)))
     .flatten();
@@ -134,7 +155,8 @@ function List(sources) {
   const vtree$ = view(items$);
 
   return {
-    DOM: vtree$
+    DOM: vtree$,
+    entity: outgoingEntityEvents
   };
 }
 
