@@ -12,7 +12,7 @@ import Random from 'random-id';
 // import { Entity } from '../../Entity'
 import { set } from 'lodash';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
-import Item from './Item';
+import AttributeItem from './AttributeItem';
 
 
 function entityIntent(entity) {
@@ -114,7 +114,7 @@ function view(state$) {
 
 function makeItemWrapper(DOM) {
   return function itemWrapper(props, id) {
-    const item = isolate(Item)({DOM, Props: xs.of(props)});
+    const item = isolate(AttributeItem)({DOM, Props: xs.of(props)});
     return {
       DOM: item.DOM,
       Remove: item.Remove.mapTo(id)
