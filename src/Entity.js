@@ -666,7 +666,7 @@ export class Entity {
                 // var cnt = optionsarray.length;
                 // msg.count = cnt
                 // optionobj.when = msg.when
-                msg.options = {}
+                // msg.options = {}
                 //{ value: 'op2', label: 'Option 2', trigger: '6' },
                 
                 //The first option is my own answer if more than one option.
