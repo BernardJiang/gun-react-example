@@ -26,6 +26,7 @@ function view(state$) {
       for (i=0; i<props.oplen; i++){
         oparr.push( p( props['op'+i] + ';'))
       }
+      // oparr.push( p( props['op'+i] + '. '))
     }
 
     let color = '#888'
@@ -43,9 +44,9 @@ function view(state$) {
       div('.slider-container', [
         div('.bd.rowC', {key: props._}, [
           p( new Date(props.when).toLocaleString().toLowerCase()),
-          p(" :: " + props.message + '?'),
+          p(" :: " + props.question + '?'),
           ...oparr,
-          p(props.answer + '.'),
+          !props.oplen && p(props.answer + '.'),
           div('.mr', [
             button('btnattrdel', 'x')
           ])

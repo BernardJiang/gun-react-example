@@ -69,9 +69,18 @@ Var bob = gun.get(‘people).get(‘bob’).promOnce();
 Console.log((await bob).data)
 }
 */
+/*
+  question?
+  answer.
+  question?answer.
+  question?answer;option2;...;lastoption.
+  ignore the rest.
+*/
 
-const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
-const PatternQuestionWithOptions2 = /((.*?)(\x3F)+)((.*)(\x3B)+)*((.*?)(\x2E)+$)/
+const PatternQuestion = /((.*?)(\x3F)+$)/
+const PatternAnswer = /((.*?)(\x2E)+$)/
+const PatternQuestionWithAnswer = /((.*?)(\x3F)+)((.*?)(\x2E)+$)/
+const PatternQuestionWithOptions = /((.*?)(\x3F)+)((.*)(\x3B)+)*((.*?)(\x2E)+$)/
 
 export class Entity {
     constructor(gun) {
@@ -176,7 +185,7 @@ export class Entity {
               if (state === null)
                 delete newlist[id]
               else
-                newlist[state.message] = state
+                newlist[state.question] = state
               // console.log('newlist', newlist)
               self.attrs = Object.values(newlist).sort((a, b) => (a.when < b.when) ? 1 : -1)
               listener.next({attributeList: self.attrs})
@@ -603,40 +612,55 @@ export class Entity {
     }
 
     updateAttribute(newattr){
-        // { this.state.question, this.state.answer, this.state.options}
-        console.log("Attributes", 'question: ' + newattr.question);
-        console.log("Attributes", 'answer: ' + newattr.answer);
-        console.log("Attributes", 'options: ' + newattr.options);
-        var msg = {when: Entity.time()}
-        var optionobj = {}
-        var optionsarray = []
-        var res = PatternQuestionWithOptions2.exec(newattr.question) // +"?"+ newattr.answer + ";" + newattr.options + ".")
-        console.log("Attributes", res);
-
-        if(res === null)  //no match
-            return
         if(this.userAttributes === null)
           this.userAttributes = this.gun.get(KAttributes)
+    // { this.state.question, this.state.answer, this.state.options}
+        console.log("Attributes", 'question: ' + newattr.question);
+        var msg = {when: Entity.time(), question:"", answer:""}
+        var optionobj = {}
+        var optionsarray = []
+        var res = PatternQuestionWithOptions.exec(newattr.question) // +"?"+ newattr.answer + ";" + newattr.options + ".")
+        console.log("Attributes", res);
+
+        if(res === null) 
+        {
+          var resques = PatternQuestion.exec(newattr.question) // question +"?"
+          console.log("resques=", resques);
+          msg.oplen = 0
+          if(resques === null){
+            var resans = PatternAnswer.exec(newattr.question) // answer +"."
+            console.log("resans=", resans);
+            if(resans === null){
+              return  //ignore no matches
+            }else{
+              // msg.answer = resans[2];
+              return // do nothing for now.
+            }
+          } else {
+              if(resques[2] == "")
+                return
+              msg.question = resques[2];
+              msg.answer = "";
+          }
+
+        } else {
         //0: whole match string.
-        
         //1: question with ?
         //2: question without ?
         //3: ? 
-
         //4: options except last option
         //5: options without last ;
         //6: ;
-
         //7: last option
         //8: last option without .
         //9: .
 
-        msg.message = res[2];  //question without ?
+        msg.question = res[2];  //question without ?
         if(res[4] === undefined){ 
             //just answer.
             msg.answer = res[8]
             msg.oplen = 0
-          }else{
+        }else{
                 optionsarray = res[5].split(';')
                 optionsarray.push(res[8])
                 // var cnt = optionsarray.length;
@@ -663,10 +687,11 @@ export class Entity {
                 // this.chatAI.process(msg2);
                 // return
         }
-        console.log("After Attributes", msg)
-        this.userAttributes && this.userAttributes.get(msg.message).put(msg, function (ack) {
-            console.log("save attribute", ack)
-        });
+      }
+      console.log("After Attributes", msg)
+      this.userAttributes && this.userAttributes.get(msg.question).put(msg, function (ack) {
+          console.log("save attribute", ack)
+      });
     }
 
     deleteAttribute( option){
@@ -678,7 +703,7 @@ export class Entity {
       if(this.userAttributes === null)
         this.userAttributes = this.gun.get(KAttributes)
 
-      this.userAttributes && this.userAttributes.get(msg.message).put(null, function (ack) {
+      this.userAttributes && this.userAttributes.get(msg.question).put(null, function (ack) {
         console.log("delete an attribute", ack)
       });
 
