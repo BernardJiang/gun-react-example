@@ -43,14 +43,14 @@ function view(state$) {
     return div('.item', {style}, [
       div('.slider-container', [
         div('.bd.rowC', {key: props._}, [
+          div('.mr', [
+            button('btnattrdel', 'x')
+          ]),
           p( new Date(props.when).toLocaleString().toLowerCase()),
           p(" :: " + props.question + '?'),
           ...oparr,
-          !props.oplen && p(props.answer + '.'),
-          div('.mr', [
-            button('btnattrdel', 'x')
-          ])
-        ])
+          p(props.answer + '.'),
+        ]),
       ]),
     ]);
   });

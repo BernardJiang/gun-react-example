@@ -15,6 +15,8 @@ describe('Sign up then sign in', function() {
     //     mount(App, drivers)
     //   })
 
+    let waittime = 1000
+
     function addUser(username, userpassword) {
       cy.get('.stageNameInput')
         .clear()
@@ -29,7 +31,7 @@ describe('Sign up then sign in', function() {
       cy.get('#inup > :nth-child(3) > :nth-child(1)')
         .click()
       
-      cy.wait(1000)
+      cy.wait(waittime)
 
       cy.get('.stageNameInput')
         .clear()
@@ -71,11 +73,10 @@ describe('Sign up then sign in', function() {
 
       cy.get('#inup > :nth-child(3) > :nth-child(1)')
         // .should('contain','Sign Out')
-        .click().wait(5000)
+        .click().wait(2000)
     }
 
     function signInUser(username, userpassword) {
-      let waittime = 1000
       cy.get('#inup > :nth-child(1) > :nth-child(2)')
         .clear()
         .type(username)
@@ -107,10 +108,25 @@ describe('Sign up then sign in', function() {
 
     }
 
+    function add1Attribute(attr) {
+      cy.get('#inup > :nth-child(1) > :nth-child(2) > :nth-child(1)')  //input 
+      .clear()
+      .type(attr)
+      .should('have.value', attr)
+
+      .get('#inup > :nth-child(1) > :nth-child(2) > :nth-child(2)')  //submit button
+      .click().wait(waittime)
+
+    }
+
+    function delete1stAttribute() {
+      cy.get('#inup > :nth-child(2) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1) > :nth-child(1)')  //delete button
+      .click().wait(waittime)
+
+    }
+
     it('Visits local host', function() {
-      let waittime = 1000
       cy.visit('http://localhost:3000')
-      
       
       .get('#Settings').click().wait(waittime)
       .get('#divSettings').should('be.visible')
@@ -128,11 +144,26 @@ describe('Sign up then sign in', function() {
       .get('#divSign').should('be.visible')
 
       buggyreboot('a', 'a')
+
       signInUser('a', 'a')
       signOutUser('a', 'a')
       signInUser('b', 'b')
       signOutUser('b', 'b')
     //   cy.get('.rsc-input').clear().type('Q1?').should('have.value', 'Q1?')
+
+      signInUser('a', 'a')
+
+      cy.get('#Attributes').click().wait(waittime)
+      .get('#divAttributes').should('be.visible')
+
+      add1Attribute('q1?')
+      add1Attribute('q2?a2.')
+      add1Attribute('q3?a3;a31.')
+      add1Attribute('q4?a4;a41;a42.')
+      delete1stAttribute()
+      delete1stAttribute()
+      delete1stAttribute()
+      delete1stAttribute()
 
     })
 
