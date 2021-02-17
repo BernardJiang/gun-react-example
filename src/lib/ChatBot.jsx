@@ -930,7 +930,7 @@ function model(entityEvents) {
 }
 
 const BotStyles = {
-  divstyle: '#divSign.hue.page',
+  divstyle: '#divChatbot.hue.page',
   div2style: '.mid.row.col.go'
   
 };
