@@ -70,11 +70,12 @@ describe('Sign up then sign in', function() {
         .should('have.value', userpassword)
 
       cy.get('#inup > :nth-child(3) > :nth-child(1)')
-        .should('contain','Sign In')
+        // .should('contain','Sign Out')
         .click().wait(5000)
     }
 
     function signInUser(username, userpassword) {
+      let waittime = 1000
       cy.get('#inup > :nth-child(1) > :nth-child(2)')
         .clear()
         .type(username)
@@ -86,10 +87,16 @@ describe('Sign up then sign in', function() {
         .should('have.value', userpassword)
 
       cy.get('#inup > :nth-child(3) > :nth-child(1)')
-        .should('contain','Sign In')
-        .click()
-        .should('contain','Sign Out')
+        .click().wait(waittime)
 
+      cy.get('#inup > :nth-child(3) > :nth-child(1)').then($button => {
+          if($button.text().includes('Sign In')){
+            cy.get('#inup > :nth-child(3) > :nth-child(1)')
+            .click().wait(waittime)
+            .should('contain','Sign Out')
+
+          }
+        })  
     }
 
     function signOutUser(username, userpassword) {
