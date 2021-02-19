@@ -5,6 +5,8 @@
 // import {makeHashHistoryDriver} from '@cycle/history';
 // import { makeGunDriver } from '../../src/cyclegun';
 
+const { a } = require("@cycle/react-dom")
+
 describe('Sign up then sign in', function() {
     // beforeEach(() => {
     //     const drivers = {
@@ -156,6 +158,7 @@ describe('Sign up then sign in', function() {
       cy.get('#Attributes').click().wait(waittime)
       .get('#divAttributes').should('be.visible')
 
+      add1Attribute('Your name?a.')
       add1Attribute('q1?')
       add1Attribute('q2?a2.')
       add1Attribute('q3?a3;a31.')
@@ -164,6 +167,10 @@ describe('Sign up then sign in', function() {
       delete1stAttribute()
       delete1stAttribute()
       delete1stAttribute()
+
+      cy.get('#signin').click().wait(waittime)
+      .get('#divSign').should('be.visible')
+      signOutUser('a', 'a')
 
     })
 

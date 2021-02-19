@@ -5,9 +5,10 @@ import 'gun/lib/open'
 import 'gun/lib/unset'
 
 // ? 0x3F; . 0x2E; ; 0x3B; ! 0x21
-const PatternQuestion = /\x3F$/
-const PatternAnswer = /\x2E$/
-const PatternQuestionWithOptions = /(.*\x3F)(.*\x3B)*(.*\x2E$)/
+const PatternQuestion = /^([^?]+)(\x3F)+$/
+const PatternAnswer = /^([^.]+)(\x2E)+$/
+const PatternQuestionWithAnswer = /((.*?)(\x3F)+)((.*?)(\x2E)+$)/
+const PatternQuestionWithOptions = /((.*?)(\x3F)+)((.*)(\x3B)+)*((.*?)(\x2E)+$)/
 
 const KAttributes = 'attributes'
 
@@ -26,6 +27,64 @@ export default class ChatAI {
         this.myself = myself
     }
 
+    parsemsg(userinput) {
+        console.log('user input: ' + userinput);
+        var msg = { question: "", answer: "", oplen: 0, message: userinput, msgType: 'unknown' }
+        var optionsarray = []
+        var res = PatternQuestionWithOptions.exec(userinput) // +"?"+ newattr.answer + ";" + newattr.options + ".")
+        console.log("parsed: ", res);
+        if (res !== null) {
+            //0: whole match string.
+            //1: question with ?
+            //2: question without ?
+            //3: ? 
+            //4: options except last option
+            //5: options without last ;
+            //6: ;
+            //7: last option
+            //8: last option without .
+            //9: .
+            msg.question = res[2];  //question without ?
+            if (res[4] !== undefined) { //have at least one option
+                optionsarray = res[5].split(';')
+                optionsarray.push(res[8])
+                //The first option is my own answer if more than one option.
+                msg.answer = optionsarray[0]
+                msg.oplen = optionsarray.length
+                msg.msgType = 'question_with_options'
+                optionsarray.forEach((opt, idx) => {
+                    // console.log("Opt opt=", opt)
+                    // console.log("Opt idx=", idx)
+                    // msg.options = Object.assign({}, msg.options, {['op' + idx]: {value: "op"+idx, label: opt, trigger: '6'}}) 
+                    msg['op' + idx] = opt
+                    msg['tr' + idx] = 6
+                })
+            } else {
+                //just answer.
+                msg.answer = res[8]
+                msg.oplen = 0
+                msg.msgType = 'question_with_answers'
+            }
+        } else {
+
+            var resques = PatternQuestion.exec(userinput) // question +"?"
+            console.log("resques=", resques);
+            if (resques !== null) {
+                msg.question = resques[1];
+                msg.msgType = 'question'
+            } else {
+                var resans = PatternAnswer.exec(userinput) // answer +"."
+                console.log("resans=", resans);
+                if (resans !== null) {
+                    msg.question = resques[2];
+                    msg.msgType = 'answer'
+                }
+            }
+        }
+
+        return msg
+    }
+
     process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
         console.log("In chatAI process() msg=", msg)
         var userself = this.gun.user()
@@ -34,14 +93,17 @@ export default class ChatAI {
         if (!userAttributes) //validate attributes.
             return
 
-        msg.once(function(data){
+        msg.once(function (data) {
+            //If the message is a question/answer/options, then save it under the question.
+            //If the message is a question, then save it if not yet saved.
+            //If the message is an answer, then save it under the lastquestion.
             console.log("data =", data)
-            if ( data == undefined || data._ == undefined)
+            if (data == undefined || data._ == undefined)
                 return
             var currMessage = data.message
             var currAnswer = data.answer
 
-            if(currAnswer){
+            if (currAnswer) {
                 userAttributes.get(currMessage).put({
                     message: currMessage,
                     answer: currAnswer,
@@ -51,10 +113,10 @@ export default class ChatAI {
                 });
                 return
             }
-    
+
             console.log("new messaage." + data.message + ". " + PatternAnswer.test(data.message))
             var resans = PatternAnswer.test(currMessage)
-    
+
             if (PatternQuestion.test(currMessage)) { //a question
                 userself.get('lastquestion').put({
                     message: currMessage
@@ -66,7 +128,7 @@ export default class ChatAI {
                 }, function (ack) {
                     console.log("save attribute", ack)
                 });
-            } else if ( resans ) { // an answer
+            } else if (resans) { // an answer
                 var lq = userself.get('lastquestion')
                 if (lq) {
                     lq.once(function (data) {
@@ -84,13 +146,13 @@ export default class ChatAI {
             } else { //ignore chats.
                 console.log("Ignore a messaage." + currMessage)
             }
-    
+
         })
 
     }
 
 
-    
+
     processRespond(msg) { // respond the message from others and self.
 
         console.log("In chatAI process() msg=", msg)
@@ -105,13 +167,13 @@ export default class ChatAI {
         if (!this.userAttributes)  //if no userAttributes
             return
         // var stageName = this.stageName
-        if(!msg.message)
+        if (!msg.message)
             return
         // var c = msg.message.charAt(msg.message.length - 1)
         // if (c !== '?')
         //     return; //not a question, ignore.
         var resans = PatternQuestion.test(msg.message)
-        if(!resans) 
+        if (!resans)
             return; //not a question, ignore.
 
         var ans = this.userAttributes.get(msg.message)
@@ -150,7 +212,7 @@ export default class ChatAI {
                 message: data.answer,
                 bot: true,
             }
-                       
+
             // console.log("ChatAI msg", msg);
             // console.log("ChatAI answer", answer);
 
@@ -164,7 +226,7 @@ export default class ChatAI {
 
             // gQuestion.get('downlink').put(gAns);   //link question to answer.
             // gAns.get('uplink').put(gQuestion);    //link answer to question.
-            
+
             // console.log("ChatAI gQuestion", gQuestion);  
             // console.log("ChatAI gAns", gAns);
 
@@ -192,9 +254,9 @@ export default class ChatAI {
             // console.log("ChatAI from answer answer soul=", gAns._.get)
             // console.log("ChatAI from answer answer =", gAns._.put.message)
             // console.log("ChatAI from answer question soul =", gAns._.put.uplink)
-             console.log("ChatAI from gAns", gAns)
-             console.log("ChatAI from myself", myself)
- 
+            console.log("ChatAI from gAns", gAns)
+            console.log("ChatAI from myself", myself)
+
             gAns.path('author').put(myself)
             myself.path('post').set(gAns);
 
