@@ -108,6 +108,11 @@ export default class ChatAI {
                     userself.get('lastquestion').put({
                         question: data.question
                     });
+                    var lq = userAttributes.get(data.question)
+                    if(lq){
+                        //do nothing for now.
+                        break;
+                    }
                 case 'question_with_answer':
                 case 'question_with_options':
                     userAttributes.get(data.question).put(data, function (ack) {
@@ -153,17 +158,11 @@ export default class ChatAI {
         if (!this.userAttributes)  //if no userAttributes
             return
         // var stageName = this.stageName
-        if (!msg.message)
+        if (msg.msgType != 'question')
             return
-        // var c = msg.message.charAt(msg.message.length - 1)
-        // if (c !== '?')
-        //     return; //not a question, ignore.
-        var resans = PatternQuestion.test(msg.message)
-        if (!resans)
-            return; //not a question, ignore.
 
-        var ans = this.userAttributes.get(msg.message)
-        // console.log("ans:", ans);
+        var ans = this.userAttributes.get(msg.question)
+        console.log("ans:", ans);
         if (!ans)
             return //answer is null, then ignore it.
 
@@ -172,35 +171,18 @@ export default class ChatAI {
         var myself = this.user
 
         ans.once(function (data) {
-            if (!data) { //never hear this question. Save the question.
-
-                user.get('lastquestion').put({
-                    message: msg.message
-                });
-                console.log("save question from others: ", msg.message)
-                userAttributes.get(msg.message).put({
-                    message: msg.message,
-                    when: msg.when
-                }, function (ack) {
-                    console.log("save question status=", ack.err)
-                });
-
-                return
-            }
-            if (!("answer" in data))
-                return //means question exists without an answer.
             console.log("got the answer =", data)
-            const when = Gun.time.is()
-
+            if (!("answer" in data) || data.answer == "")
+                return //means question exists without an answer.
             var answer = {
                 stageName: msg.stageName,
-                when,
-                message: data.answer,
+                when: Gun.time.is(),
+                answer: data.answer,
                 bot: true,
             }
 
             // console.log("ChatAI msg", msg);
-            // console.log("ChatAI answer", answer);
+            console.log("ChatAI answer", answer);
 
             var gAns = chat.set(answer);
 
@@ -243,8 +225,8 @@ export default class ChatAI {
             console.log("ChatAI from gAns", gAns)
             console.log("ChatAI from myself", myself)
 
-            gAns.path('author').put(myself)
-            myself.path('post').set(gAns);
+            // gAns.path('author').put(myself)
+            // myself.path('post').set(gAns);
 
         })
 

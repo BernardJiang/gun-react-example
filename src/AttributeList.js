@@ -36,8 +36,8 @@ function model(entityEvents, events, itemFn) {
   .map(action => {
     const amount = action.attributeList.length;
     let newItems = [];
-    console.log("total items: " + amount)
-    console.log(action.attributeList)
+    // console.log("total items: " + amount)
+    // console.log(action.attributeList)
     for (let i = 0; i < amount; i++) {
       newItems.push(createNewItem(action.attributeList[i], i));
     }

@@ -232,8 +232,8 @@ export class Entity {
       start(listener) {
         // console.log('shallow: ' + self.path)
         self.gun.get(KChat).map().on((newlist => (state, id) => {
-          console.log('id', id)
-          console.log('. state= ', state)
+          // console.log('id', id)
+          // console.log('. state= ', state)
           // let newlist = []
           // newlist.push(state)
           // console.log("state.when = ", state.when, Entity.time());
@@ -382,7 +382,7 @@ export class Entity {
     // myself.path('post').set(gmsg);
     if(this.chat.msgType != "unknown"){
       this.chatAI.processAttribute(gmsg);
-    // this.chatAI.processRespond(msg)
+      this.chatAI.processRespond(msg)
 
     }
 
