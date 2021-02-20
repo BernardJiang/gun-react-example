@@ -175,7 +175,7 @@ export default class ChatAI {
             if (!("answer" in data) || data.answer == "")
                 return //means question exists without an answer.
             var answer = {
-                stageName: msg.stageName,
+                stageName: data.stageName,
                 when: Gun.time.is(),
                 answer: data.answer,
                 bot: true,
