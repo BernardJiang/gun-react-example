@@ -380,9 +380,11 @@ export class Entity {
 
     // gmsg.path('author').put(myself);
     // myself.path('post').set(gmsg);
-
-    // this.chatAI.process(gmsg);
+    if(this.chat.msgType != "unknown"){
+      this.chatAI.processAttribute(gmsg);
     // this.chatAI.processRespond(msg)
+
+    }
 
   }
 

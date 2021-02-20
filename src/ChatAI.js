@@ -63,7 +63,7 @@ export default class ChatAI {
                 //just answer.
                 msg.answer = res[8]
                 msg.oplen = 0
-                msg.msgType = 'question_with_answers'
+                msg.msgType = 'question_with_answer'
             }
         } else {
 
@@ -85,11 +85,13 @@ export default class ChatAI {
         return msg
     }
 
-    process(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
-        console.log("In chatAI process() msg=", msg)
+    processAttribute(msg) {  //process message of self. This process handles attributes process. It doesn't respond to questions.
+        console.log("In chatAI processAttribute() msg=", msg)
         var userself = this.gun.user()
+        if(!userself)
+            return
 
-        var userAttributes = this.gun.get('KAttributes')
+        var userAttributes = this.gun.get(KAttributes)
         if (!userAttributes) //validate attributes.
             return
 
@@ -100,53 +102,37 @@ export default class ChatAI {
             console.log("data =", data)
             if (data == undefined || data._ == undefined)
                 return
-            var currMessage = data.message
-            var currAnswer = data.answer
 
-            if (currAnswer) {
-                userAttributes.get(currMessage).put({
-                    message: currMessage,
-                    answer: currAnswer,
-                    when: data.when
-                }, function (ack) {
-                    // console.log("save attribute", ack)
-                });
-                return
-            }
-
-            console.log("new messaage." + data.message + ". " + PatternAnswer.test(data.message))
-            var resans = PatternAnswer.test(currMessage)
-
-            if (PatternQuestion.test(currMessage)) { //a question
-                userself.get('lastquestion').put({
-                    message: currMessage
-                });
-                console.log("attr", "save key=" + data.message + ". message=" + data.when)
-                userAttributes.get(currMessage).put({
-                    message: currMessage,
-                    when: data.when
-                }, function (ack) {
-                    console.log("save attribute", ack)
-                });
-            } else if (resans) { // an answer
-                var lq = userself.get('lastquestion')
-                if (lq) {
-                    lq.once(function (data) {
-                        // console.log("get lastquestion object", data.message)
-                        data && userAttributes.get(data.message).put({
-                            answer: currMessage,
-                            bot: true
+            switch(data.msgType){
+                case 'question':
+                    userself.get('lastquestion').put({
+                        question: data.question
+                    });
+                case 'question_with_answer':
+                case 'question_with_options':
+                    userAttributes.get(data.question).put(data, function (ack) {
+                        console.log("save attribute", ack)
+                    });
+                    break;
+                case 'answer':
+                    var lq = userself.get('lastquestion')
+                    if (lq) {
+                        lq.once(function (ques) {
+                            // console.log("get lastquestion object", data.message)
+                            ques && userAttributes.get(ques.question).put({
+                                question: ques.question,
+                                answer: data.answer
+                            })
+                            userself.get('lastquestion').put(null);
                         })
-                        userself.get('lastquestion').put(null);
-                    })
-                } else {
-                    //ignore answer without a question.
-                    console.log("Ignore an answer.", currMessage)
-                }
-            } else { //ignore chats.
-                console.log("Ignore a messaage." + currMessage)
+                    } else {
+                        //ignore answer without a question.
+                        console.log("Ignore an answer.", data)
+                    }
+                        break;
+                default:
+                    console.log("something went wrong!!!, not a valid msg type");
             }
-
         })
 
     }
