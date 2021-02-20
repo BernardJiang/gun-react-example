@@ -76,7 +76,7 @@ export default class ChatAI {
                 var resans = PatternAnswer.exec(userinput) // answer +"."
                 console.log("resans=", resans);
                 if (resans !== null) {
-                    msg.question = resques[2];
+                    msg.answer = resans[1];
                     msg.msgType = 'answer'
                 }
             }

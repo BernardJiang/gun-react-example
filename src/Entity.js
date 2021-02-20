@@ -232,19 +232,19 @@ export class Entity {
       start(listener) {
         // console.log('shallow: ' + self.path)
         self.gun.get(KChat).map().on((newlist => (state, id) => {
-          // console.log('id', id)
-          // console.log('. state= ', state)
+          console.log('id', id)
+          console.log('. state= ', state)
           // let newlist = []
           // newlist.push(state)
           // console.log("state.when = ", state.when, Entity.time());
           if (state.when + 10000000 > Entity.time()) {
-            let msg = { bot: state.bot, message: state.message, when: state.when, stageName: state.stageName }
+            // let msg = { bot: state.bot, message: state.message, when: state.when, stageName: state.stageName }
             if (newlist.length != 0) {
               let lastone = newlist[newlist.length - 1]
-              if (!_.isEqual(lastone, msg))
-                newlist.push(msg)
+              if (!_.isEqual(lastone, state))
+                newlist.push(state)
             } else
-              newlist.push(msg)
+              newlist.push(state)
 
             // console.log('msg', msg)
             listener.next(newlist)
@@ -358,69 +358,31 @@ export class Entity {
   //     this.onSignChange(cb);
   // }
 
-  sendMessage(msg) {
-    var optionobj = {}
-    var optionsarray = []
-    var res = PatternQuestionWithOptions.exec(msg.message)
-    if (res !== null) {
-      msg.message = res[1];
-      if (res[2] === undefined) {
-        //just answer.
-        msg.answer = res[3]
+  sendMessage(userinput) {
 
-      } else {
+    var msg = this.chatAI.parsemsg(userinput)
 
-        optionsarray = res[2].substr(0, res[2].length - 1).split(';')
-        optionsarray.push(res[3].substr(0, res[3].length - 1))
-        // var cnt = optionsarray.length;
-        // msg.count = cnt
-        // optionobj.when = msg.when
-        msg.options = {}
-        //{ value: 'op2', label: 'Option 2', trigger: '6' },
-
-        //The first option is my own answer if more than one option.
-        msg.answer = optionsarray[0] + "."
-
-        optionsarray.forEach((opt, idx) => {
-          // console.log("Opt opt=", opt)
-          // console.log("Opt idx=", idx)
-          msg.options = Object.assign({}, msg.options, { ['op' + idx]: { value: "op" + idx, label: opt, trigger: '6' } })
-        })
-        // msg.options = res[2] + res[3];
-        // var msg2 = Object.assign({}, msg, {options: options})
-        // this.chat.set(msg2);
-        // this.chatAI.process(msg2);
-        // return
-      }
+    var chatmsg = { ...msg, 
+      stageName: this.stageName,
+      when: Entity.time(),
+      where: "empty",
+      bot: false,
+      // uplink: "empty",
+      // downlink: "empty"
     }
-    var gmsg = this.chat.set(msg);
-    // console.log("Entity Send message=", msg)
-    // console.log("Entity myself=", this.myself)
+    console.log("Entity Send chat message=", chatmsg)
+    var gmsg = this.chat.set(chatmsg);
     if (gmsg == undefined) {
       console.log("err", gmsg)
     }
 
-    const myself = this.gun.get(msg.stageName)
+    // const myself = this.gun.get(msg.stageName)
 
-    gmsg.path('author').put(myself);
-    myself.path('post').set(gmsg);
-    // if(optionsarray.length>0){
-    // console.log("Entity optionobj=", optionobj)
-    // var gOptions = this.chat.set(optionobj)
-    // newmsg.path('options').put(gOptions)
-    // gOptions.path('questions').put(newmsg)
-    // gOptions.path('author').put(this.myself)
-    // this.myself.path('post').set(gOptions)
-    // console.log("Entity goption=", gOptions)
+    // gmsg.path('author').put(myself);
+    // myself.path('post').set(gmsg);
 
-    // gOptions.open( optionobj => {
-    //     console.log("open nested object", optionobj)
-    // })
-
-    // }
-
-    this.chatAI.process(gmsg);
-    this.chatAI.processRespond(msg)
+    // this.chatAI.process(gmsg);
+    // this.chatAI.processRespond(msg)
 
   }
 
@@ -665,18 +627,7 @@ export function makeEntityDriver(opts) {
             entity.auth(command.stageName, command.password, command.authenticated);
             break;
           case 'btnsend':
-            let msg = {
-              // who: this.state.stageName,
-              stageName: command.stageName,
-              when: Entity.time(),
-              where: "empty",
-              message: command.userinput,
-              bot: false,
-              // uplink: "empty",
-              // downlink: "empty"
-            }
-            console.log('msg sent : ', msg)
-            entity.sendMessage(msg);
+            entity.sendMessage(command.userinput);
             break;
           case 'btnattributesubmit':
             console.log('attribute sent : ', command)
