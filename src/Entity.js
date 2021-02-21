@@ -288,7 +288,7 @@ export class Entity {
           this.myself = self.get(stageName).put({ stageName: stageName })
           // console.log('auth OK, set userlist myself=', myself);
           self.get(KUserList).set(this.myself)
-
+          this.userAttributes = this.user.get(KAttributes)
         }
       })
     } else {
@@ -297,6 +297,7 @@ export class Entity {
       this.gun.get(KUserList).unset(myself)
       this.gun.get('signstatus').put({ stageName: stageName, signin: false })
       this.user.leave()
+      this.userAttributes = null
     }
 
     // this.user.auth(stageName, password, ack => {
@@ -577,7 +578,7 @@ export class Entity {
 
   updateAttribute(newattr) {
     if (this.userAttributes === null)
-      this.userAttributes = this.gun.get(KAttributes)
+      return
     console.log("Attributes", 'question: ' + newattr.question);
     var msg = this.chatAI.parsemsg(newattr.question)
     msg.when = Entity.time()
@@ -595,7 +596,8 @@ export class Entity {
     console.log("about to delete ", msg)
 
     if (this.userAttributes === null)
-      this.userAttributes = this.gun.get(KAttributes)
+      return
+      //this.userAttributes = this.gun.get(KAttributes)
 
     this.userAttributes && this.userAttributes.get(msg.question).put(null, function (ack) {
       console.log("delete an attribute", ack)
