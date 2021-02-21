@@ -74,10 +74,6 @@ function navigation(pathname) {
       dataset: { page: 'signin' },
       className: { 'active': pathname === '/signin' }
     }, 'Sign In'),
-    span('#Settings', {
-      dataset: { page: 'settings' },
-      className: { 'active': pathname === '/settings' }
-    }, 'Settings'),
     span('#Attributes', {
       dataset: { page: 'attributes' },
       className: { 'active': pathname === '/attributes' }
@@ -90,10 +86,10 @@ function navigation(pathname) {
       dataset: { page: 'chatbot' },
       className: { 'active': pathname === '/chatbot' }
     }, 'Chatbot'),
-    span('#Greeter', {
-      dataset: { page: 'greeter' },
-      className: { 'active': pathname === '/greeter' }
-    }, 'Greeter')
+    span('#Settings', {
+      dataset: { page: 'settings' },
+      className: { 'active': pathname === '/settings' }
+    }, 'Settings')
   ])
 }
 
@@ -103,33 +99,19 @@ function settingsView() {
     p('Here to edit settings '),
   ])
 }
-// function attributesView() {
-//   return div('#divAttributes',[
-//     h1('Attributes !'),
-//     p('Here to attributes '),
-//   ])
-// }
 function talksView() {
   return div('#divTalks', [
     h1('Talks !'),
     p('Here to talks'),
   ])
 }
-// function chatbotView() {
-//   return div('#divChatbot', [
-//     h1('Chat bot !'),
-//     p('Here to chat bot in/ up '),
-//   ])
-// }
 
 
 function view(state$) {
-  return state$.map(([history, nameview, signview, chatbotview, attributesview]) => {
+  return state$.map(([history, signview, chatbotview, attributesview]) => {
     const { pathname } = history;
     let page = h1('404 not found')
-    if (pathname === '/Greeter') {
-      page = nameview
-    } else if (pathname === '/Sign In') {
+    if (pathname === '/Sign In') {
       page = signview
     } else if (pathname === '/Settings') {
       page = settingsView()
@@ -165,7 +147,7 @@ function main(sources) {
     label: 'Welcome!!! ', value: 'no one'
   });
   
-  const greetersink = greeterComponent({ DOM: react, props$ })
+  // const greetersink = greeterComponent({ DOM: react, props$ })
   
   const signsink = SignIn({ DOM: react, entity: entity });
   
@@ -173,7 +155,7 @@ function main(sources) {
 
   const attributessink = AttributesComp({ DOM: react, entity: entity });
 
-  const state$ = xs.combine(sources.history, greetersink.DOM, signsink.DOM, chatbotsink.DOM, attributessink.DOM);
+  const state$ = xs.combine(sources.history, signsink.DOM, chatbotsink.DOM, attributessink.DOM);
 
   const vdom$ = view(state$);
 
