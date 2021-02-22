@@ -55,7 +55,7 @@ function view(state$) {
     .map( state => {
       // console.log("state=", state)
       return div('.mid.col.rowC', [
-            input({ sel: 'qainput', type: 'text', placeholder: 'anything' }),
+            input({ sel: 'qainput', type: 'text', placeholder: 'anything', defaultValue: 'default string' }),
             // h1("sp"),
             button({ sel: 'btnsend' }, 'send'),
             // h1('footer' + state.sent)
