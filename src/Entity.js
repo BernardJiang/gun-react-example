@@ -284,7 +284,7 @@ export class Entity {
         if (ack.err) {
           // console.log('auth err', ack.err);
         } else {
-          self.get('signstatus').put({ stageName: stageName, signin: true })
+          self.get(KSignStatus).put({ stageName: stageName, signin: true })
           this.myself = self.get(stageName).put({ stageName: stageName })
           // console.log('auth OK, set userlist myself=', myself);
           self.get(KUserList).set(this.myself)
@@ -295,7 +295,7 @@ export class Entity {
       const myself = this.gun.get(stageName)
       // console.log("sign out !!! myself= ", myself )
       this.gun.get(KUserList).unset(myself)
-      this.gun.get('signstatus').put({ stageName: stageName, signin: false })
+      this.gun.get(KSignStatus).put({ stageName: stageName, signin: false })
       this.user.leave()
       this.userAttributes = null
     }

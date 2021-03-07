@@ -13,7 +13,13 @@ function entityIntent(entity) {
     .compose(dropRepeats());
 
   const useris$ = entity.getSignStatus()
-    .startWith({ authenticated: false });
+    .fold((acc, x) => {
+      if(acc.stageName === "") 
+        return x;
+      if(acc.stageName == x.stageName)
+        return x;
+      return acc;
+    }, { authenticated: false, stageName: "" });
 
   return { userAuth$, useris$ }
 }
