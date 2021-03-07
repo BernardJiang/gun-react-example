@@ -289,6 +289,8 @@ export class Entity {
           // console.log('auth OK, set userlist myself=', myself);
           self.get(KUserList).set(this.myself)
           this.userAttributes = this.user.get(KAttributes)
+          this.chatAI.setSelf(this.myself)
+          this.chatAI.setStageName(stageName)
         }
       })
     } else {
@@ -298,6 +300,8 @@ export class Entity {
       this.gun.get(KSignStatus).put({ stageName: stageName, signin: false })
       this.user.leave()
       this.userAttributes = null
+      this.chatAI.setSelf("")
+      this.chatAI.setStageName("")
     }
 
     // this.user.auth(stageName, password, ack => {

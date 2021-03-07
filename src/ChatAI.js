@@ -20,6 +20,9 @@ export default class ChatAI {
         // this.stageName = ''
         this.myself = ''
     }
+    setStageName(stageName) {
+        this.stageName = stageName
+    }
 
     setSelf(myself) {
         // this should be replaced with real id. stageName can be changed.
@@ -169,13 +172,16 @@ export default class ChatAI {
         var user = this.user
         var userAttributes = this.userAttributes
         var myself = this.user
+        var thisChatAI = this
 
         ans.once(function (data) {
             console.log("got the answer =", data)
+            if (data == undefined || data._ == undefined)
+                return
             if (!("answer" in data) || data.answer == "")
                 return //means question exists without an answer.
             var answer = {
-                stageName: data.stageName,
+                stageName: thisChatAI.stageName,
                 when: Gun.time.is(),
                 answer: data.answer,
                 bot: true,
