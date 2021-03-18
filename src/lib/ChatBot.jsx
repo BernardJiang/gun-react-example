@@ -941,7 +941,7 @@ function view(state$) {
       // console.log("state=", state)
       return div(BotStyles.divstyle, [
           div(BotStyles.div2style, [
-            h1('chatroom one')
+            h1('chatroom one Time Square')
           ]),
           div('.mid.row.col', [
             !!state.msglist && state.msglist.map((item, id) => { 
