@@ -8,7 +8,7 @@ import makeRoutingDriver, { routes } from 'cycle-routing-driver'
 import { render } from 'react-dom';
 import placeholderText from 'lorem-ipsum';
 import dropRepeats from 'xstream/extra/dropRepeats';
-
+import { ReactSVG } from 'react-svg';
 
 import { Entity } from './Entity';
 import { greeter2View, greeterComponent } from './greeter2View'
@@ -100,10 +100,52 @@ function settingsView() {
   ])
 }
 function talksView() {
-  return div('#divTalks', [
-    h1('Talks !'),
-    p('Here to talks'),
-  ])
+  const steps = [
+    {
+      id: '0',
+      message: 'Welcome to react chatbot!',
+      trigger: '1',
+    },
+    {
+      id: '1',
+      message: 'Bye!',
+      end: true,
+    },
+  ];
+  
+  // css.global('body', {
+  //   alignItems: 'center',
+  //   backgroundColor: 'gray',
+  //   display: 'flex',
+  //   height: '100vh',
+  //   justifyContent: 'center',
+  //   margin: 0,
+  // })
+
+  // const styles = css({
+  //   ' rect': {
+  //     fill: 'aqua',
+  //     height: 190,
+  //     stroke: 'darkmagenta',
+  //     width: 190,
+  //   },
+  //   ' svg': {
+  //     height: 200,
+  //     width: 200,
+  //   },
+  // })
+
+  return h('div', [
+    h('ReactSVG', {role:"img", src:"svg.svg", svg: {height: 200, width: 200} } ),
+    h('h1', true ? 'Welcome, bernard, 2' : 'What\'s your name?'),
+    h('input', {sel: 'name', type:'text'}),
+  ]);
+
+  // return  
+  // div('#divTalks', [
+  //   h1('Talks !'),
+  //   p('Here to talks'),
+  // ])
 }
 
 

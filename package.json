@@ -32,6 +32,7 @@
     "react-load-image": "^0.1.7",
     "react-router-dom": "^5.1.1",
     "react-scripts": "2.1.5",
+    "react-svg": "^12.1.0",
     "styled-components": "^4.3.2",
     "xstream": "^11.13.0"
   },
