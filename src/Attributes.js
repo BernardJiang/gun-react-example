@@ -187,7 +187,7 @@ function model(entityEvents, events) {
 
 function view(state$) {
   const vdom$ = state$
-    .map( ([state, attributeView, listview]) =>
+    .map( ([state, attributeView]) =>
       div('#divAttributes.hue.page', [
         h1('Attributes for ' + state.stageName), 
         !!state.stageName && form('#inup.sign.pad.center', [
@@ -199,7 +199,6 @@ function view(state$) {
             ])
           ]),
           !!attributeView && attributeView,
-          !!attributeView && listview
 
         ])
       ])
@@ -236,7 +235,6 @@ export default function AttributesComp(sources) {
   const state1$ = model(entityEvents, events)
 
   const attributeList = AttributeList(sources)
-  // const list = List(sources)
 
   const state$ = xs.combine(state1$, attributeList.DOM);
 
