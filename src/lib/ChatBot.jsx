@@ -17,7 +17,8 @@ import {
   FloatingIcon,
   Footer,
   Input,
-  SubmitButton
+  SubmitButton,
+  ChatList
 } from './components';
 import Recognition from './recognition';
 import { ChatIcon, CloseIcon, SubmitIcon, MicIcon } from './icons';
@@ -27,6 +28,7 @@ import { speakFn } from './speechSynthesis';
 import { Entity } from '../Entity'
 import { set } from 'lodash';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
+
 
 const formatMsgs = msgs => Object.keys(msgs)
   .map(key => ({ id: key, ...msgs[key] }))
@@ -937,7 +939,7 @@ const BotStyles = {
 
 function view(state$) {
   const vdom$ = state$
-    .map( ([state, footerview]) => {
+    .map( ([state, footerview, chatlistview]) => {
       // console.log("state=", state)
       return div(BotStyles.divstyle, [
           div(BotStyles.div2style, [
@@ -958,6 +960,7 @@ function view(state$) {
                 // li( div(id, {key: id}, [h1(item.message)]) )
               })
             ]),
+            chatlistview,
             footerview
       ])
     });
@@ -973,24 +976,24 @@ function entityTodo(clickevents$, state$) {
 export function ChatBot(sources) {
   const { DOM, entity } = sources;
   // console.log('sources.entity', entity)
+  const chatlist = ChatList(sources)
+  const footer = Footer(sources)
 
   const entityEvents = entityIntent(entity)
   // const events = Intent(DOM);
 
   const state1$ = model(entityEvents)
 
-  // const outgoingEntityEvents$ = entityTodo(state$)
+ // const outgoingEntityEvents$ = entityTodo(state$)
 
-  const footer = Footer(sources)
-
-  const state$ = xs.combine(state1$, footer.DOM);
+  const state$ = xs.combine(state1$, footer.DOM, chatlist.DOM);
 
   const vdom$ = view(state$)
 
   const sinks = {
     DOM: vdom$,
     value: state$,
-    entity: xs.merge(footer.entity)
+    entity: xs.merge(footer.entity, chatlist.entity)
   }
   return sinks;
 

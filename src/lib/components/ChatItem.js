@@ -57,7 +57,7 @@ function view(state$) {
 }
 
 
-function AttributeItem(sources) {
+function ChatItem(sources) {
   const action$ = intent(sources.DOM);
   const state$ = model(sources.Props, action$);
   const vtree$ = view(state$);
@@ -68,4 +68,4 @@ function AttributeItem(sources) {
   };
 }
 
-export default AttributeItem;
+export default ChatItem;

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import Random from 'random-id';
 import { set } from 'lodash';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
-import AttributeItem from './AttributeItem';
+import ChatItem from './ChatItem';
 
 
 function entityIntent(entity) {
@@ -70,33 +70,13 @@ function view(state$) {
       return xs.combine(...itemVNodeStreamsByKey)
       .map(vnodes => div('.list', [].concat(vnodes)));
 
-    //   return div('.mid.row.col.go', [
-    //     !!state.attributeList && Object.values(state.attributeList).sort((a, b) => (a.when < b.when) ? 1 : -1).map((item, id) => {
-    //       const oparr = []
-    //       if (item.oplen != 0 ){
-    //         var i;
-    //         for (i=0; i<item.oplen; i++){
-    //           oparr.push( p( item['op'+i] + ';'))
-    //         }
-    //       }
-    //       return div('.bd.rowC', {key: id}, [
-    //         p( new Date(item.when).toLocaleString().toLowerCase()),
-    //         p(item.message + '?'),
-    //         ...oparr,
-    //         p(item.answer + '.'),
-    //         div('.mr', [
-    //           button({ sel: 'btnattrdel' }, 'x')
-    //         ])
-    //       ])
-    //     })
-    //   ])   
     }).flatten();
   return vdom$
 }
 
 function makeItemWrapper(DOM) {
   return function itemWrapper(props, id) {
-    const item = isolate(AttributeItem)({DOM, Props: xs.of(props)});
+    const item = isolate(ChatItem)({DOM, Props: xs.of(props)});
     return {
       DOM: item.DOM,
       Remove: item.Remove.mapTo(id)
@@ -122,7 +102,7 @@ function entityTodo(clickevents$, state$) {
   return outgoingEntityEvents$
 }
 
-function AttributeList(sources) {
+function ChatList(sources) {
   const { DOM, entity } = sources;
   const entityEvents = entityIntent(entity);
   const proxyItemRemove$ = xs.create();
@@ -143,6 +123,6 @@ function AttributeList(sources) {
   return sinks;
 }
 
-export default AttributeList;
+export default ChatList;
 
 

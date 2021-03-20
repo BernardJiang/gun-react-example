@@ -8,6 +8,7 @@ import FloatingIcon from './FloatingIcon';
 import Footer from './Footer';
 import Input from './Input';
 import SubmitButton from './SubmitButton';
+import ChatList from './ChatList';
 
 export {
   ChatBotContainer,
@@ -19,5 +20,6 @@ export {
   FloatingIcon,
   Footer,
   Input,
-  SubmitButton
+  SubmitButton,
+  ChatList
 };

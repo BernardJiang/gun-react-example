@@ -229,12 +229,12 @@ export default function AttributesComp(sources) {
   const { DOM, entity } = sources;
   // console.log('sources.entity', entity)
 
+  const attributeList = AttributeList(sources)
+
   const entityEvents = entityIntent(entity);
   const events = Intent(DOM);
 
   const state1$ = model(entityEvents, events)
-
-  const attributeList = AttributeList(sources)
 
   const state$ = xs.combine(state1$, attributeList.DOM);
 
