@@ -12,11 +12,12 @@ import ChatItem from './ChatItem';
 
 
 function entityIntent(entity) {
-  const userAttributeList$ = entity.getAttributeList()
-    .startWith({ attributeList: [] })
-    .compose(dropRepeats());
+  const chat$ = entity.getChat().map(msg => {
+    // console.log("Chatbot got : ", msg)
+    return {msglist: msg}
+  })
 
-  return {userAttributeList$}
+  return {chat$}
 }
 
 function Intent(DOM, itemRemove$) {
@@ -32,14 +33,14 @@ function model(entityEvents, events, itemFn) {
     return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
   }
 
-  const stateItemReducer$ = entityEvents.userAttributeList$
+  const stateItemReducer$ = entityEvents.chat$
   .map(action => {
-    const amount = action.attributeList.length;
+    const amount = action.msglist.length;
     let newItems = [];
     // console.log("total items: " + amount)
     // console.log(action.attributeList)
     for (let i = 0; i < amount; i++) {
-      newItems.push(createNewItem(action.attributeList[i], i));
+      newItems.push(createNewItem(action.msglist[i], i));
     }
     return function stateItemReducer(listItems) {
       // console.log("original listitems has " + listItems.length + ". will add " + newItems.length)

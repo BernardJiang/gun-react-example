@@ -35,23 +35,28 @@ function view(state$) {
       border: '1px solid #000',
       background: 'none repeat scroll 0% 0% ' + color,
       width: width + 'px',
-      height: '110px',
+      height: '210px',
       display: 'block',
       padding: '20px',
       margin: '10px 0px'
     };
     return div('.item', {style}, [
-      div('.slider-container', [
+      
         div('.bd.rowC', {key: props._}, [
-          div('.mr', [
-            button('btnattrdel', 'x')
+          div('.mr.column', [
+            button('btnattrdel', 'x'),
+            p(props.stageName == undefined ? "unknown" : (props.stageName)),
+            p(props.bot ? "bot" : "human"),
+
           ]),
-          p( new Date(props.when).toLocaleString().toLowerCase()),
-          p(" :: " + props.question + '?'),
-          ...oparr,
-          p(props.answer + '.'),
+          div(".bd.column", [
+            p(props.question + '?'),
+            ...oparr,
+            p(props.answer + '.'),
+            p( new Date(props.when).toLocaleString().toLowerCase()),
+          ]),
         ]),
-      ]),
+      
     ]);
   });
 }
