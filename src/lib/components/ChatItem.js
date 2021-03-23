@@ -47,7 +47,7 @@ function view(state$) {
             button('btnattrdel', 'x'),
             p(props.stageName == undefined ? "unknown" : (props.stageName)),
             p(props.bot ? "bot" : "human"),
-
+            p(props.isMyself ? "self" : "other"),
           ]),
           div(".bd.column", [
             p(props.question + '?'),

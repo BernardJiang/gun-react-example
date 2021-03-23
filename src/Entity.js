@@ -239,7 +239,8 @@ export class Entity {
           // console.log("state.when = ", state.when, Entity.time());
           if (state.when + 10000000 > Entity.time()) {
             // let msg = { bot: state.bot, message: state.message, when: state.when, stageName: state.stageName }
-            state.isMyself = state.stageName == this.stageName 
+            state.isMyself = state.stageName == self.stageName 
+            // console.log("isMyself =" , state.isMyself, state.stageName, self.stageName)
             if (newlist.length != 0) {
               let lastone = newlist[newlist.length - 1]
               if (!_.isEqual(lastone, state))
