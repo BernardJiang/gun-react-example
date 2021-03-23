@@ -946,21 +946,8 @@ function view(state$) {
             h1('chatroom one Time Square')
           ]),
           div('.mid.row.col', [
-            !!state.msglist && state.msglist.map((item, id) => { 
-                // console.log("item=", item, id) 
-                var message = "Msg: " + item.message + " Q: " + item.question + " A: " + item.answer
-                message = message.replace('.', '')
-                // console.log("Msg=", message) 
-                return div('.bd', {key: id}, [
-                  p(item.bot ? "bot" : "human"),
-                  p(item.stageName == undefined ? "unknown" : ("name: " + item.stageName)),
-                  p(message),
-                  p( new Date(item.when).toLocaleString().toLowerCase()),
-                ])
-                // li( div(id, {key: id}, [h1(item.message)]) )
-              })
+              chatlistview,
             ]),
-            chatlistview,
             footerview
       ])
     });
