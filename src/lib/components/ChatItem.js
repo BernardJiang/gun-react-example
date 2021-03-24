@@ -24,7 +24,7 @@ function view(state$) {
     if (props.oplen != 0 ){
       var i;
       for (i=0; i<props.oplen; i++){
-        oparr.push( p( props['op'+i] + ';'))
+        oparr.push( button('btmoption', props['op'+i] ))
       }
       // oparr.push( p( props['op'+i] + '. '))
     }

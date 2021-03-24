@@ -905,17 +905,11 @@ ChatBot.defaultProps = {
 };
 
 function entityIntent(entity) {
-  const chat$ = entity.getChat().map(msg => {
-    // console.log("Chatbot got : ", msg)
-    return {msglist: msg}
-  })
-    .startWith([{msglist: {bot: false, message: "init", when: 123}}])
-    .compose(dropRepeats());
 
   const useris$ = entity.getSignStatus()
     .startWith({ authenticated: false });
 
-  return { chat$, useris$ }
+  return { useris$ }
 }
 
 function Intent(DOM) {
@@ -925,7 +919,7 @@ function Intent(DOM) {
 }
 
 function model(entityEvents) {
-  const state$ = xs.merge(entityEvents.chat$, entityEvents.useris$)
+  const state$ = xs.merge(entityEvents.useris$)
     .fold((acc, x) => { return { ...acc, ...x } }, {})
     .startWith({ msglist: [], authenticated: false})
   return state$
