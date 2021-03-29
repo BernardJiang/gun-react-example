@@ -639,6 +639,14 @@ export function makeEntityDriver(opts) {
           case 'btnsend':
             entity.sendMessage(command.userinput);
             break;
+          case 'btndel':
+              console.log('Chatbot delete a question: ', command)
+              // entity.deleteAttribute({ pos: command.pos })
+          break;
+          case 'btnAns':
+              console.log('Chatbot answer a question: ', command)
+              // entity.deleteAttribute({ pos: command.pos })
+          break;
           case 'btnattributesubmit':
             console.log('attribute sent : ', command)
             entity.updateAttribute({ question: command.question, answer: command.answer })
@@ -649,7 +657,7 @@ export function makeEntityDriver(opts) {
             break;
           default:
             console.log('command is not defined!!!', command)
-            break;
+          break;
 
         }
       }

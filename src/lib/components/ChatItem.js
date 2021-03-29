@@ -2,8 +2,16 @@ import xs from 'xstream';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
 function intent(domSource) {
-  return domSource.select('btnattrdel').events('click')
-  .mapTo({typeKey: 'btnattrdel'})
+  const butdelete$ = domSource.select('btnattrdel').events('click').mapTo({typeKey: 'btnattrdel'})
+  const but0$ = domSource.select('btnopt0').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 0})
+  const but1$ = domSource.select('btnopt1').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 1})
+  const but2$ = domSource.select('btnopt2').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 2})
+  const but3$ = domSource.select('btnopt3').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 3})
+  const but4$ = domSource.select('btnopt4').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 4})
+  const but5$ = domSource.select('btnopt5').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 5})
+
+  return xs.merge(butdelete$, but0$, but1$, but2$, but3$, but4$, but5$);
+
 }
 
 function model(props$, action$) {
@@ -24,7 +32,7 @@ function view(state$) {
     if (props.oplen != 0 ){
       var i;
       for (i=0; i<props.oplen; i++){
-        oparr.push( button('btmoption', props['op'+i] ))
+        oparr.push( button('btnopt'+i, props['op'+i] ))
       }
       // oparr.push( p( props['op'+i] + '. '))
     }
@@ -69,7 +77,7 @@ function ChatItem(sources) {
 
   return {
     DOM: vtree$,
-    Remove: action$.filter(action => action.typeKey === 'btnattrdel'),
+    Remove: action$,
   };
 }
 

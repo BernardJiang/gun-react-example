@@ -22,7 +22,9 @@ function entityIntent(entity) {
 
 function Intent(DOM, itemRemove$) {
   
-  const clickevents$ = itemRemove$.map(id => ({typeKey: 'btnattrdel', payload: id}))
+  // const clickevents$ = itemRemove$.filter(obj => obj.typeKey === 'btnattrdel').map(obj => ({typeKey: 'btnattrdel', payload: obj.id}))
+  // const clickAnswers$ = itemRemove$.filer(obj => obj.typeKey === 'btnAns').map(obj => ({typeKey: 'btnAns', payload: obj.id, ButtonIndex: obj.ButtonIndex}))
+  const clickevents$ = itemRemove$
 
   return { clickevents$ }
 }
@@ -80,7 +82,10 @@ function makeItemWrapper(DOM) {
     const item = isolate(ChatItem)({DOM, Props: xs.of(props)});
     return {
       DOM: item.DOM,
-      Remove: item.Remove.mapTo(id)
+      Remove: item.Remove.map( obj => {
+        obj.id= id
+        return obj
+      })
     }
   }
 }
@@ -91,10 +96,12 @@ function entityTodo(clickevents$, state$) {
   .compose(sampleCombine(state$))
     .map( ([click, state]) => {
       // console.log("ENTITY todo state=", state)
-      // console.log("ENTITY click=", click)
+      console.log("ENTITY click=", click)
       // if (state.userinput && state.authenticated) {
         if (click.typeKey === 'btnattrdel') {
-          return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.payload}
+          return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.id}
+        } else if (click.typeKey === 'btnAns' ) {
+          return {action: 'btnAns', id: click.id, ButtonIndex: click.ButtonIndex, stageName: state.stageName}
         }
       // } else {
       //   console.log("either no content or not signed in");      
