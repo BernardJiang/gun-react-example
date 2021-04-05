@@ -20,11 +20,11 @@ function entityIntent(entity) {
   return {chat$}
 }
 
-function Intent(DOM, itemRemove$) {
+function Intent(DOM, itemAction$) {
   
-  // const clickevents$ = itemRemove$.filter(obj => obj.typeKey === 'btnattrdel').map(obj => ({typeKey: 'btnattrdel', payload: obj.id}))
-  // const clickAnswers$ = itemRemove$.filer(obj => obj.typeKey === 'btnAns').map(obj => ({typeKey: 'btnAns', payload: obj.id, ButtonIndex: obj.ButtonIndex}))
-  const clickevents$ = itemRemove$
+  // const clickevents$ = itemAction$.filter(obj => obj.typeKey === 'btnattrdel').map(obj => ({typeKey: 'btnattrdel', payload: obj.id}))
+  // const clickAnswers$ = itemAction$.filer(obj => obj.typeKey === 'btnAns').map(obj => ({typeKey: 'btnAns', payload: obj.id, ButtonIndex: obj.ButtonIndex}))
+  const clickevents$ = itemAction$
 
   return { clickevents$ }
 }
@@ -32,7 +32,7 @@ function Intent(DOM, itemRemove$) {
 function model(entityEvents, events, itemFn) {
   function createNewItem(props, id) {
     const sinks = itemFn(props, id);
-    return {id, DOM: sinks.DOM.remember(), Remove: sinks.Remove};
+    return {id, DOM: sinks.DOM.remember(), Action: sinks.Action};
   }
 
   const stateItemReducer$ = entityEvents.chat$
@@ -82,7 +82,7 @@ function makeItemWrapper(DOM) {
     const item = isolate(ChatItem)({DOM, Props: xs.of(props)});
     return {
       DOM: item.DOM,
-      Remove: item.Remove.map( obj => {
+      Action: item.Action.map( obj => {
         obj.id= id
         return obj
       })
@@ -101,7 +101,8 @@ function entityTodo(clickevents$, state$) {
         if (click.typeKey === 'btnattrdel') {
           return {action: 'btnattrdel', userinput: state.userinput, stageName: state.stageName, pos: click.id}
         } else if (click.typeKey === 'btnAns' ) {
-          return {action: 'btnAns', id: click.id, ButtonIndex: click.ButtonIndex, stageName: state.stageName}
+          console.log(click)
+          return {action: 'btnAns', id: click.id, ButtonIndex: click.ButtonIndex, stageName: state.stageName, ...click}
         }
       // } else {
       //   console.log("either no content or not signed in");      
@@ -113,16 +114,16 @@ function entityTodo(clickevents$, state$) {
 function ChatList(sources) {
   const { DOM, entity } = sources;
   const entityEvents = entityIntent(entity);
-  const proxyItemRemove$ = xs.create();
-  const events = Intent(DOM, proxyItemRemove$);
+  const proxyItemAction$ = xs.create();
+  const events = Intent(DOM, proxyItemAction$);
   const itemWrapper = makeItemWrapper(sources.DOM);
   const state$ = model(entityEvents, events, itemWrapper);
   const outgoingEntityEvents$ = entityTodo(events.clickevents$, state$)
-  const itemRemove$ = state$
-    .map(items => xs.merge(...items.map(item => item.Remove)))
+  const itemAction$ = state$
+    .map(items => xs.merge(...items.map(item => item.Action)))
     .flatten();
-  proxyItemRemove$.imitate(itemRemove$);
- const vdom$ = view(state$)
+  proxyItemAction$.imitate(itemAction$);
+  const vdom$ = view(state$)
   const sinks = {
     DOM: vdom$,
     value: state$,

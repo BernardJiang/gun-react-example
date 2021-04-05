@@ -395,6 +395,10 @@ export class Entity {
 
   }
 
+  sendAnswer(userinput) {
+    console.log("In sendAnswer", userinput)
+  }
+
   // //prepare data for UI.
   // onChatMessage(cbUpdateUIChat) {
   //     // console.log('Entity onChatMessage', 'entered')
@@ -645,7 +649,8 @@ export function makeEntityDriver(opts) {
           break;
           case 'btnAns':
               console.log('Chatbot answer a question: ', command)
-              // entity.deleteAttribute({ pos: command.pos })
+              console.log('Chatbot myself: ', entity.stageName)
+              entity.sendAnswer( command )
           break;
           case 'btnattributesubmit':
             console.log('attribute sent : ', command)

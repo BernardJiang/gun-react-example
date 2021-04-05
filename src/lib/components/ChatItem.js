@@ -1,9 +1,13 @@
 import xs from 'xstream';
+import sampleCombine from 'xstream/extra/sampleCombine';
 import { div, form, ul, li, h1, input, button, p } from '@cycle/react-dom';
 
 function intent(domSource) {
   const butdelete$ = domSource.select('btnattrdel').events('click').mapTo({typeKey: 'btnattrdel'})
-  const but0$ = domSource.select('btnopt0').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 0})
+  const but0$ = domSource.select('btnopt0').events('click').map(ev => {
+    console.log(ev)
+    return ev
+  }).mapTo({typeKey: 'btnAns', ButtonIndex: 0})
   const but1$ = domSource.select('btnopt1').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 1})
   const but2$ = domSource.select('btnopt2').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 2})
   const but3$ = domSource.select('btnopt3').events('click').mapTo({typeKey: 'btnAns', ButtonIndex: 3})
@@ -20,9 +24,21 @@ function model(props$, action$) {
       return props;
     });
 
+    const Answer$ = action$
+    .filter(a => a.typeKey === 'btnAns')
+    .compose(sampleCombine(props$))
+    .map(([action, props]) => {    
+      console.log(props)
+      return {...action, ...props};
+    });
+    
+    // .map(action => function AnswerReducer(oldState)
 
-  return xs.merge(usePropsReducer$)
+  const domState$ = xs.merge(usePropsReducer$)
     .fold((state, reducer) => reducer(state), {color: '#888', width: 200});
+  // const gunState$ = xs.merge(AnswerReducer$)
+  // .fold((state, reducer) => reducer(state), {color: '#888', width: 200});
+  return {domState: domState$,  gunState: Answer$}
 }
 
 function view(state$) {
@@ -72,12 +88,13 @@ function view(state$) {
 
 function ChatItem(sources) {
   const action$ = intent(sources.DOM);
-  const state$ = model(sources.Props, action$);
-  const vtree$ = view(state$);
+  const state = model(sources.Props, action$);
+  const vtree$ = view(state.domState);
 
   return {
     DOM: vtree$,
-    Remove: action$,
+    Action: state.gunState, //action$,
+    props: state.gunState
   };
 }
 
