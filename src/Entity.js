@@ -397,6 +397,19 @@ export class Entity {
 
   sendAnswer(userinput) {
     console.log("In sendAnswer", userinput)
+
+    var chatmsg = { 
+      stageName: this.stageName,
+      when: Entity.time(),
+      where: "empty",
+      bot: false,
+      answer: userinput["op" + userinput.ButtonIndex]
+    }
+    var gmsg = this.chat.set(chatmsg);
+    if(gmsg == undefined) {
+      console.log("err", gmsg)
+    }
+    
   }
 
   // //prepare data for UI.
